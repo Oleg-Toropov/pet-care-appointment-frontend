@@ -1,5 +1,6 @@
 import { Accordion, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import UserImage from "../common/UserImage";
 import placeholder from "../../assets/images/placeholder.jpg";
 
 const VeterinarianCard = ({ vet }) => {
@@ -10,40 +11,37 @@ const VeterinarianCard = ({ vet }) => {
           <Accordion.Header>
             <div className="d-flex align-items-center">
               <Link>
-                {vet.photo ? (
-                  <Card.Img
-                    src={"data:image/png;base64, ${vet.photo}"}
-                    className="user-image"
-                    alt="User Photo"
-                  />
-                ) : (
-                  <Card.Img
-                    src={placeholder}
-                    className="user-image"
-                    alt="User Photo"
-                  />
-                )}
+                <UserImage
+                  userId={vet.id}
+                  userPhoto={vet.photo}
+                  placeholder={placeholder}
+                />
               </Link>
             </div>
-            <div>
+            <div className="ms-3">
               <Card.Title className="title">
-                Dr. {vet.firstName} {vet.lastName}
+                {vet.firstName} {vet.lastName}
               </Card.Title>
               <Card.Title>
                 <h6> {vet.specialization} </h6>
               </Card.Title>
-              <Card.Title className="review rating-stars">
-                Reviews: Some stars
-              </Card.Title>
-              <Link to={""}>Book appointment</Link>
+              <Card.Text className="review rating-stars">
+                Рейтинг: звезды
+              </Card.Text>
+              <Link to={""} className="link">
+                Записаться на прием
+              </Link>
             </div>
           </Accordion.Header>
           <Accordion.Body>
             <div>
               <Link to={""} className="link-2">
-                See what people are saying about
+                Узнайте, что говорят люди о
               </Link>{" "}
-              <span className="margin-left-space">Dr. {vet.firstName}</span>
+              <span className="margin-left-space">
+                {" "}
+                {vet.firstName} {vet.lastName}
+              </span>
             </div>
           </Accordion.Body>
         </Accordion.Item>

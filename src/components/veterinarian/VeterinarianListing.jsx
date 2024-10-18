@@ -18,30 +18,29 @@ const VeterinarianListing = () => {
   }, []);
 
   if (veterinarians.length === 0) {
-    return <p>No veterinarians found at this time</p>;
+    return <p>На данный момент ветеринары не найдены</p>;
   }
 
   return (
-    <Row>
-      <h6>Meet Our Veterinarians</h6>
-      <Col>
-        <Container>
-          <Row>
-            <h5>The search goes here</h5>
-          </Row>
-        </Container>
+    <Container>
+      <Row className="justify-content-center">
+        <h2 className="text-center mb-4 mt-4">
+          Познакомьтесь с нашими ветеринарами
+        </h2>
+      </Row>
 
-        <Col>
-          <Container>
-            <Row>
-              {veterinarians.map((vet, index) => (
-                <VeterinarianCard key={index} vet={vet} />
-              ))}
-            </Row>
-          </Container>
+      <Row className="justify-content-center">
+        <Col md={4}>
+          <h5>Здесь будет поиск</h5>
         </Col>
-      </Col>
-    </Row>
+
+        <Col md={7}>
+          {veterinarians.map((vet, index) => (
+            <VeterinarianCard key={index} vet={vet} />
+          ))}
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
