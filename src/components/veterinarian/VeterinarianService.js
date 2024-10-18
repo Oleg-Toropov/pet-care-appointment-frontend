@@ -11,3 +11,16 @@ export async function getVeterinarians() {
     throw error;
   }
 }
+
+export async function findAvailableVeterinarians(searchParams) {
+  try {
+    const queryParams = new URLSearchParams(searchParams);
+    const result = await api.get(
+      `/veterinarians/search-veterinarian?${queryParams}`
+    );
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching available veterinarians:", error); // TODO: delete
+    throw error;
+  }
+}

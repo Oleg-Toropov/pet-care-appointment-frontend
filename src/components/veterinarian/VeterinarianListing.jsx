@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import VeterinarianCard from "./VeterinarianCard";
 import { getVeterinarians } from "./VeterinarianService";
+import VeterinarianSearch from "./VeterinarianSearch";
 
 const VeterinarianListing = () => {
   const [veterinarians, setVeterinarians] = useState([]);
@@ -21,6 +22,8 @@ const VeterinarianListing = () => {
     return <p>На данный момент ветеринары не найдены</p>;
   }
 
+  const handleSearchResult = (searchResult) => {};
+
   return (
     <Container>
       <Row className="justify-content-center">
@@ -31,7 +34,7 @@ const VeterinarianListing = () => {
 
       <Row className="justify-content-center">
         <Col md={4}>
-          <h5>Здесь будет поиск</h5>
+          <VeterinarianSearch onSearchResult={handleSearchResult} />
         </Col>
 
         <Col md={7}>
