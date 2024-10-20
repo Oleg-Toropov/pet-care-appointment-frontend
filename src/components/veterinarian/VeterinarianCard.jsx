@@ -36,12 +36,8 @@ const VeterinarianCard = ({ vet }) => {
           <Accordion.Body>
             <div>
               <Link to={""} className="link-2">
-                Узнайте, что говорят люди о
+                Посмотреть отзывы клиентов
               </Link>{" "}
-              <span className="margin-left-space">
-                {" "}
-                {vet.firstName} {vet.lastName}
-              </span>
             </div>
           </Accordion.Body>
         </Accordion.Item>

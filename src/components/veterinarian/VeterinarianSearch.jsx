@@ -21,11 +21,24 @@ const VeterinarianSearch = ({ onSearchResult }) => {
   const { errorMessage, setErrorMessage, showErrorAlert, setShowErrorAlert } =
     UseMessageAlerts();
 
+  const [formErrors, setFormErrors] = useState({
+    specialization: "",
+    date: "",
+    time: "",
+  });
+
   const handleInputChange = (e) => {
     setSearchQuery({
       ...searchQuery,
       [e.target.name]: e.target.value,
     });
+
+    if (e.target.name === "specialization" && e.target.value) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        specialization: "",
+      }));
+    }
   };
 
   const handleDateChange = (date) => {
@@ -33,6 +46,13 @@ const VeterinarianSearch = ({ onSearchResult }) => {
       ...searchQuery,
       date,
     });
+
+    if (date) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        date: "",
+      }));
+    }
   };
 
   const handleTimeChange = (time) => {
@@ -40,28 +60,62 @@ const VeterinarianSearch = ({ onSearchResult }) => {
       ...searchQuery,
       time,
     });
+
+    if (time) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        time: "",
+      }));
+    }
   };
 
   const handleDateTimeToggle = (e) => {
     const isChecked = e.target.checked;
     setShowDateTime(isChecked);
     if (isChecked) {
-      setSearchQuery(
-        prevQuery({
-          ...searchQuery,
-          date: null,
-          time: null,
-        })
-      );
+      setSearchQuery((prevQuery) => ({
+        ...prevQuery,
+        date: null,
+        time: null,
+      }));
     }
+  };
+
+  const validateForm = () => {
+    let errors = { specialization: "", date: "", time: "" };
+    let isValid = true;
+
+    if (!searchQuery.specialization) {
+      errors.specialization = "Пожалуйста, выберите специализацию";
+      isValid = false;
+    }
+
+    if (showDateTime) {
+      if (!searchQuery.date) {
+        errors.date = "Пожалуйста, выберите дату";
+        isValid = false;
+      }
+      if (!searchQuery.time) {
+        errors.time = "Пожалуйста, выберите время";
+        isValid = false;
+      }
+    }
+
+    setFormErrors(errors);
+    return isValid;
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     let searchParams = { specialization: searchQuery.specialization };
 
     if (searchQuery.date) {
-      const formattedDate = format(searchQuery.date, "dd-MM-yyyy");
+      const formattedDate = format(searchQuery.date, "dd.MM.yyyy");
       searchParams.date = formattedDate;
     }
 
@@ -73,6 +127,7 @@ const VeterinarianSearch = ({ onSearchResult }) => {
       const response = await findAvailableVeterinarians(searchParams);
       onSearchResult(response.data);
       setShowErrorAlert(false);
+      setFormErrors({ specialization: "", date: "", time: "" });
     } catch (error) {
       setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
@@ -85,6 +140,7 @@ const VeterinarianSearch = ({ onSearchResult }) => {
       time: null,
       specialization: "",
     });
+    setFormErrors({ specialization: "", date: "", time: "" });
     setShowDateTime(false);
     onSearchResult(null);
   };
@@ -100,6 +156,14 @@ const VeterinarianSearch = ({ onSearchResult }) => {
             name="specialization"
             value={searchQuery.specialization}
             onChange={handleInputChange}
+            onBlur={() => {
+              if (!searchQuery.specialization) {
+                setFormErrors((prevErrors) => ({
+                  ...prevErrors,
+                  specialization: "Пожалуйста, выберите специализацию",
+                }));
+              }
+            }}
           >
             <option value="">Выберите специализацию</option>
             <option value="Терапевт">Терапевт</option>
@@ -123,6 +187,9 @@ const VeterinarianSearch = ({ onSearchResult }) => {
             <option value="Паразитолог">Паразитолог</option>
             <option value="Аллерголог">Аллерголог</option>
           </Form.Control>
+          {formErrors.specialization && (
+            <span className="text-danger">{formErrors.specialization}</span>
+          )}
         </Form.Group>
 
         <fieldset>
@@ -150,6 +217,9 @@ const VeterinarianSearch = ({ onSearchResult }) => {
                       className="form-control"
                       placeholderText="Выберите дату"
                     />
+                    {formErrors.date && (
+                      <span className="text-danger">{formErrors.date}</span>
+                    )}
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label className="searchText">Время</Form.Label>
@@ -164,8 +234,10 @@ const VeterinarianSearch = ({ onSearchResult }) => {
                       dateFormat="HH:mm"
                       className="form-control"
                       placeholderText="Выберите время"
-                      required
                     />
+                    {formErrors.time && (
+                      <span className="text-danger">{formErrors.time}</span>
+                    )}
                   </Form.Group>
                 </React.Fragment>
               )}
