@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { format } from "date-fns";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import DatePicker from "react-datepicker";
@@ -8,6 +7,7 @@ import { registerLocale } from "react-datepicker";
 import ru from "date-fns/locale/ru";
 import { findAvailableVeterinarians } from "./VeterinarianService";
 import AlertMessage from "../common/AlertMessage";
+import { dateTimeFormatter } from "../utils/utilities";
 
 registerLocale("ru", ru);
 
@@ -21,24 +21,11 @@ const VeterinarianSearch = ({ onSearchResult }) => {
   const { errorMessage, setErrorMessage, showErrorAlert, setShowErrorAlert } =
     UseMessageAlerts();
 
-  const [formErrors, setFormErrors] = useState({
-    specialization: "",
-    date: "",
-    time: "",
-  });
-
   const handleInputChange = (e) => {
     setSearchQuery({
       ...searchQuery,
       [e.target.name]: e.target.value,
     });
-
-    if (e.target.name === "specialization" && e.target.value) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        specialization: "",
-      }));
-    }
   };
 
   const handleDateChange = (date) => {
@@ -46,13 +33,6 @@ const VeterinarianSearch = ({ onSearchResult }) => {
       ...searchQuery,
       date,
     });
-
-    if (date) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        date: "",
-      }));
-    }
   };
 
   const handleTimeChange = (time) => {
@@ -60,13 +40,6 @@ const VeterinarianSearch = ({ onSearchResult }) => {
       ...searchQuery,
       time,
     });
-
-    if (time) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        time: "",
-      }));
-    }
   };
 
   const handleDateTimeToggle = (e) => {
@@ -81,53 +54,24 @@ const VeterinarianSearch = ({ onSearchResult }) => {
     }
   };
 
-  const validateForm = () => {
-    let errors = { specialization: "", date: "", time: "" };
-    let isValid = true;
-
-    if (!searchQuery.specialization) {
-      errors.specialization = "Пожалуйста, выберите специализацию";
-      isValid = false;
-    }
-
-    if (showDateTime) {
-      if (!searchQuery.date) {
-        errors.date = "Пожалуйста, выберите дату";
-        isValid = false;
-      }
-      if (!searchQuery.time) {
-        errors.time = "Пожалуйста, выберите время";
-        isValid = false;
-      }
-    }
-
-    setFormErrors(errors);
-    return isValid;
-  };
-
   const handleSearch = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
+    const { date, time } = searchQuery;
+    const { formattedDate, formattedTime } = dateTimeFormatter(date, time);
 
     let searchParams = { specialization: searchQuery.specialization };
 
     if (searchQuery.date) {
-      const formattedDate = format(searchQuery.date, "dd.MM.yyyy");
       searchParams.date = formattedDate;
     }
 
     if (searchQuery.time) {
-      const formattedTime = format(searchQuery.time, "HH:mm");
       searchParams.time = formattedTime;
     }
     try {
       const response = await findAvailableVeterinarians(searchParams);
       onSearchResult(response.data);
       setShowErrorAlert(false);
-      setFormErrors({ specialization: "", date: "", time: "" });
     } catch (error) {
       setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
@@ -140,30 +84,23 @@ const VeterinarianSearch = ({ onSearchResult }) => {
       time: null,
       specialization: "",
     });
-    setFormErrors({ specialization: "", date: "", time: "" });
     setShowDateTime(false);
+    setShowErrorAlert(false);
+    setErrorMessage("");
     onSearchResult(null);
   };
 
   return (
     <section className="stickyFormContainer">
-      <h3>Поиск ветеринара</h3>
+      <h4>Поиск ветеринара</h4>
       <Form onSubmit={handleSearch}>
         <Form.Group>
-          <Form.Label>Специализация</Form.Label>
           <Form.Control
             as="select"
             name="specialization"
             value={searchQuery.specialization}
             onChange={handleInputChange}
-            onBlur={() => {
-              if (!searchQuery.specialization) {
-                setFormErrors((prevErrors) => ({
-                  ...prevErrors,
-                  specialization: "Пожалуйста, выберите специализацию",
-                }));
-              }
-            }}
+            required
           >
             <option value="">Выберите специализацию</option>
             <option value="Терапевт">Терапевт</option>
@@ -187,9 +124,6 @@ const VeterinarianSearch = ({ onSearchResult }) => {
             <option value="Паразитолог">Паразитолог</option>
             <option value="Аллерголог">Аллерголог</option>
           </Form.Control>
-          {formErrors.specialization && (
-            <span className="text-danger">{formErrors.specialization}</span>
-          )}
         </Form.Group>
 
         <fieldset>
@@ -205,9 +139,7 @@ const VeterinarianSearch = ({ onSearchResult }) => {
               </Form.Group>
               {showDateTime && (
                 <React.Fragment>
-                  <legend>Выбрать дату и время</legend>
                   <Form.Group className="mb-3">
-                    <Form.Label className="searchText">Дата</Form.Label>
                     <DatePicker
                       selected={searchQuery.date}
                       onChange={handleDateChange}
@@ -216,13 +148,10 @@ const VeterinarianSearch = ({ onSearchResult }) => {
                       minDate={new Date()}
                       className="form-control"
                       placeholderText="Выберите дату"
+                      required={showDateTime}
                     />
-                    {formErrors.date && (
-                      <span className="text-danger">{formErrors.date}</span>
-                    )}
                   </Form.Group>
                   <Form.Group className="mb-3">
-                    <Form.Label className="searchText">Время</Form.Label>
                     <DatePicker
                       selected={searchQuery.time}
                       onChange={handleTimeChange}
@@ -234,10 +163,8 @@ const VeterinarianSearch = ({ onSearchResult }) => {
                       dateFormat="HH:mm"
                       className="form-control"
                       placeholderText="Выберите время"
+                      required={showDateTime}
                     />
-                    {formErrors.time && (
-                      <span className="text-danger">{formErrors.time}</span>
-                    )}
                   </Form.Group>
                 </React.Fragment>
               )}
@@ -245,7 +172,7 @@ const VeterinarianSearch = ({ onSearchResult }) => {
           </Row>
         </fieldset>
 
-        <div className="d-flex justify-content-center mb-4">
+        <div className="d-flex mb-4">
           <Button type="submit" variant="outline-primary">
             Поиск
           </Button>

@@ -1,0 +1,271 @@
+import { useState } from "react";
+import { dateTimeFormatter } from "../utils/utilities";
+import UseMessageAlerts from "../hooks/UseMessageAlerts";
+import AlertMessage from "../common/AlertMessage";
+import { useParams } from "react-router-dom";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Card,
+  OverlayTrigger,
+  Button,
+  Tooltip,
+} from "react-bootstrap";
+import { FaPlus } from "react-icons/fa";
+import DatePicker from "react-datepicker";
+import PetEntry from "../pet/PetEntry";
+import { bookAppointment } from "./AppointmentService";
+
+const BookAppointment = () => {
+  const [formData, setFormData] = useState({
+    appointmentDate: "",
+    appointmentTime: "",
+    reason: "",
+    pets: [
+      {
+        petName: "",
+        petType: "",
+        petColor: "",
+        petBreed: "",
+        petAge: "",
+      },
+    ],
+  });
+
+  const {
+    successMessage,
+    setSuccessMessage,
+    showSuccessAlert,
+    setShowSuccessAlert,
+    errorMessage,
+    setErrorMessage,
+    showErrorAlert,
+    setShowErrorAlert,
+  } = UseMessageAlerts();
+
+  const { recipientId } = useParams();
+  const senderId = 3;
+
+  const handleDateChange = (date) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      appointmentDate: date,
+    }));
+  };
+
+  const handleTimeChange = (time) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      appointmentTime: time,
+    }));
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handlePetChange = (index, e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      pets: prevState.pets.map((pet, ind) =>
+        ind === index ? { ...pet, [name]: value } : pet
+      ),
+    }));
+  };
+
+  const addPet = () => {
+    const newPet = {
+      petName: "",
+      petType: "",
+      petColor: "",
+      petBreed: "",
+      petAge: "",
+    };
+    setFormData((prevState) => ({
+      ...prevState,
+      pets: [...prevState.pets, newPet],
+    }));
+  };
+
+  const removePet = (index, e) => {
+    const filterPets = formData.pets.filter((_, idx) => idx !== index);
+    setFormData((prevState) => ({
+      ...prevState,
+      pets: filterPets,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { appointmentDate, appointmentTime } = formData;
+    const { formattedDate, formattedTime } = dateTimeFormatter(
+      appointmentDate,
+      appointmentTime
+    );
+
+    const pets = formData.pets.map((pet) => ({
+      name: pet.petName,
+      type: pet.petType,
+      color: pet.petColor,
+      breed: pet.petBreed,
+      age: pet.petAge,
+    }));
+
+    const request = {
+      appointment: {
+        appointmentDate: formattedDate,
+        appointmentTime: formattedTime,
+        reason: formData.reason,
+      },
+      pets: pets,
+    };
+
+    try {
+      console.log("The appointment request : ", request); //TODO delete
+      const response = await bookAppointment(senderId, recipientId, request);
+      console.log("The appointment response : ", response); //TODO delete
+      setSuccessMessage(response.message);
+      handleReset();
+      setShowSuccessAlert(true);
+    } catch (error) {
+      setErrorMessage(error.response.message);
+      setShowErrorAlert(true);
+    }
+  };
+
+  const handleReset = () => {
+    setFormData({
+      appointmentDate: "",
+      appointmentTime: "",
+      reason: "",
+      pets: [
+        {
+          petName: "",
+          petType: "",
+          petColor: "",
+          petBreed: "",
+          petAge: "",
+        },
+      ],
+    });
+    setShowSuccessAlert(false);
+    setShowErrorAlert(false);
+  };
+
+  return (
+    <Container className="mt-5">
+      <Row className="justify-content-center">
+        <Col lg={6} md={8} sm={10}>
+          <Form onSubmit={handleSubmit}>
+            <Card className="shadow mb-5">
+              <Card.Header as="h5" className="mb-4 text-center">
+                Запись на прием
+              </Card.Header>
+              <Card.Body>
+                <Form.Group as={Row} className="mb-4">
+                  <Col md={6}>
+                    <DatePicker
+                      selected={formData.appointmentDate}
+                      onChange={handleDateChange}
+                      locale="ru"
+                      dateFormat="dd.MM.yyyy"
+                      minDate={new Date()}
+                      className="form-control shadow"
+                      placeholderText="Выберите дату"
+                      required
+                    />
+                  </Col>
+
+                  <Col md={6}>
+                    <DatePicker
+                      selected={formData.appointmentTime}
+                      onChange={handleTimeChange}
+                      locale="ru"
+                      showTimeSelect
+                      showTimeSelectOnly
+                      timeIntervals={30}
+                      timeCaption="Время"
+                      dateFormat="HH:mm"
+                      className="form-control shadow"
+                      placeholderText="Выберите время"
+                      required
+                    />
+                  </Col>
+                </Form.Group>
+
+                <Form.Group className="mb-4">
+                  <Form.Label className="legend">
+                    Причина записи на прием
+                  </Form.Label>
+
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    name="reason"
+                    className="shadow"
+                    onChange={handleInputChange}
+                    value={formData.reason}
+                    required
+                  />
+                </Form.Group>
+
+                {formData.pets.map((pet, index) => (
+                  <PetEntry
+                    key={index}
+                    pet={pet}
+                    index={index}
+                    handleInputChange={(e) => handlePetChange(index, e)}
+                    removePet={removePet}
+                    canRemove={formData.pets.length > 1}
+                  />
+                ))}
+
+                {showErrorAlert && (
+                  <AlertMessage type={"danger"} message={errorMessage} />
+                )}
+                {showSuccessAlert && (
+                  <AlertMessage type={"success"} message={successMessage} />
+                )}
+
+                <div className="d-flex justify-content-center mb-3">
+                  <OverlayTrigger overlay={<Tooltip>Добавить питомца</Tooltip>}>
+                    <Button size="sm" onClick={addPet} className="me-2">
+                      <FaPlus />
+                    </Button>
+                  </OverlayTrigger>
+
+                  <Button
+                    type="submit"
+                    variant="outline-primary"
+                    size="sm"
+                    className="me-2"
+                  >
+                    Записаться
+                  </Button>
+
+                  <Button
+                    variant="outline-info"
+                    size="sm"
+                    onClick={handleReset}
+                  >
+                    Очистить
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
+  );
+};
+
+export default BookAppointment;
