@@ -17,8 +17,10 @@ import { FaPlus } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import PetEntry from "../pet/PetEntry";
 import { bookAppointment } from "./AppointmentService";
+import ProcessSpinner from "../common/ProcessSpinner";
 
 const BookAppointment = () => {
+  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     appointmentDate: "",
     appointmentTime: "",
@@ -128,6 +130,7 @@ const BookAppointment = () => {
       pets: pets,
     };
 
+    setIsProcessing(true);
     try {
       console.log("The appointment request : ", request); //TODO delete
       const response = await bookAppointment(senderId, recipientId, request);
@@ -138,6 +141,8 @@ const BookAppointment = () => {
     } catch (error) {
       setErrorMessage(error.response.message);
       setShowErrorAlert(true);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -247,8 +252,13 @@ const BookAppointment = () => {
                     variant="outline-primary"
                     size="sm"
                     className="me-2"
+                    disabled={isProcessing}
                   >
-                    Записаться
+                    {isProcessing ? (
+                      <ProcessSpinner message="Идет регистрация..." />
+                    ) : (
+                      "Записаться"
+                    )}
                   </Button>
 
                   <Button
