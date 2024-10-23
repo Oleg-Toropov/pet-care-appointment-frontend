@@ -4,13 +4,14 @@ import Home from "./components/home/Home";
 import VeterinarianListing from "./components/veterinarian/VeterinarianListing";
 import {
   Route,
-  Router,
+  // Router,
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
 import RootLayout from "./components/layout/RootLayout";
 import BookAppointment from "./components/appointment/BookAppointment";
+import Veterinarian from "./components/veterinarian/Veterinarian";
 
 function App() {
   const router = createBrowserRouter(
@@ -21,6 +22,10 @@ function App() {
         <Route
           path="/book-appointment/:recipientId/new-appointment"
           element={<BookAppointment />}
+        />
+        <Route
+          path="/veterinarian/:vetId/veterinarian"
+          element={<Veterinarian />}
         />
       </Route>
     )

@@ -48,7 +48,7 @@ const BookAppointment = () => {
   } = UseMessageAlerts();
 
   const { recipientId } = useParams();
-  const senderId = 3;
+  const senderId = 3; //TODO delete
 
   const handleDateChange = (date) => {
     setFormData((prevState) => ({
@@ -132,9 +132,7 @@ const BookAppointment = () => {
 
     setIsProcessing(true);
     try {
-      console.log("The appointment request : ", request); //TODO delete
       const response = await bookAppointment(senderId, recipientId, request);
-      console.log("The appointment response : ", response); //TODO delete
       setSuccessMessage(response.message);
       handleReset();
       setShowSuccessAlert(true);
