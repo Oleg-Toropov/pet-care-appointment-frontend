@@ -18,6 +18,7 @@ const AddItemModal = ({ show, handleClose, handleSave, itemLabel }) => {
     if (itemLabel === "Breed") return "породы";
     if (itemLabel === "Color") return "цвета";
     if (itemLabel === "Type") return "типа";
+    if (itemLabel === "Specialization") return "специализации";
   };
 
   return (

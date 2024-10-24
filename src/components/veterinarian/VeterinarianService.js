@@ -12,3 +12,8 @@ export async function findAvailableVeterinarians(searchParams) {
   );
   return result.data;
 }
+
+export const getAllSpecializations = async () => {
+  const response = await api.get("/veterinarians/vet/get-all-specialization");
+  return response.data;
+};

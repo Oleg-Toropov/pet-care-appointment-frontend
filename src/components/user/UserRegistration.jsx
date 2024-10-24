@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import AlertMessage from "../common/AlertMessage";
 import ProcessSpinner from "../common/ProcessSpinner";
+import VetSpecializationSelector from "../veterinarian/VetSpecializationSelector";
+import { registerUser } from "./UserService";
 
 const UserRegistration = () => {
   const [user, setUser] = useState({
@@ -45,17 +47,17 @@ const UserRegistration = () => {
       const response = await registerUser(user);
       setSuccessMessage(response.message);
       setShowSuccessAlert(true);
-      setIsProcessing(false);
       handleReset();
     } catch (error) {
       setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
+    } finally {
       setIsProcessing(false);
     }
   };
 
   const handleReset = () => {
-    setFormData({
+    setUser({
       firstName: "",
       lastName: "",
       gender: "",
@@ -65,6 +67,7 @@ const UserRegistration = () => {
       userType: "",
       specialization: "",
     });
+    setShowErrorAlert(false);
   };
 
   return (
@@ -185,6 +188,26 @@ const UserRegistration = () => {
                   </Col>
                 </Form.Group>
 
+                {user.userType === "VET" && (
+                  <Form.Group>
+                    <Row>
+                      <Col>
+                        <VetSpecializationSelector
+                          value={user.specialization}
+                          onChange={handleInputChange}
+                        />
+                      </Col>
+                    </Row>
+                  </Form.Group>
+                )}
+
+                {showErrorAlert && (
+                  <AlertMessage type={"danger"} message={errorMessage} />
+                )}
+                {showSuccessAlert && (
+                  <AlertMessage type={"success"} message={successMessage} />
+                )}
+
                 <div className="d-flex justify-content-center mb-3">
                   <Button
                     type="submit"
@@ -207,13 +230,6 @@ const UserRegistration = () => {
                     Очистить
                   </Button>
                 </div>
-
-                {showErrorAlert && (
-                  <AlertMessage type="danger" message={errorMessage} />
-                )}
-                {showSuccessAlert && (
-                  <AlertMessage type="success" message={successMessage} />
-                )}
 
                 <div className="text-center">
                   Вы уже зарегистрированы?{" "}

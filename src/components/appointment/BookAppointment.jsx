@@ -253,7 +253,7 @@ const BookAppointment = () => {
                     disabled={isProcessing}
                   >
                     {isProcessing ? (
-                      <ProcessSpinner message="Идет регистрация..." />
+                      <ProcessSpinner message="Обработка регистрация..." />
                     ) : (
                       "Записаться"
                     )}
