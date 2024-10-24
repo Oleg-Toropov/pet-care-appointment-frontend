@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const NavBar = () => {
+  const { userId } = useParams();
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleMouseEnter = () => {
@@ -37,7 +39,7 @@ const NavBar = () => {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <NavDropdown.Item to={"/user-dashboard"} as={Link}>
+              <NavDropdown.Item to={"/register-user"} as={Link}>
                 Зарегистрироваться
               </NavDropdown.Item>
               <NavDropdown.Divider />
@@ -45,7 +47,10 @@ const NavBar = () => {
                 Войти
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item to={"/user-dashboard"} as={Link}>
+              <NavDropdown.Item
+                to={`/user-dashboard/${userId}/my-dashboard`}
+                as={Link}
+              >
                 Мой профиль
               </NavDropdown.Item>
               <NavDropdown.Divider />
