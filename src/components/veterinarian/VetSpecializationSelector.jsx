@@ -9,21 +9,18 @@ const VetSpecializationSelector = ({ value, onChange }) => {
 
   useEffect(() => {
     const fetchAllSpecializations = async () => {
-      try {
-        const result = await getAllSpecializations();
-        setSpecializations(result.data);
-      } catch (error) {
-        console.error(error.response.data.message);
-      }
+      const result = await getAllSpecializations();
+      setSpecializations(result.data);
     };
     fetchAllSpecializations();
   }, []);
 
   const handleSpecializationChange = (e) => {
-    if (e.target.value === "add-new-specialization") {
+    const selectedValue = e.target.value;
+    if (selectedValue === "add-new-specialization") {
       setShowModal(true);
     } else {
-      onChange(e);
+      onChange({ target: { name: "specialization", value: selectedValue } });
     }
   };
 

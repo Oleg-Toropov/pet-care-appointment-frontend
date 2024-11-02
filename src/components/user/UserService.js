@@ -23,3 +23,13 @@ export async function changeUserPassword(
   );
   return result.data;
 }
+
+export async function updateUser(userData, userId) {
+  const response = await api.put(`/users/user/${userId}/update`, userData);
+  return response.data;
+}
+
+export async function deleteUser(userId) {
+  const response = await api.delete(`/users/user/${userId}/delete`);
+  return response.data;
+}

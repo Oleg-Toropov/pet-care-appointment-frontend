@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Form, Col } from "react-bootstrap";
 import AddItemModal from "../modals/AddItemModal";
-import { getPetTypes } from "./PetService";
+import { getAllPetTypes } from "./PetService";
 
 const PetTypeSelector = ({ value, onChange }) => {
   const [petTypes, setPetTypes] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const fetchPetTypes = async () => {
-      try {
-        const response = await getPetTypes();
-        setPetTypes(response.data);
-      } catch (error) {
-        console.error(error.response.data.message);
-      }
+    const fetchAllPetTypes = async () => {
+      const response = await getAllPetTypes();
+      setPetTypes(response.data);
     };
-    fetchPetTypes();
+    fetchAllPetTypes();
   }, []);
 
   const handleTypeChange = (e) => {
@@ -45,12 +41,13 @@ const PetTypeSelector = ({ value, onChange }) => {
           onChange={handleTypeChange}
         >
           <option value="">Тип питомца</option>
-          <option value="add-new-item">Добавить новый тип</option>
+
           {petTypes.map((type) => (
             <option key={type} value={type}>
               {type}
             </option>
           ))}
+          <option value="add-new-item">Добавить новый тип</option>
         </Form.Control>
       </Form.Group>
       <AddItemModal

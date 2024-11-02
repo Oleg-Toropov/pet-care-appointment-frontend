@@ -36,7 +36,6 @@ const Rating = ({ veterinarianId, onReviewSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Проверка: если рейтинг не выбран, показать ошибку
     if (!rating) {
       setErrorMessage("Пожалуйста, выберите количество звезд для оценки.");
       setShowErrorAlert(true);

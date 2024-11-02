@@ -23,10 +23,6 @@ const VeterinarianListing = () => {
       });
   }, []);
 
-  if (veterinarians.length === 0) {
-    return <p>На данный момент ветеринары не найдены</p>;
-  }
-
   const handleSearchResult = (veterinarians) => {
     if (veterinarians === null) {
       setVeterinarians(allVeterinarians);
@@ -36,6 +32,10 @@ const VeterinarianListing = () => {
       setVeterinarians([]);
     }
   };
+
+  if (veterinarians.length === 0) {
+    return <p>На данный момент ветеринары не найдены</p>;
+  }
 
   return (
     <Container>

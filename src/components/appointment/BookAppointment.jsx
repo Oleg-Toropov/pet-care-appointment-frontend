@@ -107,11 +107,17 @@ const BookAppointment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { appointmentDate, appointmentTime } = formData;
-    const { formattedDate, formattedTime } = dateTimeFormatter(
-      appointmentDate,
-      appointmentTime
-    );
+    const formattedDate = formData.appointmentDate
+      ? formData.appointmentDate.toISOString().split("T")[0]
+      : "";
+
+    const formattedTime = formData.appointmentTime
+      ? formData.appointmentTime.toLocaleTimeString("ru-RU", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        })
+      : "";
 
     const pets = formData.pets.map((pet) => ({
       name: pet.petName,

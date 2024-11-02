@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Col } from "react-bootstrap";
 import AddItemModal from "../modals/AddItemModal";
-import { getPetBreeds } from "./PetService";
+import { getAllPetBreeds } from "./PetService";
 
 const PetBreedSelector = ({ petType, value, onChange }) => {
   const [petBreeds, setPetBreeds] = useState([]);
@@ -9,15 +9,11 @@ const PetBreedSelector = ({ petType, value, onChange }) => {
 
   useEffect(() => {
     if (petType) {
-      const fetchPetBreeds = async () => {
-        try {
-          const response = await getPetBreeds(petType);
-          setPetBreeds(response.data);
-        } catch (error) {
-          console.error(error.response.data.message);
-        }
+      const fetchAllPetBreeds = async () => {
+        const response = await getAllPetBreeds(petType);
+        setPetBreeds(response.data);
       };
-      fetchPetBreeds();
+      fetchAllPetBreeds();
     } else {
       setPetBreeds([]);
     }
@@ -49,12 +45,12 @@ const PetBreedSelector = ({ petType, value, onChange }) => {
           onChange={handleBreedChange}
         >
           <option value="">Порода питомца</option>
-          <option value="add-new-item">Добавить новую породу</option>
           {petBreeds.map((breed) => (
             <option key={breed} value={breed}>
               {breed}
             </option>
           ))}
+          <option value="add-new-item">Добавить новую породу</option>
         </Form.Control>
       </Form.Group>
       <AddItemModal

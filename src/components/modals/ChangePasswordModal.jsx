@@ -38,6 +38,7 @@ const ChangePasswordModal = ({ userId, show, handleClose }) => {
 
     try {
       const response = await changeUserPassword(
+        // userId, // TODO delete
         3,
         passwords.currentPassword,
         passwords.newPassword,
@@ -49,7 +50,6 @@ const ChangePasswordModal = ({ userId, show, handleClose }) => {
     } catch (error) {
       setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
-      console.error(error.message);
     }
   };
 

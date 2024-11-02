@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AlertMessage from "../common/AlertMessage";
 import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 import { updateUserPhoto, uploadUserPhoto } from "./ImageUploaderService";
@@ -30,7 +30,6 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
     } catch (error) {
       setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
-      console.error(error.message);
     }
   };
   useEffect(() => {
@@ -55,7 +54,7 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
           setShowSuccessAlert(true);
         };
       } else {
-        const response = await uploadUserPhoto(3, file);
+        const response = await uploadUserPhoto(userId, file);
         setSuccessMessage(response.data);
         window.location.reload();
         setShowSuccessAlert(true);
@@ -63,7 +62,6 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
     } catch (error) {
       setErrorMessage(error.message);
       setShowErrorAlert(true);
-      console.error(error.message);
     }
   };
 
@@ -75,10 +73,10 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
 
       <Modal.Body>
         {showErrorAlert && (
-          <AlertMessage type={"danger"} messsag={errorMessage} />
+          <AlertMessage type={"danger"} message={errorMessage} />
         )}
         {showSuccessAlert && (
-          <AlertMessage type={"success"} messsag={successMessage} />
+          <AlertMessage type={"success"} message={successMessage} />
         )}
 
         <Form>
