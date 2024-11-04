@@ -21,7 +21,6 @@ const CustomPieChart = ({
 
   return (
     <section className="mb-5 mt-5">
-      <h4 className="text-center mt-4">Обзор записей на приём</h4>
       <ResponsiveContainer width={width} height={height}>
         <PieChart className="mt-4">
           <Pie

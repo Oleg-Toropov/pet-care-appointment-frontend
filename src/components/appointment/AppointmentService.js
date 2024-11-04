@@ -55,3 +55,13 @@ export const getAppointmentById = async (appointmentId) => {
   );
   return result.data;
 };
+
+export async function countAppointments() {
+  const result = await api.get("/appointments/count/appointments");
+  return result.data;
+}
+
+export const getAppointmentsSummary = async () => {
+  const response = await api.get("/appointments/summary/appointments-summary");
+  return response.data;
+};
