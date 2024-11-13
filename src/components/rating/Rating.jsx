@@ -55,8 +55,13 @@ const Rating = ({ veterinarianId, onReviewSubmit }) => {
         onReviewSubmit();
       }
     } catch (error) {
-      setErrorMessage(error.response.data.message);
-      setShowErrorAlert(true);
+      if (error.response.data.status === 401) {
+        setErrorMessage("Пожалуйста, войдите в систему, чтобы отправить отзыв");
+        setShowErrorAlert(true);
+      } else {
+        setErrorMessage(error.response.data.message);
+        setShowErrorAlert(true);
+      }
     }
   };
 

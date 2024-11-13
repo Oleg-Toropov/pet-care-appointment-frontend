@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { dateTimeFormatter } from "../utils/utilities";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import AlertMessage from "../common/AlertMessage";
 import { useParams } from "react-router-dom";
@@ -48,7 +47,7 @@ const BookAppointment = () => {
   } = UseMessageAlerts();
 
   const { recipientId } = useParams();
-  const senderId = 3; //TODO delete
+  const senderId = localStorage.getItem("userId");
 
   const handleDateChange = (date) => {
     setFormData((prevState) => ({
@@ -143,8 +142,15 @@ const BookAppointment = () => {
       handleReset();
       setShowSuccessAlert(true);
     } catch (error) {
-      setErrorMessage(error.response.message);
-      setShowErrorAlert(true);
+      if (error.response.data.status === 401) {
+        setErrorMessage(
+          "Пожалуйста, войдите в систему, чтобы записаться на прием"
+        );
+        setShowErrorAlert(true);
+      } else {
+        setErrorMessage(error.response.data.message);
+        setShowErrorAlert(true);
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -182,6 +188,8 @@ const BookAppointment = () => {
                 <Form.Group as={Row} className="mb-4">
                   <Col md={6}>
                     <DatePicker
+                      id="appointmentDate"
+                      name="appointmentDate"
                       selected={formData.appointmentDate}
                       onChange={handleDateChange}
                       locale="ru"
@@ -195,6 +203,8 @@ const BookAppointment = () => {
 
                   <Col md={6}>
                     <DatePicker
+                      id="appointmentTime"
+                      name="appointmentTime"
                       selected={formData.appointmentTime}
                       onChange={handleTimeChange}
                       locale="ru"
@@ -211,13 +221,14 @@ const BookAppointment = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-4">
-                  <Form.Label className="legend">
+                  <Form.Label htmlFor="reason" className="legend">
                     Причина записи на прием
                   </Form.Label>
 
                   <Form.Control
                     as="textarea"
                     rows={3}
+                    id="reason"
                     name="reason"
                     className="shadow"
                     onChange={handleInputChange}
@@ -259,7 +270,7 @@ const BookAppointment = () => {
                     disabled={isProcessing}
                   >
                     {isProcessing ? (
-                      <ProcessSpinner message="Обработка регистрация..." />
+                      <ProcessSpinner message="Регистрация записи на прием..." />
                     ) : (
                       "Записаться"
                     )}

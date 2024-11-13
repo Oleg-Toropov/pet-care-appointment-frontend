@@ -3,7 +3,7 @@ import { Form, Col } from "react-bootstrap";
 import AddItemModal from "../modals/AddItemModal";
 import { getAllPetTypes } from "./PetService";
 
-const PetTypeSelector = ({ value, onChange }) => {
+const PetTypeSelector = ({ id, value, onChange }) => {
   const [petTypes, setPetTypes] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
@@ -32,7 +32,7 @@ const PetTypeSelector = ({ value, onChange }) => {
 
   return (
     <React.Fragment>
-      <Form.Group as={Col} controlId="petType">
+      <Form.Group as={Col} controlId={id}>
         <Form.Control
           as="select"
           name="petType"

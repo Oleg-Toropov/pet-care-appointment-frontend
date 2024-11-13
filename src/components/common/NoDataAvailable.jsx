@@ -3,10 +3,16 @@ const NoDataAvailable = ({ dataType, errorMessage }) => {
 
   switch (dataType) {
     case "appointment data":
-      message = "У вас нет записей на приём";
+      message = "Нет ни одной записи на прием";
       break;
     case "review data":
-      message = "У вас нет отзывов";
+      message = "Нет ни одного отзыва";
+      break;
+    case "user registration data":
+      message = "Нет ни одного зарегистрированного пользователя";
+      break;
+    case "vet specialization data":
+      message = "Нет ни одного зарегистрированного ветеринара";
       break;
     default:
       message = "Нет доступных данных";

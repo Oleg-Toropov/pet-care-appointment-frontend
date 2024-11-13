@@ -175,13 +175,6 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
 
   return (
     <Container className="p-3">
-      {showSuccessAlert && (
-        <AlertMessage type={"success"} message={successMessage} />
-      )}
-      {showErrorAlert && (
-        <AlertMessage type={"danger"} message={errorMessage} />
-      )}
-
       <AppointmentFilter
         onClearFilters={handleClearFilter}
         statuses={statuses}
@@ -272,6 +265,14 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                     />
                   )}
                 </Row>
+
+                {showSuccessAlert && (
+                  <AlertMessage type={"success"} message={successMessage} />
+                )}
+                {showErrorAlert && (
+                  <AlertMessage type={"danger"} message={errorMessage} />
+                )}
+
                 {user.userType === UserType.PATIENT && (
                   <Link to={`/book-appoitnemnt/${recipientId}/new-appointmnet`}>
                     Записаться на новый прием

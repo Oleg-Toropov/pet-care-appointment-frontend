@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -9,6 +9,7 @@ import {
   Legend,
 } from "recharts";
 import { getAggregateUsersByMonthAndType } from "../user/UserService";
+import NoDataAvailable from "../common/NoDataAvailable";
 
 const RegistrationChart = () => {
   const [userData, setUserData] = useState([]);
@@ -53,17 +54,31 @@ const RegistrationChart = () => {
   }, []);
 
   return (
-    <ResponsiveContainer width="60%" height={400}>
-      <h5 className="chart-title mb-5">Обзор регистраций пользователей</h5>
-      <BarChart data={userData}>
-        <XAxis dataKey="name" angle={-50} textAnchor="end" height={60} />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey={"Ветеринары"} fill="#2f6a32" />
-        <Bar dataKey={"Клиенты"} fill="#d26161" />
-      </BarChart>
-    </ResponsiveContainer>
+    <section>
+      {userData && userData.length > 0 ? (
+        <React.Fragment>
+          {" "}
+          <ResponsiveContainer width="60%" height={400}>
+            <h5 className="chart-title mb-5">
+              Обзор регистраций пользователей
+            </h5>
+            <BarChart data={userData}>
+              <XAxis dataKey="name" angle={-50} textAnchor="end" height={60} />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey={"Ветеринары"} fill="#2f6a32" />
+              <Bar dataKey={"Клиенты"} fill="#d26161" />
+            </BarChart>
+          </ResponsiveContainer>
+        </React.Fragment>
+      ) : (
+        <NoDataAvailable
+          dataType={"user registration data"}
+          message={errorMessage}
+        />
+      )}
+    </section>
   );
 };
 

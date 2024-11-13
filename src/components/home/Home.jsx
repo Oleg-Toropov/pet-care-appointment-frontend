@@ -20,7 +20,7 @@ const Home = () => {
                 Комплексный уход за вашими пушистыми друзьями
               </Card.Title>
               <Card.Text>
-                В Universal Pet Care мы уверены, что каждый питомец заслуживает
+                В Doctor Aibolit мы уверены, что каждый питомец заслуживает
                 лучшего. Наша команда преданных профессионалов здесь, чтобы
                 обеспечить здоровье и счастье вашего питомца с помощью
                 комплексных ветеринарных услуг. Обладая десятилетиями
@@ -84,8 +84,8 @@ const Home = () => {
       </Row>
       <div className="card mb-5">
         <h4>
-          Что люди говорят о ветеринарах{" "}
-          <span className="text-info"> Universal Pet Care</span>
+          Что люди говорят о ветеринарах клиники{" "}
+          <span className="text-info"> Doctor Aibolit</span>
         </h4>
         <hr />
         <p className="text-center">

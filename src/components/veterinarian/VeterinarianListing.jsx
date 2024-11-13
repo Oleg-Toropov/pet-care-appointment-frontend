@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import VeterinarianCard from "./VeterinarianCard";
 import { getVeterinarians } from "./VeterinarianService";
 import VeterinarianSearch from "./VeterinarianSearch";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
+import NoDataAvailable from "../common/NoDataAvailable";
 
 const VeterinarianListing = () => {
   const [veterinarians, setVeterinarians] = useState([]);
@@ -39,23 +40,32 @@ const VeterinarianListing = () => {
 
   return (
     <Container>
-      <Row className="justify-content-center">
-        <h2 className="text-center mb-4 mt-4">
-          Познакомьтесь с нашими ветеринарами
-        </h2>
-      </Row>
+      {veterinarians && veterinarians.length > 0 ? (
+        <React.Fragment>
+          <Row className="justify-content-center">
+            <h2 className="text-center mb-4 mt-4">
+              Познакомьтесь с нашими ветеринарами
+            </h2>
+          </Row>
 
-      <Row className="justify-content-center">
-        <Col md={4}>
-          <VeterinarianSearch onSearchResult={handleSearchResult} />
-        </Col>
+          <Row className="justify-content-center">
+            <Col md={4}>
+              <VeterinarianSearch onSearchResult={handleSearchResult} />
+            </Col>
 
-        <Col md={7}>
-          {veterinarians.map((vet, index) => (
-            <VeterinarianCard key={index} vet={vet} />
-          ))}
-        </Col>
-      </Row>
+            <Col md={7}>
+              {veterinarians.map((vet, index) => (
+                <VeterinarianCard key={index} vet={vet} />
+              ))}
+            </Col>
+          </Row>
+        </React.Fragment>
+      ) : (
+        <NoDataAvailable
+          dataType={"veterinarians data"}
+          message={errorMessage}
+        />
+      )}
     </Container>
   );
 };

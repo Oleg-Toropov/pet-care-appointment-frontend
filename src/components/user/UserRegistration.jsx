@@ -138,6 +138,7 @@ const UserRegistration = () => {
                         value={user.email}
                         onChange={handleInputChange}
                         className="shadow"
+                        autoComplete="email"
                       />
                     </Col>
                     <Col sm={6}>

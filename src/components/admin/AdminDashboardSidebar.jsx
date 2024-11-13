@@ -18,7 +18,7 @@ const AdminDashboardSidebar = ({
     >
       <div className="sidebar-title">
         <div className="sidebar-brand">
-          <BsFillHospitalFill className="icon-header" /> uniPetcare
+          <BsFillHospitalFill className="icon-header" /> Doctor Aibolit
         </div>
         <span className="icon icon-close" onClick={OpenSidebar}>
           <BsX />

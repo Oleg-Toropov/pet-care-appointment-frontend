@@ -25,7 +25,7 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
 
   const getUser = async () => {
     try {
-      const result = getUserById(3);
+      const result = getUserById(userId);
       setUser(result.data);
     } catch (error) {
       setErrorMessage(error.response.data.message);

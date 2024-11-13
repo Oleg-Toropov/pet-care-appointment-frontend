@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BsPersonFill, BsLockFill } from "react-icons/bs";
+import { jwtDecode } from "jwt-decode";
+
 import {
   Container,
   Row,
@@ -9,13 +11,23 @@ import {
   Button,
   InputGroup,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { loginUser } from "./AuthService";
+import UseMessageAlerts from "../hooks/UseMessageAlerts";
+import AlertMessage from "../common/AlertMessage";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
+
+  const { errorMessage, setErrorMessage, showErrorAlert, setShowErrorAlert } =
+    UseMessageAlerts();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,16 +37,55 @@ const Login = () => {
     }));
   };
 
+  useEffect(() => {
+    const isAthenticated = localStorage.getItem("authToken");
+    if (isAthenticated) {
+      navigate(from, { replace: true });
+    }
+  });
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!credentials.email || !credentials.password) {
+      setErrorMessage(
+        "Пожалуйста, введите действительное имя пользователя и пароль"
+      );
+      setShowErrorAlert(true);
+      return;
+    }
+    try {
+      const data = await loginUser(credentials.email, credentials.password);
+      localStorage.setItem("authToken", data.token);
+      const decoded = jwtDecode(data.token);
+      localStorage.setItem("userRoles", JSON.stringify(decoded.roles));
+      localStorage.setItem("userId", decoded.id);
+      clearLoginForm();
+      navigate(from, { replace: true });
+      window.location.reload();
+    } catch (error) {
+      setErrorMessage(error.response.data.message);
+      setShowErrorAlert(true);
+    }
+  };
+
+  const clearLoginForm = () => {
+    setCredentials({ email: "", password: "" });
+    setShowErrorAlert(false);
+  };
+
   return (
     <Container className="mt-5">
       <Row className="justify-content-center">
         <Col sm={4}>
           <Card>
+            {showErrorAlert && (
+              <AlertMessage type={"danger"} message={errorMessage} />
+            )}
             <Card.Body>
               <Card.Title className="text-center mb-4">
                 Вход в личный кабинет
               </Card.Title>
-              <Form>
+              <Form onSubmit={handleLogin}>
                 <Form.Group className="mb-3" controlId="username">
                   <Form.Label>Логин</Form.Label>
                   <InputGroup>
@@ -48,6 +99,7 @@ const Login = () => {
                       value={credentials.email}
                       onChange={handleInputChange}
                       placeholder="email"
+                      autoComplete="username"
                     />
                   </InputGroup>
                 </Form.Group>

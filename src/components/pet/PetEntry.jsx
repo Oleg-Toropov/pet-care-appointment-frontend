@@ -22,7 +22,7 @@ const PetEntry = ({ pet, index, removePet, canRemove, handleInputChange }) => {
             <Form.Control
               type="text"
               name="petName"
-              id={`petName -${index}`}
+              id={`petName-${index}`}
               value={pet.petName}
               placeholder="Кличка питомца"
               onChange={handleInputChange}
@@ -33,7 +33,8 @@ const PetEntry = ({ pet, index, removePet, canRemove, handleInputChange }) => {
             <Form.Control
               type="number"
               name="petAge"
-              id="petAge"
+              // id="petAge"
+              id={`petAge-${index}`}
               value={pet.petAge}
               placeholder="Возраст питомца"
               onChange={handleInputChange}
@@ -45,15 +46,24 @@ const PetEntry = ({ pet, index, removePet, canRemove, handleInputChange }) => {
       </fieldset>
 
       <Form.Group as={Col} className="mb-4">
-        <PetColorSelector value={pet.petColor} onChange={handleInputChange} />
+        <PetColorSelector
+          id={`petColor-${index}`}
+          value={pet.petColor}
+          onChange={handleInputChange}
+        />
       </Form.Group>
 
       <Form.Group as={Row} className="mb-2 d-flex">
         <Col>
-          <PetTypeSelector value={pet.petType} onChange={handleInputChange} />
+          <PetTypeSelector
+            id={`petType-${index}`}
+            value={pet.petType}
+            onChange={handleInputChange}
+          />
         </Col>
         <Col>
           <PetBreedSelector
+            id={`petBreed-${index}`}
             petType={pet.petType}
             value={pet.petBreed}
             onChange={handleInputChange}

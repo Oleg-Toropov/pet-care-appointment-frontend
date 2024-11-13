@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, InputGroup, Form, Container, Row, Col } from "react-bootstrap";
+import { Button, InputGroup, Form } from "react-bootstrap";
 
 const UserFilter = ({
   label,

@@ -38,6 +38,7 @@ const EditablePetRow = ({
           name="name"
           value={editPet.name}
           onChange={handlePetChange}
+          autoComplete="off"
         />
       </td>
 
@@ -47,6 +48,7 @@ const EditablePetRow = ({
           name="type"
           value={editPet.type}
           onChange={handlePetChange}
+          autoComplete="off"
         />
       </td>
 
@@ -56,6 +58,7 @@ const EditablePetRow = ({
           name="breed"
           value={editPet.breed}
           onChange={handlePetChange}
+          autoComplete="off"
         />
       </td>
 
@@ -65,6 +68,7 @@ const EditablePetRow = ({
           name="color"
           value={editPet.color}
           onChange={handlePetChange}
+          autoComplete="off"
         />
       </td>
       <td>
@@ -73,6 +77,7 @@ const EditablePetRow = ({
           name="age"
           value={editPet.age}
           onChange={handlePetChange}
+          autoComplete="off"
         />
       </td>
       <td>

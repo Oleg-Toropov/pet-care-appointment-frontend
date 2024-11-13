@@ -143,28 +143,34 @@ const UserUpdate = () => {
 
               <fieldset className="mb-3 mt-3">
                 <legend className="legend">Контактная информация</legend>
-                <Form.Group
-                  as={Col}
-                  controlId="emailPhoneFields"
-                  className="d-flex"
-                >
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    value={userData.email}
-                    onChange={handleUserInputChange}
-                    style={{ marginRight: "10px" }}
-                    disabled
-                  />
-                  <Form.Control
-                    type="text"
-                    name="phoneNumber"
-                    placeholder="Mobile Contact"
-                    value={userData.phoneNumber}
-                    onChange={handleUserInputChange}
-                    className="shadow"
-                  />
-                </Form.Group>
+                <Row>
+                  <Form.Group
+                    as={Col}
+                    controlId="emailField"
+                    className="d-flex"
+                  >
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      value={userData.email}
+                      onChange={handleUserInputChange}
+                      style={{ marginRight: "10px" }}
+                      disabled
+                      autoComplete="email"
+                    />
+                  </Form.Group>
+                  <Form.Group as={Col} controlId="phoneNumberField">
+                    <Form.Control
+                      type="text"
+                      name="phoneNumber"
+                      placeholder="Mobile Contact"
+                      value={userData.phoneNumber}
+                      onChange={handleUserInputChange}
+                      className="shadow"
+                      autoComplete="tel"
+                    />
+                  </Form.Group>
+                </Row>
               </fieldset>
 
               {userData.userType === "VET" && (

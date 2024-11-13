@@ -13,9 +13,12 @@ const AppointmentFilter = ({
         <Col xs={12} md={6}>
           <Form>
             <Form.Group>
-              <Form.Label>Фильтр приемов по статусу:</Form.Label>
+              <Form.Label htmlFor="statusFilter">
+                Фильтр приемов по статусу:
+              </Form.Label>
               <InputGroup>
                 <Form.Select
+                  id="statusFilter"
                   value={selectedStatus}
                   onChange={(e) => onSelectStatus(e.target.value)}
                 >
