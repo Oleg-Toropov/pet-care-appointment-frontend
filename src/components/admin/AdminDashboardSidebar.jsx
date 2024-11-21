@@ -3,7 +3,9 @@ import {
   BsGrid1X2Fill,
   BsX,
   BsPeopleFill,
+  BsCalendar,
 } from "react-icons/bs";
+import { MdEvent } from "react-icons/md";
 
 const AdminDashboardSidebar = ({
   openSidebarToggle,
@@ -33,7 +35,7 @@ const AdminDashboardSidebar = ({
           onClick={() => onNavigate("overview")}
         >
           <a href="#">
-            <BsGrid1X2Fill className="icon" /> Панель управления
+            <BsGrid1X2Fill className="icon" /> Статистика
           </a>
         </li>
 
@@ -56,6 +58,26 @@ const AdminDashboardSidebar = ({
         >
           <a href="#">
             <BsPeopleFill className="icon" /> Клиенты
+          </a>
+        </li>
+        <li
+          className={`sidebar-list-item ${
+            activeTab === "appointments" ? "active" : ""
+          }`}
+          onClick={() => onNavigate("appointments")}
+        >
+          <a href="#">
+            <BsCalendar className="icon" /> Записи на прием
+          </a>
+        </li>
+        <li
+          className={`sidebar-list-item ${
+            activeTab === "reviews" ? "active" : ""
+          }`}
+          onClick={() => onNavigate("reviews")}
+        >
+          <a href="#">
+            <MdEvent className="icon" /> Отзывы
           </a>
         </li>
       </ul>

@@ -5,9 +5,15 @@ export async function bookAppointment(
   recipientId,
   appointmentRequest
 ) {
+  const token = localStorage.getItem("authToken");
   const result = await api.post(
     `/appointments/book-appointment?senderId=${senderId}&recipientId=${recipientId}`,
-    appointmentRequest
+    appointmentRequest,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
   return result.data;
 }
@@ -25,6 +31,7 @@ export const addPetToAppointment = async (appointmentId, newPetData) => {
     `appointments/appointment/${appointmentId}/add-pet`,
     newPetData
   );
+  console.log("Ответ сервера:", response);
   return response;
 };
 
@@ -63,5 +70,17 @@ export async function countAppointments() {
 
 export const getAppointmentsSummary = async () => {
   const response = await api.get("/appointments/summary/appointments-summary");
+  return response.data;
+};
+
+export const getAppointments = async () => {
+  const response = await api.get("/appointments/all");
+  return response.data;
+};
+
+export const deleteAppointment = async (appointmentId) => {
+  const response = await api.delete(
+    `/appointments/appointment/${appointmentId}/delete`
+  );
   return response.data;
 };

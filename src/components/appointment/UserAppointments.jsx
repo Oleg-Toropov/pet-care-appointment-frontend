@@ -43,15 +43,19 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
     setShowErrorAlert,
   } = UseMessageAlerts();
 
-  const { recipientId } = useParams();
-
   const fetchAppointment = async (appointmentId) => {
     const response = await getAppointmentById(appointmentId);
+    console.log(response);
+
     const updatedAppointment = response.data;
+
     setAppointments((prevAppointments) =>
       prevAppointments.map((appointment) =>
         appointment.id === updatedAppointment.id
-          ? updatedAppointment
+          ? {
+              ...appointment,
+              ...updatedAppointment,
+            }
           : appointment
       )
     );
@@ -189,7 +193,8 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
           const formattedStatus = formatAppointmentStatus(appointment.status);
 
           const isWaitingForApproval = statusKey === "waiting-for-approval";
-          const isApproved = statusKey === "approved";
+          const isCancelled = statusKey === "cancelled";
+          const recipientId = appointment.veterinarian.id;
 
           return (
             <Accordion.Item eventKey={index} key={index} className="mb-4">
@@ -258,7 +263,7 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                     />
                   </Col>
 
-                  {isApproved && (
+                  {!(isCancelled || isWaitingForApproval) && (
                     <UserInformation
                       userType={user.userType}
                       appointment={appointment}
@@ -274,7 +279,7 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                 )}
 
                 {user.userType === UserType.PATIENT && (
-                  <Link to={`/book-appoitnemnt/${recipientId}/new-appointmnet`}>
+                  <Link to={`/book-appointment/${recipientId}/new-appointment`}>
                     Записаться на новый прием
                   </Link>
                 )}

@@ -21,8 +21,7 @@ import ProcessSpinner from "../common/ProcessSpinner";
 const BookAppointment = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
-    appointmentDate: "",
-    appointmentTime: "",
+    appointmentDateTime: null,
     reason: "",
     pets: [
       {
@@ -52,14 +51,30 @@ const BookAppointment = () => {
   const handleDateChange = (date) => {
     setFormData((prevState) => ({
       ...prevState,
-      appointmentDate: date,
+      appointmentDateTime: new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        prevState.appointmentDateTime
+          ? prevState.appointmentDateTime.getHours()
+          : 0,
+        prevState.appointmentDateTime
+          ? prevState.appointmentDateTime.getMinutes()
+          : 0
+      ),
     }));
   };
 
   const handleTimeChange = (time) => {
     setFormData((prevState) => ({
       ...prevState,
-      appointmentTime: time,
+      appointmentDateTime: new Date(
+        prevState.appointmentDateTime.getFullYear(),
+        prevState.appointmentDateTime.getMonth(),
+        prevState.appointmentDateTime.getDate(),
+        time.getHours(),
+        time.getMinutes()
+      ),
     }));
   };
 
@@ -105,13 +120,12 @@ const BookAppointment = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const formattedDate = formData.appointmentDate
-      ? formData.appointmentDate.toISOString().split("T")[0]
+    const formattedDate = formData.appointmentDateTime
+      ? formData.appointmentDateTime.toLocaleDateString("en-CA")
       : "";
 
-    const formattedTime = formData.appointmentTime
-      ? formData.appointmentTime.toLocaleTimeString("ru-RU", {
+    const formattedTime = formData.appointmentDateTime
+      ? formData.appointmentDateTime.toLocaleTimeString("en-GB", {
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
@@ -189,8 +203,7 @@ const BookAppointment = () => {
                   <Col md={6}>
                     <DatePicker
                       id="appointmentDate"
-                      name="appointmentDate"
-                      selected={formData.appointmentDate}
+                      selected={formData.appointmentDateTime}
                       onChange={handleDateChange}
                       locale="ru"
                       dateFormat="dd.MM.yyyy"
@@ -204,8 +217,7 @@ const BookAppointment = () => {
                   <Col md={6}>
                     <DatePicker
                       id="appointmentTime"
-                      name="appointmentTime"
-                      selected={formData.appointmentTime}
+                      selected={formData.appointmentDateTime}
                       onChange={handleTimeChange}
                       locale="ru"
                       showTimeSelect

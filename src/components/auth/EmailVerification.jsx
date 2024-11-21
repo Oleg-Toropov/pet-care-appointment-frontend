@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { verifyEmail, resendVerificationToken } from "./AuthService";
 import ProcessSpinner from "../common/ProcessSpinner";
 
@@ -9,11 +9,16 @@ const EmailVerification = () => {
   const [alertType, setAlertType] = useState("alert-info");
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const isMounted = useRef(false);
+
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const token = queryParams.get("token");
     if (token) {
-      verifyEmailToken(token);
+      if (!isMounted.current) {
+        isMounted.current = true;
+        verifyEmailToken(token);
+      }
     } else if (!token) {
       setVerificationMessage("Токен не предоставлен.");
       setAlertType("alert-danger");

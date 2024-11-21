@@ -1,6 +1,7 @@
 import home1 from "../../assets/images/home1.jpg";
 import home2 from "../../assets/images/home2.jpg";
 import { Card, Button, Row, ListGroup, Col, Container } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -43,7 +44,7 @@ const Home = () => {
                 учреждение оснащено новейшими ветеринарными технологиями, что
                 позволяет нам предоставлять высококачественную помощь.
               </Card.Text>
-              <Button variant="outline-info">
+              <Button as={Link} to="/doctors" variant="outline-info">
                 Познакомьтесь с нашими ветеринарами
               </Button>
             </Card.Body>
@@ -75,23 +76,13 @@ const Home = () => {
                 ветеринарных услуг гарантирует, что здоровье вашего питомца в
                 надежных руках.
               </Card.Text>
-              <Button variant="outline-info">
+              <Button as={Link} to="/doctors" variant="outline-info">
                 Познакомьтесь с нашими ветеринарами
               </Button>
             </Card.Body>
           </Card>
         </Col>
       </Row>
-      <div className="card mb-5">
-        <h4>
-          Что люди говорят о ветеринарах клиники{" "}
-          <span className="text-info"> Doctor Aibolit</span>
-        </h4>
-        <hr />
-        <p className="text-center">
-          Здесь мы будем перемещать ветеринаров по слайдам
-        </p>
-      </div>
     </Container>
   );
 };

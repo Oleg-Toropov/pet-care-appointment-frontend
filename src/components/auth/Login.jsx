@@ -15,6 +15,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { loginUser } from "./AuthService";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import AlertMessage from "../common/AlertMessage";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -28,6 +29,8 @@ const Login = () => {
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/";
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -63,7 +66,11 @@ const Login = () => {
       navigate(from, { replace: true });
       window.location.reload();
     } catch (error) {
-      setErrorMessage(error.response.data.message);
+      const errorMsg =
+        error.response?.data?.data ||
+        error.response?.data?.message ||
+        "Произошла ошибка";
+      setErrorMessage(errorMsg);
       setShowErrorAlert(true);
     }
   };
@@ -111,11 +118,18 @@ const Login = () => {
                       <BsLockFill />
                     </InputGroup.Text>
                     <Form.Control
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       value={credentials.password}
                       onChange={handleInputChange}
                     />
+
+                    <Button
+                      variant="outline-secondary"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <FiEyeOff /> : <FiEye />}
+                    </Button>
                   </InputGroup>
                 </Form.Group>
                 <Button
@@ -131,6 +145,14 @@ const Login = () => {
                 <Link to={"/register-user"} style={{ textDecoration: "none" }}>
                   Зарегистрируйтесь здесь
                 </Link>
+                <div className="mt-3">
+                  <Link
+                    to={"/password-rest-request"}
+                    style={{ textDecoration: "none" }}
+                  >
+                    Забыли пароль?
+                  </Link>
+                </div>
               </div>
             </Card.Body>
           </Card>

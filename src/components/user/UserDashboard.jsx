@@ -35,9 +35,9 @@ const UserDashboard = () => {
 
   const { userId } = useParams();
 
-  const currentUserId = localStorage.getItem("userId");
+  // const currentUserId = localStorage.getItem("userId");
 
-  const isCurrentUser = userId === currentUserId;
+  // const isCurrentUser = userId === currentUserId;
 
   useEffect(() => {
     const getUser = async () => {
@@ -98,7 +98,7 @@ const UserDashboard = () => {
       setShowSuccessAlert(true);
       setTimeout(() => {
         logout();
-      }, 10000);
+      }, 2000);
     } catch (error) {
       setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
@@ -149,26 +149,23 @@ const UserDashboard = () => {
           </Row>
         </Tab>
 
-        {isCurrentUser && (
-          <Tab eventKey="appointments" title={<h3>Список приёмов</h3>}>
-            <Row>
-              <Col>
-                {user && (
-                  <React.Fragment>
-                    {appointments && appointments.length > 0 ? (
-                      <UserAppointments
-                        user={user}
-                        appointments={appointments}
-                      />
-                    ) : (
-                      <NoDataAvailable dataType={"appointment data"} />
-                    )}
-                  </React.Fragment>
-                )}
-              </Col>
-            </Row>
-          </Tab>
-        )}
+        {/* {isCurrentUser && ( */}
+        <Tab eventKey="appointments" title={<h3>Список приёмов</h3>}>
+          <Row>
+            <Col>
+              {user && (
+                <React.Fragment>
+                  {appointments && appointments.length > 0 ? (
+                    <UserAppointments user={user} appointments={appointments} />
+                  ) : (
+                    <NoDataAvailable dataType={"appointment data"} />
+                  )}
+                </React.Fragment>
+              )}
+            </Col>
+          </Row>
+        </Tab>
+        {/* )} */}
 
         <Tab eventKey="reviews" title={<h3>Отзывы</h3>}>
           <Container className="d-flex justify-content-center align-items-center">
@@ -179,7 +176,11 @@ const UserDashboard = () => {
                 <Col>
                   {user && user.reviews && user.reviews.length > 0 ? (
                     user.reviews.map((review, index) => (
-                      <Review key={index} review={review} />
+                      <Review
+                        key={index}
+                        review={review}
+                        userType={user.userType}
+                      />
                     ))
                   ) : (
                     <NoDataAvailable dataType={"review data"} />

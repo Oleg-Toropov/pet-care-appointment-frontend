@@ -5,10 +5,12 @@ import { getVeterinarians } from "./VeterinarianService";
 import VeterinarianSearch from "./VeterinarianSearch";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import NoDataAvailable from "../common/NoDataAvailable";
+import LoadSpinner from "../common/LoadSpinner";
 
 const VeterinarianListing = () => {
   const [veterinarians, setVeterinarians] = useState([]);
   const [allVeterinarians, setAllVeterinarians] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { errorMessage, setErrorMessage, showErrorAlert, setShowErrorAlert } =
     UseMessageAlerts();
 
@@ -17,6 +19,9 @@ const VeterinarianListing = () => {
       .then((data) => {
         setVeterinarians(data.data);
         setAllVeterinarians(data.data);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
       })
       .catch((error) => {
         setErrorMessage(error.response.data.message);
@@ -34,8 +39,12 @@ const VeterinarianListing = () => {
     }
   };
 
-  if (veterinarians.length === 0) {
-    return <p>На данный момент ветеринары не найдены</p>;
+  if (isLoading) {
+    return (
+      <div>
+        <LoadSpinner />
+      </div>
+    );
   }
 
   return (

@@ -39,7 +39,7 @@ export function formatAppointmentStatus(status) {
   const statusTranslations = {
     CANCELLED: "Отменён",
     ON_GOING: "В процессе",
-    UPCOMING: "Предстоящий",
+    UP_COMING: "Предстоящий",
     APPROVED: "Подтверждён",
     NOT_APPROVED: "Не подтверждён",
     WAITING_FOR_APPROVAL: "Ожидает подтверждения",

@@ -1,10 +1,11 @@
 import { Button } from "react-bootstrap";
+import PropTypes from "prop-types";
 
 const ActionButtons = ({
-  title,
+  children,
   variant,
   onClick,
-  disabled,
+  disabled = false,
   className = "",
 }) => {
   return (
@@ -15,9 +16,17 @@ const ActionButtons = ({
       onClick={onClick}
       className={className}
     >
-      {title}
+      {children}
     </Button>
   );
+};
+
+ActionButtons.propTypes = {
+  children: PropTypes.node.isRequired,
+  variant: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 export default ActionButtons;

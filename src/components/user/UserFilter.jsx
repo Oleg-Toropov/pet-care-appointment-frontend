@@ -13,6 +13,8 @@ const UserFilter = ({
     <InputGroup className="mb-2">
       <InputGroup.Text> {label}</InputGroup.Text>
       <Form.Select
+        id="user-filter-select"
+        name="userFilter"
         className="form-control"
         value={selectedValue}
         onChange={(e) => onSelectedValue(e.target.value)}

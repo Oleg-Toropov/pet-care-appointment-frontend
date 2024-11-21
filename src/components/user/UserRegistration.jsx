@@ -7,6 +7,7 @@ import AlertMessage from "../common/AlertMessage";
 import ProcessSpinner from "../common/ProcessSpinner";
 import VetSpecializationSelector from "../veterinarian/VetSpecializationSelector";
 import { registerUser } from "./UserService";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const UserRegistration = () => {
   const [user, setUser] = useState({
@@ -32,6 +33,8 @@ const UserRegistration = () => {
 
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUser((prevState) => ({
@@ -48,6 +51,9 @@ const UserRegistration = () => {
       setSuccessMessage(response.message);
       setShowSuccessAlert(true);
       handleReset();
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 5000);
     } catch (error) {
       setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
@@ -157,15 +163,25 @@ const UserRegistration = () => {
                 <Form.Group as={Row} controlId="password" className="mb-3">
                   <Col>
                     <Form.Label className="legend">Пароль</Form.Label>
-                    <Form.Control
-                      type="password"
-                      name="password"
-                      required
-                      placeholder="Установите пароль"
-                      value={user.password}
-                      onChange={handleInputChange}
-                      className="shadow"
-                    />
+                    <div className="input-group">
+                      <Form.Control
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        required
+                        placeholder="Установите пароль"
+                        value={user.password}
+                        onChange={handleInputChange}
+                        className="shadow"
+                      />
+                      <Button
+                        variant="outline-secondary"
+                        onClick={() =>
+                          setShowPassword((prevState) => !prevState)
+                        }
+                      >
+                        {showPassword ? <FiEyeOff /> : <FiEye />}
+                      </Button>
+                    </div>
                   </Col>
                 </Form.Group>
 

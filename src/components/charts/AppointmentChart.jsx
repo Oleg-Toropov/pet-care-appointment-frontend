@@ -8,29 +8,36 @@ const AppointmentChart = () => {
   const [appointmentData, setAppointmentData] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    const getAppointmentsInfo = async () => {
-      try {
-        const response = await getAppointmentsSummary();
-        const translatedData = response.data.map((item) => ({
-          ...item,
-          status: item.name,
-          name: formatAppointmentStatus(item.name),
-        }));
+  const getAppointmentsInfo = async () => {
+    try {
+      const response = await getAppointmentsSummary();
+      const translatedData = response.data.map((item) => ({
+        ...item,
+        status: item.name,
+        name: formatAppointmentStatus(item.name),
+      }));
 
-        setAppointmentData(translatedData);
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-    };
+      setAppointmentData(translatedData);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  useEffect(() => {
     getAppointmentsInfo();
+
+    const intervalId = setInterval(() => {
+      getAppointmentsInfo();
+    }, 300000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
     <section>
       {appointmentData && appointmentData.length > 0 ? (
         <React.Fragment>
-          <h5 className="mb-4 chart-title">Appointments Overview</h5>
+          <h5 className="mb-4 chart-title">Обзор статусов приемов</h5>
           <CustomPieChart data={appointmentData} />
         </React.Fragment>
       ) : (

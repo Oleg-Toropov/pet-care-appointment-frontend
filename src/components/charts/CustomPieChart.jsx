@@ -27,6 +27,8 @@ const CustomPieChart = ({
             dataKey={dataKey}
             data={data}
             label={({ [nameKey]: name }) => name}
+            labelLine={false}
+            style={{ fontSize: "12px" }}
           >
             {data &&
               data.map((entry, index) => {
@@ -36,7 +38,7 @@ const CustomPieChart = ({
               })}
           </Pie>
           <Tooltip formatter={(value, name) => [value, name]} />
-          <Legend layout="vertical" />
+          <Legend layout="vertical" wrapperStyle={{ fontSize: "13px" }} />
         </PieChart>
       </ResponsiveContainer>
     </section>

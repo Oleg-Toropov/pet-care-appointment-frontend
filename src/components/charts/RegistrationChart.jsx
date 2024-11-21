@@ -66,7 +66,7 @@ const RegistrationChart = () => {
               <XAxis dataKey="name" angle={-50} textAnchor="end" height={60} />
               <YAxis />
               <Tooltip />
-              <Legend />
+              <Legend wrapperStyle={{ fontSize: "14px" }} />
               <Bar dataKey={"Ветеринары"} fill="#2f6a32" />
               <Bar dataKey={"Клиенты"} fill="#d26161" />
             </BarChart>

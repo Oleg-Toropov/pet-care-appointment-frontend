@@ -188,7 +188,7 @@ const VeterinarianComponent = () => {
         <Col>
           {" "}
           <div className="d-flex justify-content-end">
-            <Link to={"/user-registration"}>
+            <Link to={"/register-user"}>
               {" "}
               <BsPlusSquareFill /> добавить нового пользователя
             </Link>

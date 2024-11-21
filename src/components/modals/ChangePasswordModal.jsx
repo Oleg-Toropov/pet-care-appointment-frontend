@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import { eyeOff, eyeOn } from "react-icons-kit/feather";
-import { Icon } from "react-icons-kit";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { changeUserPassword } from "../user/UserService";
 import AlertMessage from "../common/AlertMessage";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import { Form, Modal, Row, Col, InputGroup, Button } from "react-bootstrap";
 
 const ChangePasswordModal = ({ userId, show, handleClose }) => {
-  const [type, setType] = useState("password");
-  const { icon, setIcon } = useState(eyeOff);
+  const [showPassword, setShowPassword] = useState(false);
   const [passwords, setPasswords] = useState({
     currentPassword: "",
     newPassword: "",
@@ -38,8 +36,7 @@ const ChangePasswordModal = ({ userId, show, handleClose }) => {
 
     try {
       const response = await changeUserPassword(
-        // userId, // TODO delete
-        3,
+        userId,
         passwords.currentPassword,
         passwords.newPassword,
         passwords.confirmNewPassword
@@ -50,16 +47,6 @@ const ChangePasswordModal = ({ userId, show, handleClose }) => {
     } catch (error) {
       setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
-    }
-  };
-
-  const handleShowPassword = () => {
-    if (type === "password") {
-      setType("text");
-      setIcon(eyeOn);
-    } else {
-      setType("password");
-      setIcon(eyeOff);
     }
   };
 
@@ -91,35 +78,48 @@ const ChangePasswordModal = ({ userId, show, handleClose }) => {
             <Form.Label>Текущий пароль:</Form.Label>
             <InputGroup>
               <Form.Control
-                type={type}
+                type={showPassword ? "text" : "password"}
                 name="currentPassword"
                 value={passwords.currentPassword}
                 onChange={handleInputChange}
               />
-              <InputGroup.Text onClick={handleShowPassword}>
-                {/*eye*/}
+
+              <InputGroup.Text onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <FiEyeOff /> : <FiEye />}
               </InputGroup.Text>
             </InputGroup>
           </Form.Group>
 
           <Form.Group controlId="newPassword" className="mb-2">
             <Form.Label>Новый пароль:</Form.Label>
-            <Form.Control
-              type={type}
-              name="newPassword"
-              value={passwords.newPassword}
-              onChange={handleInputChange}
-            />
+            <InputGroup>
+              <Form.Control
+                type={showPassword ? "text" : "password"}
+                name="newPassword"
+                value={passwords.newPassword}
+                onChange={handleInputChange}
+              />
+
+              <InputGroup.Text onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </InputGroup.Text>
+            </InputGroup>
           </Form.Group>
 
           <Form.Group controlId="confirmNewPassword" className="mb-2">
             <Form.Label>Подтвердите новый пароль:</Form.Label>
-            <Form.Control
-              type={type}
-              name="confirmNewPassword"
-              value={passwords.confirmNewPassword}
-              onChange={handleInputChange}
-            />
+            <InputGroup>
+              <Form.Control
+                type={showPassword ? "text" : "password"}
+                name="confirmNewPassword"
+                value={passwords.confirmNewPassword}
+                onChange={handleInputChange}
+              />
+
+              <InputGroup.Text onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </InputGroup.Text>
+            </InputGroup>
           </Form.Group>
 
           <div className="d-flex justify-content-center mt-4">

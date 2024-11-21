@@ -7,7 +7,6 @@ import { registerLocale } from "react-datepicker";
 import ru from "date-fns/locale/ru";
 import { findAvailableVeterinarians } from "./VeterinarianService";
 import AlertMessage from "../common/AlertMessage";
-import { dateTimeFormatter } from "../utils/utilities";
 import { getAllSpecializations } from "./VeterinarianService";
 
 registerLocale("ru", ru);
@@ -30,18 +29,26 @@ const VeterinarianSearch = ({ onSearchResult }) => {
     });
   };
 
+  const formatDateTime = (date, time) => {
+    const appointmentDateTime = new Date(date);
+    appointmentDateTime.setHours(time.getHours(), time.getMinutes());
+    const formattedDate = appointmentDateTime.toISOString().split("T")[0];
+    const formattedTime = appointmentDateTime.toTimeString().split(" ")[0];
+    return { formattedDate, formattedTime };
+  };
+
   const handleDateChange = (date) => {
-    setSearchQuery({
-      ...searchQuery,
+    setSearchQuery((prevQuery) => ({
+      ...prevQuery,
       date,
-    });
+    }));
   };
 
   const handleTimeChange = (time) => {
-    setSearchQuery({
-      ...searchQuery,
+    setSearchQuery((prevQuery) => ({
+      ...prevQuery,
       time,
-    });
+    }));
   };
 
   const handleDateTimeToggle = (e) => {
@@ -58,24 +65,29 @@ const VeterinarianSearch = ({ onSearchResult }) => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    const { date, time } = searchQuery;
-    const { formattedDate, formattedTime } = dateTimeFormatter(date, time);
+    const { date, time, specialization } = searchQuery;
+    let formattedDate = "";
+    let formattedTime = "";
 
-    let searchParams = { specialization: searchQuery.specialization };
-
-    if (searchQuery.date) {
-      searchParams.date = formattedDate;
+    if (date && time) {
+      const formatted = formatDateTime(date, time);
+      formattedDate = formatted.formattedDate;
+      formattedTime = formatted.formattedTime;
     }
 
-    if (searchQuery.time) {
-      searchParams.time = formattedTime;
-    }
+    const searchParams = {
+      specialization,
+      ...(formattedDate && { date: formattedDate }),
+      ...(formattedTime && { time: formattedTime }),
+    };
+
     try {
       const response = await findAvailableVeterinarians(searchParams);
       onSearchResult(response.data);
       setShowErrorAlert(false);
     } catch (error) {
-      setErrorMessage(error.response.data.message);
+      onSearchResult(null);
+      setErrorMessage(error.response?.data?.message || "Ошибка поиска");
       setShowErrorAlert(true);
     }
   };

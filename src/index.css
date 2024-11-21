@@ -114,10 +114,9 @@ h6 {
 }
 
 .password-toggle {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
+  margin-left: -40px;
+  /* border: none; */
+  background: none;
   cursor: pointer;
 }
 

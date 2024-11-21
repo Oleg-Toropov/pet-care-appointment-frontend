@@ -4,6 +4,7 @@ import Home from "./components/home/Home";
 import VeterinarianListing from "./components/veterinarian/VeterinarianListing";
 import {
   Route,
+  Router,
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
@@ -18,6 +19,8 @@ import UserUpdate from "./components/user/UserUpdate";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import EmailVerification from "./components/auth/EmailVerification";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import PasswordResetRequest from "./components/auth/PasswordResetRequest";
+import ResetPassword from "./components/auth/ResetPassword";
 
 function App() {
   const router = createBrowserRouter(
@@ -38,9 +41,11 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route
-          path="/vet-reviews/:vetId/veterinarian"
-          element={<Veterinarian />}
+          path="/password-rest-request"
+          element={<PasswordResetRequest />}
         />
+
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route path="/email-verification" element={<EmailVerification />} />
         {/* Routes accessible without authentication */}

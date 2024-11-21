@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { ResponsiveContainer, Tooltip, PieChart, Pie, Cell } from "recharts";
+import {
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 import { getAggregatedUsersAccountByActiveStatus } from "../user/UserService";
 
 const AccountChart = () => {
@@ -12,30 +19,29 @@ const AccountChart = () => {
         const response = await getAggregatedUsersAccountByActiveStatus();
         const accountActivity = response.data;
 
-        const transformedData = Object.entries(accountActivity).flatMap(
-          ([status, counts]) => [
-            {
-              name: "Активные клиенты",
-              value: status === "Enabled" ? counts.PATIENT : 0,
-              color: "#d26161",
-            },
-            {
-              name: "Неактивные клиенты",
-              value: status === "Enabled" ? 0 : counts.PATIENT,
-              color: "#926262",
-            },
-            {
-              name: "Активные ветеринары",
-              value: status === "Enabled" ? counts.VET : 0,
-              color: "#2f6a32",
-            },
-            {
-              name: "Неактивные ветеринары",
-              value: status === "Enabled" ? 0 : counts.VET,
-              color: "#557a56",
-            },
-          ]
-        );
+        const transformedData = [
+          {
+            name: "Активные аккаунты клиентов",
+            value: accountActivity.Enabled?.PATIENT || 0,
+            color: "#d26161",
+          },
+          {
+            name: "Заблокированные аккаунты клиентов",
+            value: accountActivity["Non-Enabled"]?.PATIENT || 0,
+            color: "#926262",
+          },
+          {
+            name: "Активные аккаунты ветеринаров",
+            value: accountActivity.Enabled?.VET || 0,
+            color: "#2f6a32",
+          },
+          {
+            name: "Заблокированные аккаунты ветеринаров",
+            value: accountActivity["Non-Enabled"]?.VET || 0,
+            color: "#557a56",
+          },
+        ];
+
         setAccountData(transformedData);
       } catch (error) {
         setErrorMessage(error.message);
@@ -56,13 +62,16 @@ const AccountChart = () => {
             nameKey="name"
             outerRadius={110}
             fill="#8884d8"
+            paddingAngle={1}
+            minAngle={5}
             label
           >
             {accountData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
-          <Tooltip />
+          <Tooltip formatter={(value, name) => [value, name]} />
+          <Legend layout="vertical" wrapperStyle={{ fontSize: "14px" }} />
         </PieChart>
       </ResponsiveContainer>
     </div>

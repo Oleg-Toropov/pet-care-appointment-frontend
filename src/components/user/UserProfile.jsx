@@ -13,7 +13,15 @@ const UserProfile = ({ user, handleRemovePhoto, handleDeleteAccount }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
-  // const navigate = useNavigate();
+  const currentUserId = localStorage.getItem("userId");
+
+  const isCurrentUser = user.id == currentUserId;
+
+  const userTypeLabels = {
+    ADMIN: "Администратор",
+    PATIENT: "Владелец домашнего животного",
+    VET: "Ветеринар",
+  };
 
   const handleShowImageUploaderModal = () => {
     setShowImageUploaderModal(true);
@@ -58,40 +66,69 @@ const UserProfile = ({ user, handleRemovePhoto, handleDeleteAccount }) => {
               <Card.Body>
                 <UserImage userId={user.id} userPhoto={user.photo} />
               </Card.Body>
-              <div className="text-center">
-                <p>
-                  {" "}
-                  <Link to={"#"} onClick={handleShowImageUploaderModal}>
-                    Загрузить фотографию
-                  </Link>
-                </p>
 
-                <ImageUploaderModal
-                  userId={user.id}
-                  show={showImageUploaderModal}
-                  handleClose={handleCloseImageUploaderModal}
-                />
-                <p>
-                  {" "}
-                  <Link to={"#"} onClick={handleRemovePhoto}>
-                    Удалить фотографию
-                  </Link>
-                </p>
+              {isCurrentUser && (
+                <div className="text-center">
+                  <p>
+                    {" "}
+                    <Link to={"#"} onClick={handleShowImageUploaderModal}>
+                      Загрузить фотографию
+                    </Link>
+                  </p>
 
-                <p>
-                  {" "}
-                  <Link to={"#"} onClick={handleShowChangePasswordModal}>
-                    Сменить пароль
-                  </Link>
-                </p>
+                  <ImageUploaderModal
+                    userId={user.id}
+                    show={showImageUploaderModal}
+                    handleClose={handleCloseImageUploaderModal}
+                  />
+                  <p>
+                    {" "}
+                    <Link to={"#"} onClick={handleRemovePhoto}>
+                      Удалить фотографию
+                    </Link>
+                  </p>
 
-                <ChangePasswordModal
-                  userId={user.id}
-                  show={showChangePasswordModal}
-                  handleClose={handleCloseChangePasswordModal}
-                />
-              </div>
+                  <p>
+                    {" "}
+                    <Link to={"#"} onClick={handleShowChangePasswordModal}>
+                      Сменить пароль
+                    </Link>
+                  </p>
+
+                  <ChangePasswordModal
+                    userId={user.id}
+                    show={showChangePasswordModal}
+                    handleClose={handleCloseChangePasswordModal}
+                  />
+                </div>
+              )}
             </Card>
+
+            {isCurrentUser && (
+              <Card.Body>
+                <div className="d-flex justify-content-center mb-4">
+                  <div className="mx-2">
+                    <Link
+                      to={`/update-user/${user.id}/update`}
+                      className="btn btn-warning btn-sm"
+                      style={{ width: "120px" }}
+                    >
+                      Редактировать профиль
+                    </Link>
+                  </div>
+                  <div className="mx-2">
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={handleShowDeleteModal}
+                      style={{ width: "120px" }}
+                    >
+                      Удалить профиль
+                    </Button>
+                  </div>
+                </div>
+              </Card.Body>
+            )}
           </Col>
 
           <Col md={8}>
@@ -137,7 +174,7 @@ const UserProfile = ({ user, handleRemovePhoto, handleDeleteAccount }) => {
                 <Col md={4}>Тип пользователя :</Col>
                 <Col md={4}>
                   <Card.Text>
-                    {user.userType === "VET" ? "Ветеринар" : "Пациент"}
+                    {userTypeLabels[user.userType] || "Неизвестный тип"}
                   </Card.Text>
                 </Col>
               </Card.Body>
@@ -163,43 +200,21 @@ const UserProfile = ({ user, handleRemovePhoto, handleDeleteAccount }) => {
               </Card.Body>
             </Card>
 
-            <Card className="mb-3 shadow">
+            {/* <Card className="mb-3 shadow">
               <Card.Body className="d-flex align-items-center">
-                <Col md={2}>Полномочия :</Col>
+                <Col md={3}>Полномочия :</Col>
                 <Col md={4}>
-                  <ListGroup variant="flush">
+                  <ListGroup variant="flush" style={{ marginLeft: "45px" }}>
                     {user.roles &&
                       user.roles.map((role, index) => (
                         <ListGroup.Item key={index} className="text-success">
-                          {role ? role.replace("ROLE_", "") : ""}
+                          {role ? roleMap[role] || "Неизвестная роль" : ""}
                         </ListGroup.Item>
                       ))}
                   </ListGroup>
                 </Col>
               </Card.Body>
-            </Card>
-
-            <Card.Body>
-              <div className="d-flex justify-content-center mb-4">
-                <div className="mx-2">
-                  <Link
-                    to={`/update-user/${user.id}/update`}
-                    className="btn btn-warning btn-sm"
-                  >
-                    Редактировать профиль
-                  </Link>
-                </div>
-                <div className="mx-2">
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={handleShowDeleteModal}
-                  >
-                    Удалить профиль
-                  </Button>
-                </div>
-              </div>
-            </Card.Body>
+            </Card> */}
           </Col>
         </Row>
       </React.Fragment>
