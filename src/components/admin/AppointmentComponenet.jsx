@@ -16,8 +16,7 @@ const AppointmentComponent = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [appointmentsPerPage] = useState(10);
-  const [totalItems, setTotalItems] = useState(0);
+  const appointmentsPerPage = 10;
 
   const {
     successMessage,
@@ -33,9 +32,9 @@ const AppointmentComponent = () => {
   const fetchAppointments = (page = 0) => {
     getAppointments(page, appointmentsPerPage)
       .then((data) => {
-        const { content, totalElements } = data.data;
+        const { content } = data.data;
         setAppointments(content);
-        setTotalItems(totalElements);
+        setFilteredAppointments(content);
       })
       .catch((error) => {
         setErrorMessage(error.message);
@@ -85,12 +84,14 @@ const AppointmentComponent = () => {
             .includes(lowercasedSearchTerm)
       );
     }
-
     setFilteredAppointments(filtered);
+    setCurrentPage(1);
   }, [searchTerm, appointments]);
 
   const handleClearSearch = () => {
     setSearchTerm("");
+    setFilteredAppointments(appointments);
+    setCurrentPage(1);
   };
 
   const handleRowClick = (appointment) => {
@@ -109,7 +110,7 @@ const AppointmentComponent = () => {
         const response = await deleteAppointment(selectedAppointment.id);
         setSuccessMessage(response.message);
         setShowModal(false);
-        fetchAppointments();
+        fetchAppointments(currentPage - 1);
         setShowSuccessAlert(true);
       } catch (error) {
         setErrorMessage(error.response.data.message);
@@ -117,6 +118,13 @@ const AppointmentComponent = () => {
       }
     }
   };
+
+  const indexOfLastAppointment = currentPage * appointmentsPerPage;
+  const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+  const currentAppointments = filteredAppointments.slice(
+    indexOfFirstAppointment,
+    indexOfLastAppointment
+  );
 
   return (
     <main>
@@ -163,7 +171,7 @@ const AppointmentComponent = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredAppointments.map((appointment) => (
+          {currentAppointments.map((appointment) => (
             <tr
               key={appointment.id}
               onClick={() => handleRowClick(appointment)}
@@ -186,7 +194,7 @@ const AppointmentComponent = () => {
       </Table>
       <Paginator
         currentPage={currentPage}
-        totalItems={totalItems}
+        totalItems={filteredAppointments.length}
         paginate={(page) => setCurrentPage(page)}
         itemsPerPage={appointmentsPerPage}
       />

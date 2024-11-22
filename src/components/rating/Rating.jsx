@@ -21,9 +21,7 @@ const Rating = ({ veterinarianId, onReviewSubmit }) => {
     setShowErrorAlert,
   } = UseMessageAlerts();
 
-  const reviewerId = 3; //TODO delete
-
-  // const{veterinarianId} = useParams()
+  const reviewerId = localStorage.getItem("userId");
 
   const handleRatingChange = (value) => {
     setRating(value);

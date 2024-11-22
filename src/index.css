@@ -188,3 +188,83 @@ h6 {
   display: none;
 }
 /* End search component*/
+
+/* Start calendar */
+.rdp-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: normal;
+  color: #333;
+}
+
+.rdp-nav {
+  display: flex;
+  align-items: center;
+  position: absolute;
+
+  justify-content: space-between;
+}
+
+.rdp-nav button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #007bff;
+}
+
+.rdp-caption_label {
+  margin: 0 15px;
+  font-size: 16px;
+  color: #333;
+}
+
+.rdp-day {
+  color: #333;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.rdp-day_selected {
+  color: white;
+  background-color: #0056b3;
+  border-radius: 50%;
+}
+/* End calendar */
+
+/* Start buttoms time */
+.time-container {
+  flex: 1;
+}
+
+.time-container h5 {
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.time-button {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.time-button:hover {
+  background-color: #f0f0f0;
+}
+
+.time-button.selected {
+  background-color: lightblue;
+}
+
+.time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 2px;
+}
+/* End buttoms time */

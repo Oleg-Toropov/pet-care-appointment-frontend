@@ -13,15 +13,20 @@ import {
   Tooltip,
 } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
-import DatePicker from "react-datepicker";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+import { ru } from "date-fns/locale";
+
 import PetEntry from "../pet/PetEntry";
 import { bookAppointment } from "./AppointmentService";
+import { getAvailableTimesForAppointment } from "../veterinarian/VeterinarianService";
 import ProcessSpinner from "../common/ProcessSpinner";
 
 const BookAppointment = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
-    appointmentDateTime: null,
+    appointmentDate: null,
+    appointmentTime: null,
     reason: "",
     pets: [
       {
@@ -33,6 +38,9 @@ const BookAppointment = () => {
       },
     ],
   });
+
+  const [availableTimes, setAvailableTimes] = useState([]);
+  const [selectedTime, setSelectedTime] = useState("");
 
   const {
     successMessage,
@@ -47,36 +55,6 @@ const BookAppointment = () => {
 
   const { recipientId } = useParams();
   const senderId = localStorage.getItem("userId");
-
-  const handleDateChange = (date) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      appointmentDateTime: new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        prevState.appointmentDateTime
-          ? prevState.appointmentDateTime.getHours()
-          : 0,
-        prevState.appointmentDateTime
-          ? prevState.appointmentDateTime.getMinutes()
-          : 0
-      ),
-    }));
-  };
-
-  const handleTimeChange = (time) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      appointmentDateTime: new Date(
-        prevState.appointmentDateTime.getFullYear(),
-        prevState.appointmentDateTime.getMonth(),
-        prevState.appointmentDateTime.getDate(),
-        time.getHours(),
-        time.getMinutes()
-      ),
-    }));
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -110,43 +88,92 @@ const BookAppointment = () => {
     }));
   };
 
-  const removePet = (index, e) => {
-    const filterPets = formData.pets.filter((_, idx) => idx !== index);
+  const removePet = (index) => {
+    const updatedPets = formData.pets.filter((_, idx) => idx !== index);
     setFormData((prevState) => ({
       ...prevState,
-      pets: filterPets,
+      pets: updatedPets,
     }));
+  };
+
+  const handleDateSelect = async (date) => {
+    if (!date) return;
+
+    const formattedDate = `${date.getFullYear()}-${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+    setFormData((prevState) => ({
+      ...prevState,
+      appointmentDate: formattedDate,
+    }));
+
+    try {
+      const response = await getAvailableTimesForAppointment(
+        recipientId,
+        formattedDate
+      );
+      let times = response.data;
+
+      if (times.length === 0) {
+        setSuccessMessage("Нет доступного времени на выбранную дату");
+        setShowSuccessAlert(true);
+      } else {
+        times = times.map((time) => time.slice(0, 5));
+
+        const now = new Date();
+
+        if (date.toDateString() === now.toDateString()) {
+          const currentHour = now.getHours();
+          const currentMinutes = now.getMinutes();
+
+          times = times.filter((time) => {
+            const [hour, minutes] = time.split(":").map(Number);
+            return (
+              hour > currentHour ||
+              (hour === currentHour && minutes > currentMinutes)
+            );
+          });
+        }
+
+        setAvailableTimes(times);
+      }
+    } catch (error) {
+      setErrorMessage("Не удалось загрузить доступное время");
+      setAvailableTimes([]);
+    }
+  };
+
+  const handleTimeSelect = (time) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      appointmentTime: time,
+    }));
+    setSelectedTime(time);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedDate = formData.appointmentDateTime
-      ? formData.appointmentDateTime.toLocaleDateString("en-CA")
-      : "";
 
-    const formattedTime = formData.appointmentDateTime
-      ? formData.appointmentDateTime.toLocaleTimeString("en-GB", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        })
-      : "";
-
-    const pets = formData.pets.map((pet) => ({
-      name: pet.petName,
-      type: pet.petType,
-      color: pet.petColor,
-      breed: pet.petBreed,
-      age: pet.petAge,
-    }));
+    if (!formData.appointmentDate || !formData.appointmentTime) {
+      setErrorMessage("Пожалуйста, выберите дату и время.");
+      setShowErrorAlert(true);
+      return;
+    }
 
     const request = {
       appointment: {
-        appointmentDate: formattedDate,
-        appointmentTime: formattedTime,
+        appointmentDate: formData.appointmentDate,
+        appointmentTime: formData.appointmentTime,
         reason: formData.reason,
       },
-      pets: pets,
+      pets: formData.pets.map((pet) => ({
+        name: pet.petName,
+        type: pet.petType,
+        color: pet.petColor,
+        breed: pet.petBreed,
+        age: pet.petAge,
+      })),
     };
 
     setIsProcessing(true);
@@ -156,15 +183,10 @@ const BookAppointment = () => {
       handleReset();
       setShowSuccessAlert(true);
     } catch (error) {
-      if (error.response.data.status === 401) {
-        setErrorMessage(
-          "Пожалуйста, войдите в систему, чтобы записаться на прием"
-        );
-        setShowErrorAlert(true);
-      } else {
-        setErrorMessage(error.response.data.message);
-        setShowErrorAlert(true);
-      }
+      setErrorMessage(
+        error.response?.data?.message || "Произошла ошибка. Попробуйте снова."
+      );
+      setShowErrorAlert(true);
     } finally {
       setIsProcessing(false);
     }
@@ -172,8 +194,8 @@ const BookAppointment = () => {
 
   const handleReset = () => {
     setFormData({
-      appointmentDate: "",
-      appointmentTime: "",
+      appointmentDate: null,
+      appointmentTime: null,
       reason: "",
       pets: [
         {
@@ -185,6 +207,8 @@ const BookAppointment = () => {
         },
       ],
     });
+    setAvailableTimes([]);
+    setSelectedTime("");
     setShowSuccessAlert(false);
     setShowErrorAlert(false);
   };
@@ -200,35 +224,50 @@ const BookAppointment = () => {
               </Card.Header>
               <Card.Body>
                 <Form.Group as={Row} className="mb-4">
-                  <Col md={6}>
-                    <DatePicker
-                      id="appointmentDate"
-                      selected={formData.appointmentDateTime}
-                      onChange={handleDateChange}
-                      locale="ru"
-                      dateFormat="dd.MM.yyyy"
-                      minDate={new Date()}
-                      className="form-control shadow"
-                      placeholderText="Выберите дату"
-                      required
-                    />
-                  </Col>
+                  <Col md={8}>
+                    <div className="calendar-container">
+                      <div className="calendar">
+                        <h5 className="legend">Выберите дату:</h5>
+                        <DayPicker
+                          mode="single"
+                          selected={formData.appointmentDate}
+                          onSelect={handleDateSelect}
+                          locale={ru}
+                          disabled={{
+                            before: new Date(),
+                            after: new Date(
+                              new Date().setDate(new Date().getDate() + 30)
+                            ),
+                          }}
+                        />
+                      </div>
 
-                  <Col md={6}>
-                    <DatePicker
-                      id="appointmentTime"
-                      selected={formData.appointmentDateTime}
-                      onChange={handleTimeChange}
-                      locale="ru"
-                      showTimeSelect
-                      showTimeSelectOnly
-                      timeIntervals={30}
-                      timeCaption="Время"
-                      dateFormat="HH:mm"
-                      className="form-control shadow"
-                      placeholderText="Выберите время"
-                      required
-                    />
+                      {availableTimes.length > 0 ? (
+                        <div className="time-container">
+                          <h5 className="legend">Доступное время:</h5>
+                          <div className="time-grid">
+                            {availableTimes.map((time) => (
+                              <button
+                                type="button"
+                                key={time}
+                                onClick={() => handleTimeSelect(time)}
+                                className={`time-button ${
+                                  time === selectedTime ? "selected" : ""
+                                }`}
+                              >
+                                {time}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        !isProcessing && (
+                          <p className="no-times-message">
+                            Нет доступного времени на выбранную дату
+                          </p>
+                        )
+                      )}
+                    </div>
                   </Col>
                 </Form.Group>
 
@@ -236,7 +275,6 @@ const BookAppointment = () => {
                   <Form.Label htmlFor="reason" className="legend">
                     Причина записи на прием
                   </Form.Label>
-
                   <Form.Control
                     as="textarea"
                     rows={3}
@@ -255,7 +293,7 @@ const BookAppointment = () => {
                     pet={pet}
                     index={index}
                     handleInputChange={(e) => handlePetChange(index, e)}
-                    removePet={removePet}
+                    removePet={() => removePet(index)}
                     canRemove={formData.pets.length > 1}
                   />
                 ))}

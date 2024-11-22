@@ -5,7 +5,6 @@ import {
   BsPeopleFill,
   BsCalendar,
 } from "react-icons/bs";
-import { MdEvent } from "react-icons/md";
 
 const AdminDashboardSidebar = ({
   openSidebarToggle,
@@ -68,16 +67,6 @@ const AdminDashboardSidebar = ({
         >
           <a href="#">
             <BsCalendar className="icon" /> Записи на прием
-          </a>
-        </li>
-        <li
-          className={`sidebar-list-item ${
-            activeTab === "reviews" ? "active" : ""
-          }`}
-          onClick={() => onNavigate("reviews")}
-        >
-          <a href="#">
-            <MdEvent className="icon" /> Отзывы
           </a>
         </li>
       </ul>

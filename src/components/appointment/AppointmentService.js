@@ -31,7 +31,6 @@ export const addPetToAppointment = async (appointmentId, newPetData) => {
     `appointments/appointment/${appointmentId}/add-pet`,
     newPetData
   );
-  console.log("Ответ сервера:", response);
   return response;
 };
 

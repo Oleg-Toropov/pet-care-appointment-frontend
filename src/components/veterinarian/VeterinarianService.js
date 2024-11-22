@@ -17,3 +17,14 @@ export const getAllSpecializations = async () => {
   const response = await api.get("/veterinarians/vet/get-all-specialization");
   return response.data;
 };
+
+export const getAvailableTimesForAppointment = async (vetId, date) => {
+  try {
+    const response = await api.get(
+      `/veterinarians/${vetId}/available-times?date=${date}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
