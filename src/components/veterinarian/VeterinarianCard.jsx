@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import UserImage from "../common/UserImage";
 import RatingStars from "../rating/RatingStars";
 
-const VeterinarianCard = ({ vet }) => {
+const VeterinarianCard = ({ vet, eventKey, activeKey, onToggle }) => {
+  const isActive = activeKey === eventKey;
+
   return (
     <Col xs={12} className="mb-4">
-      <Accordion>
-        <Accordion.Item eventKey="0">
-          <Accordion.Header>
+      <Accordion activeKey={activeKey}>
+        <Accordion.Item eventKey={eventKey}>
+          <Accordion.Header onClick={() => onToggle(eventKey)}>
             <div className="d-flex align-items-center">
               <Link to={""}>
                 <UserImage userId={vet.id} userPhoto={vet.photo} />
@@ -25,8 +27,14 @@ const VeterinarianCard = ({ vet }) => {
                 Рейтинг: <RatingStars rating={vet.averageRating} /> (
                 {vet.totalReviewers})
               </Card.Text>
+
               <Link
                 to={`/book-appointment/${vet.id}/new-appointment`}
+                state={{
+                  specialization: vet.specialization,
+                  firstName: vet.firstName,
+                  lastName: vet.lastName,
+                }}
                 className="link"
               >
                 Записаться на прием

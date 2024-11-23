@@ -33,13 +33,13 @@ const PetEntry = ({ pet, index, removePet, canRemove, handleInputChange }) => {
             <Form.Control
               type="number"
               name="petAge"
-              // id="petAge"
               id={`petAge-${index}`}
               value={pet.petAge}
               placeholder="Возраст питомца"
               onChange={handleInputChange}
               required
               min="0"
+              max="100"
             />
           </Col>
         </Form.Group>

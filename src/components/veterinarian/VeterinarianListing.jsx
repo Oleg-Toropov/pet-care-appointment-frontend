@@ -11,6 +11,7 @@ const VeterinarianListing = () => {
   const [veterinarians, setVeterinarians] = useState([]);
   const [allVeterinarians, setAllVeterinarians] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeKey, setActiveKey] = useState(null);
   const { errorMessage, setErrorMessage, showErrorAlert, setShowErrorAlert } =
     UseMessageAlerts();
 
@@ -39,6 +40,10 @@ const VeterinarianListing = () => {
     }
   };
 
+  const handleToggle = (key) => {
+    setActiveKey(activeKey === key ? null : key);
+  };
+
   if (isLoading) {
     return (
       <div>
@@ -64,7 +69,13 @@ const VeterinarianListing = () => {
 
             <Col md={7}>
               {veterinarians.map((vet, index) => (
-                <VeterinarianCard key={index} vet={vet} />
+                <VeterinarianCard
+                  key={index}
+                  vet={vet}
+                  eventKey={index.toString()}
+                  activeKey={activeKey}
+                  onToggle={handleToggle}
+                />
               ))}
             </Col>
           </Row>

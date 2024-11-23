@@ -268,3 +268,8 @@ h6 {
   gap: 2px;
 }
 /* End buttoms time */
+
+.highlight-option {
+  color: #069bf7; /* Задать цвет текста */
+  background-color: #c1e3f9; /* Цвет фона */
+}

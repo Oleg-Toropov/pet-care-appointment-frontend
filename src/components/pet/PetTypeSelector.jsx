@@ -40,14 +40,18 @@ const PetTypeSelector = ({ id, value, onChange }) => {
           required
           onChange={handleTypeChange}
         >
-          <option value="">Тип питомца</option>
+          <option value="" disabled hidden>
+            Тип питомца
+          </option>
 
           {petTypes.map((type) => (
             <option key={type} value={type}>
               {type}
             </option>
           ))}
-          <option value="add-new-item">Добавить новый тип</option>
+          <option value="add-new-item" className="highlight-option">
+            Добавить новый тип
+          </option>
         </Form.Control>
       </Form.Group>
       <AddItemModal

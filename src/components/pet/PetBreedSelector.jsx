@@ -44,13 +44,17 @@ const PetBreedSelector = ({ id, petType, value, onChange }) => {
           required
           onChange={handleBreedChange}
         >
-          <option value="">Порода питомца</option>
+          <option value="" disabled hidden>
+            Порода питомца
+          </option>
           {petBreeds.map((breed) => (
             <option key={breed} value={breed}>
               {breed}
             </option>
           ))}
-          <option value="add-new-item">Добавить новую породу</option>
+          <option value="add-new-item" className="highlight-option">
+            Добавить новую породу
+          </option>
         </Form.Control>
       </Form.Group>
       <AddItemModal

@@ -77,7 +77,7 @@ const Veterinarian = () => {
           </Row>
           <Card.Body>
             <Card.Title>
-              Dr. {vet.firstName} {vet.lastName}
+              {vet.firstName} {vet.lastName}
             </Card.Title>
             <Card.Text>Специализация: {vet.specialization}</Card.Text>
             {vet.averageRating > 0 && (
@@ -89,6 +89,11 @@ const Veterinarian = () => {
             )}
             <Link
               to={`/book-appointment/${vet.id}/new-appointment`}
+              state={{
+                specialization: vet.specialization,
+                firstName: vet.firstName,
+                lastName: vet.lastName,
+              }}
               className="link"
             >
               Записаться на прием

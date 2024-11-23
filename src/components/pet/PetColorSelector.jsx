@@ -40,13 +40,17 @@ const PetColorSelector = ({ id, value, onChange }) => {
           required
           onChange={handleColorChange}
         >
-          <option value="">Цвет питомца</option>
+          <option value="" disabled hidden>
+            Цвет питомца
+          </option>
           {petColors.map((color) => (
             <option key={color} value={color}>
               {color}
             </option>
           ))}
-          <option value="add-new-item">Добавить новый цвет</option>
+          <option value="add-new-item" className="highlight-option">
+            Добавить новый цвет
+          </option>
         </Form.Control>
       </Form.Group>
       <AddItemModal

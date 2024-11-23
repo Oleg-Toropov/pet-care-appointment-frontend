@@ -1,7 +1,7 @@
 import { useState } from "react";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import AlertMessage from "../common/AlertMessage";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import {
   Container,
   Row,
@@ -39,8 +39,12 @@ const BookAppointment = () => {
     ],
   });
 
+  const [isDateSelected, setIsDateSelected] = useState(false);
   const [availableTimes, setAvailableTimes] = useState([]);
   const [selectedTime, setSelectedTime] = useState("");
+
+  const location = useLocation();
+  const { specialization, firstName, lastName } = location.state || {};
 
   const {
     successMessage,
@@ -98,6 +102,7 @@ const BookAppointment = () => {
 
   const handleDateSelect = async (date) => {
     if (!date) return;
+    setIsDateSelected(true);
 
     const formattedDate = `${date.getFullYear()}-${String(
       date.getMonth() + 1
@@ -115,29 +120,24 @@ const BookAppointment = () => {
       );
       let times = response.data;
 
-      if (times.length === 0) {
-        setSuccessMessage("Нет доступного времени на выбранную дату");
-        setShowSuccessAlert(true);
-      } else {
-        times = times.map((time) => time.slice(0, 5));
+      times = times.map((time) => time.slice(0, 5));
 
-        const now = new Date();
+      const now = new Date();
 
-        if (date.toDateString() === now.toDateString()) {
-          const currentHour = now.getHours();
-          const currentMinutes = now.getMinutes();
+      if (date.toDateString() === now.toDateString()) {
+        const currentHour = now.getHours();
+        const currentMinutes = now.getMinutes();
 
-          times = times.filter((time) => {
-            const [hour, minutes] = time.split(":").map(Number);
-            return (
-              hour > currentHour ||
-              (hour === currentHour && minutes > currentMinutes)
-            );
-          });
-        }
-
-        setAvailableTimes(times);
+        times = times.filter((time) => {
+          const [hour, minutes] = time.split(":").map(Number);
+          return (
+            hour > currentHour ||
+            (hour === currentHour && minutes > currentMinutes)
+          );
+        });
       }
+
+      setAvailableTimes(times);
     } catch (error) {
       setErrorMessage("Не удалось загрузить доступное время");
       setAvailableTimes([]);
@@ -193,6 +193,7 @@ const BookAppointment = () => {
   };
 
   const handleReset = () => {
+    setIsDateSelected(false);
     setFormData({
       appointmentDate: null,
       appointmentTime: null,
@@ -220,7 +221,10 @@ const BookAppointment = () => {
           <Form onSubmit={handleSubmit}>
             <Card className="shadow mb-5">
               <Card.Header as="h5" className="mb-4 text-center">
-                Запись на прием
+                Запись на прием к ветеринару:
+                <h5 className="mt-2">
+                  {firstName} {lastName} ({specialization?.toLowerCase()})
+                </h5>
               </Card.Header>
               <Card.Body>
                 <Form.Group as={Row} className="mb-4">
@@ -261,6 +265,7 @@ const BookAppointment = () => {
                           </div>
                         </div>
                       ) : (
+                        isDateSelected &&
                         !isProcessing && (
                           <p className="no-times-message">
                             Нет доступного времени на выбранную дату

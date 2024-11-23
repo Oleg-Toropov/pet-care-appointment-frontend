@@ -124,7 +124,9 @@ const UserUpdate = () => {
                   onChange={handleUserInputChange}
                   className="shadow"
                 >
-                  <option value="">Выберите пол</option>
+                  <option value="" disabled hidden>
+                    Выберите пол
+                  </option>
                   <option value="Male">Мужской</option>
                   <option value="Female">Женский</option>
                 </Form.Control>

@@ -22,7 +22,9 @@ const AppointmentFilter = ({
                   value={selectedStatus}
                   onChange={(e) => onSelectStatus(e.target.value)}
                 >
-                  <option value="all">Все приемы</option>
+                  <option value="all" disabled hidden>
+                    Выберите статус
+                  </option>
                   {statuses.map((status, index) => (
                     <option key={index} value={status}>
                       {formatAppointmentStatus(status)}

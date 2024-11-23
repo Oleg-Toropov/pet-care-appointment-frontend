@@ -130,7 +130,9 @@ const VeterinarianSearch = ({ onSearchResult }) => {
             onChange={handleInputChange}
             required
           >
-            <option value="">Выберите специализацию</option>
+            <option value="" disabled hidden>
+              Выберите специализацию
+            </option>
             {specializations.map((specialization) => (
               <option key={specialization} value={specialization}>
                 {specialization}
@@ -160,6 +162,7 @@ const VeterinarianSearch = ({ onSearchResult }) => {
                     <DatePicker
                       selected={searchQuery.date}
                       onChange={handleDateChange}
+                      autoComplete="off"
                       locale="ru"
                       dateFormat="dd.MM.yyyy"
                       minDate={new Date()}
@@ -176,6 +179,7 @@ const VeterinarianSearch = ({ onSearchResult }) => {
                     <DatePicker
                       selected={searchQuery.time}
                       onChange={handleTimeChange}
+                      autoComplete="off"
                       locale="ru"
                       showTimeSelect
                       showTimeSelectOnly

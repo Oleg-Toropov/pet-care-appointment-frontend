@@ -29,6 +29,7 @@ export const dateTimeFormatter = (date, time) => {
 export const UserType = {
   PATIENT: "PATIENT",
   VET: "VET",
+  ADMIN: "ADMIN",
 };
 
 export const getStatusKey = (status) => {

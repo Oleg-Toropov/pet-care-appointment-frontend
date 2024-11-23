@@ -19,7 +19,11 @@ const UserFilter = ({
         value={selectedValue}
         onChange={(e) => onSelectedValue(e.target.value)}
       >
-        <option value="">{additionalText}</option>
+        {!selectedValue && (
+          <option value="" disabled hidden>
+            {additionalText}
+          </option>
+        )}
         {values.map((value, index) => (
           <option key={index} value={value}>
             {value}

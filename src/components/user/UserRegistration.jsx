@@ -125,7 +125,9 @@ const UserRegistration = () => {
                       onChange={handleInputChange}
                       className="shadow"
                     >
-                      <option value="">Выберите пол</option>
+                      <option value="" disabled hidden>
+                        Выберите пол
+                      </option>
                       <option value="Male">Мужской</option>
                       <option value="Female">Женский</option>
                     </Form.Control>
@@ -196,7 +198,9 @@ const UserRegistration = () => {
                       onChange={handleInputChange}
                       className="shadow"
                     >
-                      <option value="">Выберите тип аккаунта</option>
+                      <option value="" disabled hidden>
+                        Выберите тип аккаунта
+                      </option>
                       <option value="VET">Я ветеринар</option>
                       <option value="PATIENT">
                         Я владелец домашнего животного
