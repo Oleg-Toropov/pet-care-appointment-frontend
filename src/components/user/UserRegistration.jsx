@@ -8,6 +8,7 @@ import ProcessSpinner from "../common/ProcessSpinner";
 import VetSpecializationSelector from "../veterinarian/VetSpecializationSelector";
 import { registerUser } from "./UserService";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import ReactInputMask from "react-input-mask";
 
 const UserRegistration = () => {
   const [user, setUser] = useState({
@@ -150,14 +151,14 @@ const UserRegistration = () => {
                       />
                     </Col>
                     <Col sm={6}>
-                      <Form.Control
-                        type="text"
-                        name="phoneNumber"
-                        required
-                        placeholder="Номер телефона"
+                      <ReactInputMask
+                        mask="+7 (999) 999-99-99"
                         value={user.phoneNumber}
                         onChange={handleInputChange}
-                        className="shadow"
+                        className="form-control shadow"
+                        placeholder="+7 (999) 999-99-99"
+                        name="phoneNumber"
+                        required
                       />
                     </Col>
                   </Row>
