@@ -183,6 +183,10 @@ const UserRegistration = () => {
                       >
                         {showPassword ? <FiEyeOff /> : <FiEye />}
                       </Button>
+                      <Form.Text className="text-muted">
+                        Пароль должен быть не менее 8 символов, содержать цифры,
+                        заглавные и строчные латинские буквы.
+                      </Form.Text>
                     </div>
                   </Col>
                 </Form.Group>

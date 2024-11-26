@@ -12,6 +12,7 @@ import CustomPieChart from "../charts/CustomPieChart";
 import { formatAppointmentStatus } from "../utils/utilities";
 import NoDataAvailable from "../common/NoDataAvailable";
 import { logout } from "../auth/AuthService";
+import { deleteReview } from "../review/ReviewService";
 
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
@@ -21,6 +22,8 @@ const UserDashboard = () => {
     const storedActiveKey = localStorage.getItem("activeKey");
     return storedActiveKey ? storedActiveKey : "profile";
   });
+  const [deletedReviewId, setDeletedReviewId] = useState(null);
+  const [failedReviewId, setFailedReviewId] = useState(null);
 
   const {
     successMessage,
@@ -34,10 +37,6 @@ const UserDashboard = () => {
   } = UseMessageAlerts();
 
   const { userId } = useParams();
-
-  // const currentUserId = localStorage.getItem("userId");
-
-  // const isCurrentUser = userId === currentUserId;
 
   useEffect(() => {
     const getUser = async () => {
@@ -110,6 +109,27 @@ const UserDashboard = () => {
     localStorage.setItem("activeKey", key);
   };
 
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      await deleteReview(reviewId);
+
+      setDeletedReviewId(reviewId);
+
+      setTimeout(() => {
+        setUser((prevUser) => ({
+          ...prevUser,
+          reviews: prevUser.reviews.filter((review) => review.id !== reviewId),
+        }));
+        setDeletedReviewId(null);
+      }, 3000);
+    } catch (error) {
+      setFailedReviewId(reviewId);
+      setTimeout(() => {
+        setFailedReviewId(null);
+      }, 3000);
+    }
+  };
+
   return (
     <Container className="mt-2 user-dashboard">
       <Tabs
@@ -149,7 +169,6 @@ const UserDashboard = () => {
           </Row>
         </Tab>
 
-        {/* {isCurrentUser && ( */}
         <Tab eventKey="appointments" title={<h3>Список приёмов</h3>}>
           <Row>
             <Col>
@@ -165,7 +184,6 @@ const UserDashboard = () => {
             </Col>
           </Row>
         </Tab>
-        {/* )} */}
 
         <Tab eventKey="reviews" title={<h3>Отзывы</h3>}>
           <Container className="d-flex justify-content-center align-items-center">
@@ -175,13 +193,36 @@ const UserDashboard = () => {
               <Row>
                 <Col>
                   {user && user.reviews && user.reviews.length > 0 ? (
-                    user.reviews.map((review, index) => (
-                      <Review
-                        key={index}
-                        review={review}
-                        userType={user.userType}
-                      />
-                    ))
+                    user.reviews.map((review) =>
+                      review.id === deletedReviewId ? (
+                        <div
+                          key={review.id}
+                          className="review-item mb-3 d-flex justify-content-center align-items-center"
+                          style={{ height: "100px" }}
+                        >
+                          <p className="text-success text-center">
+                            Отзыв успешно удалён!
+                          </p>
+                        </div>
+                      ) : review.id === failedReviewId ? (
+                        <div
+                          key={review.id}
+                          className="review-item mb-3 d-flex justify-content-center align-items-center"
+                          style={{ height: "100px" }}
+                        >
+                          <p className="text-danger text-center">
+                            Ошибка при удалении отзыва!
+                          </p>
+                        </div>
+                      ) : (
+                        <Review
+                          key={review.id}
+                          review={review}
+                          userType={user.userType}
+                          onDelete={handleDeleteReview}
+                        />
+                      )
+                    )
                   ) : (
                     <NoDataAvailable dataType={"review data"} />
                   )}

@@ -6,7 +6,6 @@ export const verifyEmail = async (token) => {
 };
 
 export async function resendVerificationToken(oldToken) {
-  console.log("oldToken: ", oldToken);
   const response = await api.put(
     `/auth/resend-verification-token?token=${oldToken}`
   );

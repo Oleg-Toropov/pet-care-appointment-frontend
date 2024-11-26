@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 
 const AddItemModal = ({ show, handleClose, handleSave, itemLabel }) => {

@@ -6,6 +6,7 @@ import { BsFillArrowRightSquareFill } from "react-icons/bs";
 import Review from "../review/Review";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import { getUserById } from "../user/UserService";
+import { getBiographyById } from "./VeterinarianService";
 import AlertMessage from "../common/AlertMessage";
 import RatingStars from "../rating/RatingStars";
 import Rating from "../rating/Rating";
@@ -14,6 +15,7 @@ import LoadSpinner from "../common/LoadSpinner";
 
 const Veterinarian = () => {
   const [vet, setVet] = useState(null);
+  const [biography, setBiography] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { vetId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,17 +27,22 @@ const Veterinarian = () => {
   const getUser = async () => {
     setIsLoading(true);
     try {
-      const result = await getUserById(vetId);
-      setVet(result.data);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
+      const userResult = await getUserById(vetId);
+      setVet(userResult.data);
+
+      const biographyResult = await getBiographyById(vetId);
+      setBiography(biographyResult.data.biography);
+
+      setIsLoading(false);
     } catch (error) {
-      setErrorMessage(error.result.data.message);
-      setShowErrorAlert(true);
+      setErrorMessage(
+        error.response?.data?.message || "Ошибка загрузки данных"
+      );
+      setShowErrorAlert(false);
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     getUser();
   }, [vetId]);
@@ -100,20 +107,12 @@ const Veterinarian = () => {
             </Link>
             <hr />
             <p className="about">
-              О ветеринаре {vet.firstName} {vet.lastName}{" "}
+              О ветеринаре {vet.firstName} {vet.lastName}
             </p>
-            //TODO change
             <p>
-              Опытный ветеринар с более чем 7-летним стажем работы с мелкими
-              домашними животными. Специализируется на диагностике, лечении и
-              профилактике заболеваний, включая хирургические вмешательства и
-              экстренную помощь. В своей практике применяет индивидуальный
-              подход к каждому пациенту, заботясь о его здоровье и благополучии.
-              Постоянно совершенствует профессиональные навыки, посещая курсы и
-              семинары для освоения современных методов лечения. Основной
-              приоритет — обеспечение качественного медицинского обслуживания и
-              поддержка владельцев животных.
-            </p>
+              {biography ||
+                "Информация о ветеринаре пока отсутствует, но вскоре появится!"}
+            </p>{" "}
             <hr />
             <Rating veterinarianId={vet.id} onReviewSubmit={null} />
             <h4 className="text-center mb-4">Отзывы</h4>

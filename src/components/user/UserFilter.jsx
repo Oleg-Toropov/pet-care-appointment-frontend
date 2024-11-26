@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, InputGroup, Form } from "react-bootstrap";
 
 const UserFilter = ({

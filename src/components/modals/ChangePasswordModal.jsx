@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { changeUserPassword } from "../user/UserService";
 import AlertMessage from "../common/AlertMessage";
@@ -121,6 +121,11 @@ const ChangePasswordModal = ({ userId, show, handleClose }) => {
               </InputGroup.Text>
             </InputGroup>
           </Form.Group>
+
+          <Form.Text className="text-muted">
+            Пароль должен быть не менее 8 символов, содержать цифры, заглавные и
+            строчные латинские буквы.
+          </Form.Text>
 
           <div className="d-flex justify-content-center mt-4">
             <div className="mx-2">

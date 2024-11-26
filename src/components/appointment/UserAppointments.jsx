@@ -8,7 +8,7 @@ import useColorMapping from "../hooks/ColorMapping";
 import PatientActions from "../actions/PatientActions";
 import VeterinarianActions from "../actions/VeterinarianActions";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   updateAppointment,
   cancelAppointment,
@@ -45,7 +45,6 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
 
   const fetchAppointment = async (appointmentId) => {
     const response = await getAppointmentById(appointmentId);
-    console.log(response);
 
     const updatedAppointment = response.data;
 

@@ -59,9 +59,12 @@ const Login = () => {
     try {
       const data = await loginUser(credentials.email, credentials.password);
       localStorage.setItem("authToken", data.token);
+
       const decoded = jwtDecode(data.token);
       localStorage.setItem("userRoles", JSON.stringify(decoded.roles));
       localStorage.setItem("userId", decoded.id);
+      localStorage.setItem("userEmail", decoded.sub);
+
       clearLoginForm();
       navigate(from, { replace: true });
       window.location.reload();

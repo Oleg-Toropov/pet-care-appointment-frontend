@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import { Card } from "react-bootstrap";
 import placeholder from "../../assets/images/placeholder.jpg";
 

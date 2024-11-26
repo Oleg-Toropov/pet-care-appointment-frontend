@@ -7,6 +7,7 @@ const NavBar = () => {
   const isLoggedIn = localStorage.getItem("authToken");
   const userRoles = localStorage.getItem("userRoles") || [];
   const userId = localStorage.getItem("userId") || "";
+  const userEmail = localStorage.getItem("userEmail") || "";
 
   const handleLogout = () => {
     logout();
@@ -26,7 +27,10 @@ const NavBar = () => {
             </Nav.Link>
           </Nav>
           <Nav>
-            <NavDropdown title="Личный кабинет" id="basic-nav-dropdown">
+            <NavDropdown
+              title={isLoggedIn ? `${userEmail}` : "Личный кабинет"}
+              id="basic-nav-dropdown"
+            >
               {!isLoggedIn ? (
                 <React.Fragment>
                   <NavDropdown.Item to={"/register-user"} as={Link}>

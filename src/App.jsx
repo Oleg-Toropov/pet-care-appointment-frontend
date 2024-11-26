@@ -4,7 +4,6 @@ import Home from "./components/home/Home";
 import VeterinarianListing from "./components/veterinarian/VeterinarianListing";
 import {
   Route,
-  Router,
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,

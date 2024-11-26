@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { BsCheck, BsX } from "react-icons/bs";
 import { Button, Form } from "react-bootstrap";
 

@@ -28,3 +28,28 @@ export const getAvailableTimesForAppointment = async (vetId, date) => {
     throw error;
   }
 };
+
+export async function getBiographyById(vetId) {
+  try {
+    const response = await api.get(`biographies/biography/${vetId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function saveVetBiography(vetId, biographyData) {
+  const response = await api.post(
+    `biographies/biography/${vetId}/save`,
+    biographyData
+  );
+  return response.data;
+}
+
+export async function updateVetBiography(biographyId, biographyData) {
+  const response = await api.put(
+    `biographies/biography/${biographyId}/update`,
+    biographyData
+  );
+  return response.data;
+}

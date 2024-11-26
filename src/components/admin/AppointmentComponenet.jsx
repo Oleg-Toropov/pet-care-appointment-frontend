@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Table, Row, Col, FormControl, Modal, Button } from "react-bootstrap";
 import AlertMessage from "../common/AlertMessage";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
@@ -8,6 +8,7 @@ import {
 } from "../appointment/AppointmentService";
 import Paginator from "../common/Paginator";
 import { formatAppointmentStatus } from "../utils/utilities";
+import NoDataAvailable from "../common/NoDataAvailable";
 
 const AppointmentComponent = () => {
   const [appointments, setAppointments] = useState([]);
@@ -164,32 +165,74 @@ const AppointmentComponent = () => {
             <th>Номер приема</th>
             <th>Дата</th>
             <th>Время</th>
-            <th>Причина</th>
+            {/* <th>Причина записи</th> */}
             <th>Статус</th>
             <th>Email клиента</th>
             <th>Email ветеринара</th>
           </tr>
         </thead>
         <tbody>
-          {currentAppointments.map((appointment) => (
-            <tr
-              key={appointment.id}
-              onClick={() => handleRowClick(appointment)}
-              style={{ cursor: "pointer" }}
-            >
-              <td>{appointment.appointmentNo}</td>
-              <td>
-                {new Date(appointment.appointmentDate).toLocaleDateString(
-                  "ru-RU"
-                )}
+          {/* {currentAppointments.map > 0 ? (
+            (appointment) => (
+              <tr
+                key={appointment.id}
+                onClick={() => handleRowClick(appointment)}
+                style={{ cursor: "pointer" }}
+              >
+                <td>{appointment.appointmentNo}</td>
+                <td>
+                  {new Date(appointment.appointmentDate).toLocaleDateString(
+                    "ru-RU"
+                  )}
+                </td>
+                <td>{appointment.appointmentTime}</td>
+                <td>{appointment.reason}</td>
+                <td>{formatAppointmentStatus(appointment.status)}</td>
+                <td>{appointment.patient?.email}</td>
+                <td>{appointment.veterinarian?.email}</td>
+              </tr>
+            )
+          ) : (
+            <NoDataAvailable
+              dataType={"appointment data"}
+              message={errorMessage}
+            />
+          )} */}
+
+          {currentAppointments.length > 0 ? (
+            currentAppointments.map((appointment) => (
+              <tr
+                key={appointment.id}
+                onClick={() => handleRowClick(appointment)}
+                style={{ cursor: "pointer" }}
+              >
+                <td>{appointment.appointmentNo}</td>
+                <td>
+                  {new Date(appointment.appointmentDate).toLocaleDateString(
+                    "ru-RU"
+                  )}
+                </td>
+                <td>{appointment.appointmentTime}</td>
+                {/* <td>{appointment.reason}</td> */}
+                <td>{formatAppointmentStatus(appointment.status)}</td>
+                <td>{appointment.patient?.email}</td>
+                <td>{appointment.veterinarian?.email}</td>
+              </tr>
+            ))
+          ) : (
+            <></>
+          )}
+
+          {currentAppointments.length === 0 && (
+            <tr>
+              <td colSpan="7">
+                <NoDataAvailable
+                  dataType={"appointment data"}
+                  message={errorMessage}
+                />
               </td>
-              <td>{appointment.appointmentTime}</td>
-              <td>{appointment.reason}</td>
-              <td>{formatAppointmentStatus(appointment.status)}</td>
-              <td>{appointment.patient?.email}</td>
-              <td>{appointment.veterinarian?.email}</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </Table>
       <Paginator
@@ -199,7 +242,6 @@ const AppointmentComponent = () => {
         itemsPerPage={appointmentsPerPage}
       />
 
-      {/* Modal for Appointment Details */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Детали приёма</Modal.Title>
@@ -208,30 +250,30 @@ const AppointmentComponent = () => {
           {selectedAppointment && (
             <div>
               <p>
-                <strong>Номер приёма:</strong>{" "}
-                {selectedAppointment.appointmentNo}
-              </p>
-              <p>
-                <strong>Дата записи:</strong>{" "}
+                <strong>Дата записи на прием:</strong>{" "}
                 {new Date(selectedAppointment.createdAt).toLocaleDateString(
                   "ru-RU"
                 )}
               </p>
+
               <p>
-                <strong>Дата приёма:</strong>{" "}
-                {new Date(
-                  selectedAppointment.appointmentDate
-                ).toLocaleDateString("ru-RU")}
+                <strong>Причина приема:</strong> {selectedAppointment.reason}
               </p>
-              <p>
-                <strong>Время приёма:</strong>{" "}
-                {selectedAppointment.appointmentTime}
-              </p>
-              <p>
-                <strong>Статус:</strong>{" "}
-                {formatAppointmentStatus(selectedAppointment.status)}
-              </p>
+
               <hr />
+              <h6>Питомцы:</h6>
+              {selectedAppointment.pets.map((pet) => (
+                <div key={pet.id}>
+                  <p>
+                    <strong>Кличка:</strong> {pet.name}, <strong>Тип:</strong>{" "}
+                    {pet.type}, <strong>Цвет:</strong> {pet.color},{" "}
+                    <strong>Порода:</strong> {pet.breed},{" "}
+                    <strong>Возраст:</strong> {pet.age}
+                  </p>
+                </div>
+              ))}
+              <hr />
+
               <h6>Информация о клиенте:</h6>
               <p>
                 <strong>Имя:</strong> {selectedAppointment.patient?.firstName}
@@ -250,16 +292,7 @@ const AppointmentComponent = () => {
                 <strong>Телефон:</strong>{" "}
                 {selectedAppointment.patient?.phoneNumber}
               </p>
-              <p>
-                <strong>Email:</strong> {selectedAppointment.patient?.email}
-              </p>
 
-              <p>
-                <strong>Дата регистрации:</strong>{" "}
-                {new Date(
-                  selectedAppointment.patient?.createdAt
-                ).toLocaleDateString("ru-RU")}
-              </p>
               <hr />
               <h6>Информация о ветеринаре:</h6>
               <p>
@@ -280,38 +313,17 @@ const AppointmentComponent = () => {
                 <strong>Телефон:</strong>{" "}
                 {selectedAppointment.veterinarian?.phoneNumber}
               </p>
-              <p>
-                <strong>Email:</strong>{" "}
-                {selectedAppointment.veterinarian?.email}
-              </p>
-              <p>
-                <strong>Дата регистрации:</strong>{" "}
-                {new Date(
-                  selectedAppointment.veterinarian?.createdAt
-                ).toLocaleDateString("ru-RU")}
-              </p>
+
               <p>
                 <strong>Специализация:</strong>{" "}
                 {selectedAppointment.veterinarian?.specialization}
               </p>
-              <hr />
-              <h6>Питомцы:</h6>
-              {selectedAppointment.pets.map((pet) => (
-                <div key={pet.id}>
-                  <p>
-                    <strong>Кличка:</strong> {pet.name}, <strong>Тип:</strong>{" "}
-                    {pet.type}, <strong>Цвет:</strong> {pet.color},{" "}
-                    <strong>Порода:</strong> {pet.breed},{" "}
-                    <strong>Возраст:</strong> {pet.age}
-                  </p>
-                </div>
-              ))}
             </div>
           )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={handleDelete}>
-            Удалить
+            Удалить прием
           </Button>
           <Button variant="secondary" onClick={handleCloseModal}>
             Закрыть

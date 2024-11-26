@@ -83,7 +83,6 @@ const EmailVerification = () => {
       setVerificationMessage(response.message);
       setAlertType("alert-success");
     } catch (error) {
-      console.log("The error : " + error);
       let message = "Failed to resend verification token.";
       if (
         error.response &&

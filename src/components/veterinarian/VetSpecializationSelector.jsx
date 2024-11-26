@@ -41,8 +41,10 @@ const VetSpecializationSelector = ({ value, onChange }) => {
           required
           onChange={handleSpecializationChange}
         >
-          <option value="">Выберите специализацию</option>
-          <option value="add-new-specialization">
+          <option value="" disabled hidden>
+            Выберите специализацию
+          </option>
+          <option value="add-new-specialization" className="highlight-option">
             Добавить новую специализацию
           </option>
           {specializations.map((specialization) => (
