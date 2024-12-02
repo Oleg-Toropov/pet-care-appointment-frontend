@@ -1,4 +1,5 @@
 import { api } from "../utils/api";
+import { jwtDecode } from "jwt-decode";
 
 export const verifyEmail = async (token) => {
   const response = await api.get(`/auth/verify-your-email?token=${token}`);
@@ -14,6 +15,11 @@ export async function resendVerificationToken(oldToken) {
 
 export const loginUser = async (email, password) => {
   const response = await api.post("/auth/login", { email, password });
+  const token = response.data.data.token;
+
+  localStorage.setItem("authToken", token);
+  setLogoutTimer(token);
+
   return response.data.data;
 };
 
@@ -43,3 +49,22 @@ export async function resetPassword(token, newPassword) {
   });
   return response.data;
 }
+
+let logoutTimer;
+
+export const setLogoutTimer = (token) => {
+  const decoded = jwtDecode(token);
+  const expirationTime = decoded.exp * 1000;
+  const currentTime = Date.now();
+
+  const timeUntilLogout = expirationTime - currentTime;
+
+  if (timeUntilLogout > 0) {
+    clearTimeout(logoutTimer);
+    logoutTimer = setTimeout(() => {
+      logout();
+    }, timeUntilLogout);
+  } else {
+    logout();
+  }
+};
