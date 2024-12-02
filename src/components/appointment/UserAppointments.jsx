@@ -215,7 +215,7 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
 
           const isWaitingForApproval = statusKey === "waiting-for-approval";
           const isCancelled = statusKey === "cancelled";
-          const recipientId = appointment.veterinarian.id;
+          const vet = appointment.veterinarian;
 
           return (
             <Accordion.Item
@@ -310,7 +310,12 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
 
                   {user.userType === UserType.PATIENT && (
                     <Link
-                      to={`/book-appointment/${recipientId}/new-appointment`}
+                      to={`/book-appointment/${vet.id}/new-appointment`}
+                      state={{
+                        specialization: vet.specialization,
+                        firstName: vet.firstName,
+                        lastName: vet.lastName,
+                      }}
                     >
                       Записаться на новый прием
                     </Link>
