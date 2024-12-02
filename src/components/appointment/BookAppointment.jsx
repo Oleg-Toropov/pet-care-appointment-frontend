@@ -268,7 +268,8 @@ const BookAppointment = () => {
                         isDateSelected &&
                         !isProcessing && (
                           <p className="no-times-message">
-                            Нет доступного времени на выбранную дату
+                            На выбранную дату нет доступного времени.
+                            Пожалуйста, выберите другую дату.
                           </p>
                         )
                       )}

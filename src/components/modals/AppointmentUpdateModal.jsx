@@ -1,6 +1,9 @@
-import { useState } from "react";
-import { Modal, Form, Button } from "react-bootstrap";
-import DatePicker from "react-datepicker";
+import { useState, useEffect } from "react";
+import { Modal, Form, Button, Row, Col } from "react-bootstrap";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+import { ru } from "date-fns/locale";
+import { getAvailableTimesForAppointment } from "../veterinarian/VeterinarianService";
 
 const AppointmentUpdateModal = ({
   show,
@@ -11,23 +14,67 @@ const AppointmentUpdateModal = ({
   const [appointmentDate, setAppointmentDate] = useState(
     new Date(appointment.appointmentDate)
   );
-  const [appointmentTime, setAppointmentTime] = useState(
-    new Date(`${appointment.appointmentDate}T${appointment.appointmentTime}`)
+  const [availableTimes, setAvailableTimes] = useState([]);
+  const [selectedTime, setSelectedTime] = useState(
+    appointment.appointmentTime.slice(0, 5)
   );
   const [reason, setReason] = useState(appointment.reason);
+
+  const handleDateSelect = async (date) => {
+    if (!date) return;
+    setAppointmentDate(date);
+
+    const formattedDate = `${date.getFullYear()}-${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+    try {
+      const response = await getAvailableTimesForAppointment(
+        appointment.veterinarian.id,
+        formattedDate
+      );
+      let times = response.data.map((time) => time.slice(0, 5));
+
+      if (date.toDateString() === new Date().toDateString()) {
+        const currentHour = new Date().getHours();
+        const currentMinutes = new Date().getMinutes();
+        times = times.filter((time) => {
+          const [hour, minutes] = time.split(":").map(Number);
+          return (
+            hour > currentHour ||
+            (hour === currentHour && minutes > currentMinutes)
+          );
+        });
+      }
+
+      setAvailableTimes(times);
+    } catch (error) {
+      setAvailableTimes([]);
+    }
+  };
+
+  const handleTimeSelect = (time) => {
+    setSelectedTime(time);
+  };
 
   const handleSubmit = () => {
     const updatedAppointment = {
       ...appointment,
-      appointmentDate: appointmentDate.toISOString().split("T")[0],
-      appointmentTime: appointmentTime
-        .toTimeString()
-        .split(" ")[0]
-        .substring(0, 5),
+      appointmentDate: `${appointmentDate.getFullYear()}-${String(
+        appointmentDate.getMonth() + 1
+      ).padStart(2, "0")}-${String(appointmentDate.getDate()).padStart(
+        2,
+        "0"
+      )}`,
+      appointmentTime: selectedTime,
       reason,
     };
     handleUpdate(updatedAppointment);
   };
+
+  useEffect(() => {
+    handleDateSelect(new Date(appointment.appointmentDate));
+  }, []);
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -37,43 +84,59 @@ const AppointmentUpdateModal = ({
 
       <Modal.Body>
         <Form>
-          <Form.Group controlId="appointmentDate">
-            <Form.Label className=" me-2">Дата</Form.Label>
-            <DatePicker
-              selected={appointmentDate}
-              onChange={(date) => setAppointmentDate(date)}
-              dateFormat="dd.MM.yyyy"
-              className="form-control shadow"
-              minDate={new Date()}
-              locale="ru"
-              placeholderText="Выберите дату"
-              required
-            />
+          <Form.Group as={Row} className="mb-4">
+            <Col md={8}>
+              <div className="calendar-container">
+                <div className="calendar">
+                  <h5 className="legend">Дата:</h5>
+                  <DayPicker
+                    mode="single"
+                    selected={appointmentDate}
+                    onSelect={handleDateSelect}
+                    locale={ru}
+                    disabled={{
+                      before: new Date(),
+                      after: new Date(
+                        new Date().setDate(new Date().getDate() + 30)
+                      ),
+                    }}
+                  />
+                </div>
+
+                {availableTimes.length > 0 ? (
+                  <div className="time-container">
+                    <h5 className="legend">Доступное время:</h5>
+                    <div className="time-grid">
+                      {availableTimes.map((time) => (
+                        <button
+                          type="button"
+                          key={time}
+                          onClick={() => handleTimeSelect(time)}
+                          className={`time-button ${
+                            time === selectedTime ? "selected" : ""
+                          }`}
+                        >
+                          {time}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="no-times-message">
+                    На выбранную дату нет доступного времени. Пожалуйста,
+                    выберите другую дату.
+                  </p>
+                )}
+              </div>
+            </Col>
           </Form.Group>
 
-          <Form.Group controlId="appointmentTime" className="mt-4">
-            <Form.Label className=" me-2">Время</Form.Label>
-            <DatePicker
-              selected={appointmentTime}
-              onChange={(time) => setAppointmentTime(time)}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={30}
-              timeCaption="Time"
-              dateFormat="HH:mm"
-              className="form-control shadow"
-              locale="ru"
-              placeholderText="Выберите время"
-              required
-            />
-          </Form.Group>
-
-          <Form.Group controlId="reason" className="mt-2 shadow">
-            <Form.Label>Причина записи</Form.Label>
+          <Form.Group controlId="reason" className="mt-4">
+            <Form.Label className="legend">Причина записи:</Form.Label>
             <Form.Control
-              as={"textarea"}
+              as="textarea"
               rows={3}
-              placeholder="Enter reason"
+              placeholder="Введите причину"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
             />
