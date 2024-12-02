@@ -5,13 +5,22 @@ const AddItemModal = ({ show, handleClose, handleSave, itemLabel }) => {
   const [itemValue, setItemValue] = useState("");
 
   const handleSaveItem = () => {
-    handleSave(itemValue);
-    setItemValue("");
-    handleClose();
+    if (itemValue.trim()) {
+      handleSave(itemValue);
+      setItemValue("");
+      handleClose();
+    }
   };
 
   const handleInputChange = (e) => {
     setItemValue(e.target.value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSaveItem();
+    }
   };
 
   const getTitle = (itemLabel) => {
@@ -34,6 +43,7 @@ const AddItemModal = ({ show, handleClose, handleSave, itemLabel }) => {
               placeHolder={`Введите название ${getTitle(itemLabel)}`}
               value={itemValue}
               onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
             />
           </Form.Group>
         </Form>
