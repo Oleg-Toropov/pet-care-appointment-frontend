@@ -32,6 +32,8 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
 
   const colors = useColorMapping();
 
+  const [expandedAccordion, setExpandedAccordion] = useState(null);
+
   const {
     successMessage,
     setSuccessMessage,
@@ -125,19 +127,27 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
   };
 
   const handleUpdateAppointment = async (updatedAppointment) => {
-    const result = await updateAppointment(
-      updatedAppointment.id,
-      updatedAppointment
-    );
-    setAppointments(
-      appointments.map((appointment) =>
-        appointment.id === updatedAppointment.id
-          ? updatedAppointment
-          : appointment
-      )
-    );
-    setSuccessMessage(result.data.message);
-    setShowSuccessAlert(true);
+    try {
+      const result = await updateAppointment(
+        updatedAppointment.id,
+        updatedAppointment
+      );
+
+      setAppointments((prevAppointments) =>
+        prevAppointments.map((appointment) =>
+          appointment.id === updatedAppointment.id
+            ? updatedAppointment
+            : appointment
+        )
+      );
+
+      setExpandedAccordion(updatedAppointment.id);
+      setSuccessMessage(result.data.message);
+      setShowSuccessAlert(true);
+    } catch (error) {
+      setErrorMessage(error.response.data.message);
+      setShowErrorAlert(true);
+    }
   };
 
   const onSelectStatus = (status) => {
@@ -164,8 +174,6 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
     );
 
     setFilteredAppointments(filter);
-
-    setCurrentPage(1);
   }, [selectedStatus, appointments]);
 
   const indexOfLastVet = currentPage * appointmentsPerPage;
@@ -175,6 +183,18 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
     indexOfFirstVet,
     indexOfLastVet
   );
+
+  const handleAccordionToggle = (appointmentId) => {
+    setExpandedAccordion((prevId) =>
+      prevId === appointmentId ? null : appointmentId
+    );
+    setShowSuccessAlert(false);
+    setShowErrorAlert(false);
+  };
+
+  useEffect(() => {
+    setExpandedAccordion(null);
+  }, [currentPage]);
 
   return (
     <Container className="p-3">
@@ -186,7 +206,9 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
       />
 
       <Accordion className="mt-4 mb-5">
-        {currentAppointments.map((appointment, index) => {
+        {currentAppointments.map((appointment) => {
+          const isExpanded = expandedAccordion === appointment.id;
+
           const statusKey = getStatusKey(appointment.status);
           const statusColor = colors[statusKey] || colors["default"];
           const formattedStatus = formatAppointmentStatus(appointment.status);
@@ -196,8 +218,14 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
           const recipientId = appointment.veterinarian.id;
 
           return (
-            <Accordion.Item eventKey={index} key={index} className="mb-4">
-              <Accordion.Header>
+            <Accordion.Item
+              eventKey={appointment.id}
+              key={appointment.id}
+              className="mb-4"
+            >
+              <Accordion.Header
+                onClick={() => handleAccordionToggle(appointment.id)}
+              >
                 <div>
                   <div className="mb-3">
                     Дата приема:{" "}
@@ -212,99 +240,105 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                   </div>
                 </div>
               </Accordion.Header>
-              <Accordion.Body>
-                <Row className="mb-4">
-                  <Col md={4} className="m-t2">
-                    <p>
-                      Номер записи на прием :{" "}
-                      <span className="text-info">
-                        {appointment.appointmentNo}
-                      </span>
-                    </p>
+              {isExpanded && (
+                <Accordion.Body>
+                  <Row className="mb-4">
+                    <Col md={4} className="m-t2">
+                      <p>
+                        Номер записи на прием :{" "}
+                        <span className="text-info">
+                          {appointment.appointmentNo}
+                        </span>
+                      </p>
 
-                    <ReactDatePicker
-                      selected={
-                        new Date(
-                          `${appointment.appointmentDate}T${appointment.appointmentTime}`
-                        )
-                      }
-                      locale="ru"
-                      dateFormat="MMMM d, yyyy h:mm aa"
-                      inline
-                    />
+                      <ReactDatePicker
+                        selected={
+                          new Date(
+                            `${appointment.appointmentDate}T${appointment.appointmentTime}`
+                          )
+                        }
+                        locale="ru"
+                        dateFormat="MMMM d, yyyy h:mm aa"
+                        inline
+                      />
 
-                    <p>
-                      Время приема:
-                      <span className="text-info">
-                        {" "}
-                        {new Intl.DateTimeFormat("ru-RU", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }).format(
-                          new Date(`1970-01-01T${appointment.appointmentTime}`)
-                        )}
-                      </span>{" "}
-                    </p>
+                      <p>
+                        Время приема:
+                        <span className="text-info">
+                          {" "}
+                          {new Intl.DateTimeFormat("ru-RU", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }).format(
+                            new Date(
+                              `1970-01-01T${appointment.appointmentTime}`
+                            )
+                          )}
+                        </span>{" "}
+                      </p>
 
-                    <p>
-                      Причина записи: <span>{appointment.reason}</span>
-                    </p>
-                  </Col>
+                      <p>
+                        Причина записи: <span>{appointment.reason}</span>
+                      </p>
+                    </Col>
 
-                  <Col md={8} className="mt-2">
-                    <h4>Питомцы:</h4>
-                    <PetsTable
-                      pets={appointment.pets}
-                      onPetsUpdate={handlePetsUpdate}
-                      isEditable={isWaitingForApproval}
-                      isPatient={user.userType === UserType.PATIENT}
-                      appointmentId={appointment.id}
-                    />
-                  </Col>
+                    <Col md={8} className="mt-2">
+                      <h4>Питомцы:</h4>
+                      <PetsTable
+                        pets={appointment.pets}
+                        onPetsUpdate={handlePetsUpdate}
+                        isEditable={isWaitingForApproval}
+                        isPatient={user.userType === UserType.PATIENT}
+                        appointmentId={appointment.id}
+                      />
+                    </Col>
 
-                  {!(isCancelled || isWaitingForApproval) && (
-                    <UserInformation
-                      userType={user.userType}
-                      appointment={appointment}
-                    />
+                    {!(isCancelled || isWaitingForApproval) && (
+                      <UserInformation
+                        userType={user.userType}
+                        appointment={appointment}
+                      />
+                    )}
+                  </Row>
+
+                  {showSuccessAlert && (
+                    <AlertMessage type={"success"} message={successMessage} />
                   )}
-                </Row>
+                  {showErrorAlert && (
+                    <AlertMessage type={"danger"} message={errorMessage} />
+                  )}
 
-                {showSuccessAlert && (
-                  <AlertMessage type={"success"} message={successMessage} />
-                )}
-                {showErrorAlert && (
-                  <AlertMessage type={"danger"} message={errorMessage} />
-                )}
+                  {user.userType === UserType.PATIENT && (
+                    <Link
+                      to={`/book-appointment/${recipientId}/new-appointment`}
+                    >
+                      Записаться на новый прием
+                    </Link>
+                  )}
 
-                {user.userType === UserType.PATIENT && (
-                  <Link to={`/book-appointment/${recipientId}/new-appointment`}>
-                    Записаться на новый прием
-                  </Link>
-                )}
+                  {user && user.userType === UserType.PATIENT && (
+                    <div>
+                      <PatientActions
+                        onCancel={handleCancelAppointment}
+                        onUpdate={handleUpdateAppointment}
+                        isDisabled={!isWaitingForApproval}
+                        appointment={appointment}
+                      />
+                    </div>
+                  )}
 
-                {user && user.userType === UserType.PATIENT && (
-                  <div>
-                    <PatientActions
-                      onCancel={handleCancelAppointment}
-                      onUpdate={handleUpdateAppointment}
-                      isDisabled={!isWaitingForApproval}
-                      appointment={appointment}
-                    />
-                  </div>
-                )}
-
-                {user && user.userType === UserType.VET && (
-                  <div>
-                    <VeterinarianActions
-                      onApprove={handleApproveAppointment}
-                      onDecline={handleDeclineAppointment}
-                      isDisabled={!isWaitingForApproval}
-                      appointment={appointment}
-                    />
-                  </div>
-                )}
-              </Accordion.Body>
+                  {user && user.userType === UserType.VET && (
+                    <div>
+                      <VeterinarianActions
+                        onApprove={handleApproveAppointment}
+                        onDecline={handleDeclineAppointment}
+                        isDisabled={!isWaitingForApproval}
+                        appointment={appointment}
+                      />
+                    </div>
+                  )}
+                </Accordion.Body>
+              )}
             </Accordion.Item>
           );
         })}

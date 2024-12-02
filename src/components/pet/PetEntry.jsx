@@ -50,6 +50,7 @@ const PetEntry = ({ pet, index, removePet, canRemove, handleInputChange }) => {
           id={`petColor-${index}`}
           value={pet.petColor}
           onChange={handleInputChange}
+          required
         />
       </Form.Group>
 
@@ -59,6 +60,7 @@ const PetEntry = ({ pet, index, removePet, canRemove, handleInputChange }) => {
             id={`petType-${index}`}
             value={pet.petType}
             onChange={handleInputChange}
+            required
           />
         </Col>
         <Col>
@@ -67,6 +69,7 @@ const PetEntry = ({ pet, index, removePet, canRemove, handleInputChange }) => {
             petType={pet.petType}
             value={pet.petBreed}
             onChange={handleInputChange}
+            required
           />
         </Col>
       </Form.Group>
