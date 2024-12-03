@@ -1,16 +1,37 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { logout } from "../auth/AuthService";
+import { getUserPhoto } from "../user/UserService";
+import placeholder from "../../assets/images/placeholder.jpg";
 
 const NavBar = () => {
-  const isLoggedIn = localStorage.getItem("authToken");
-  const userRoles = localStorage.getItem("userRoles") || [];
+  const isLoggedIn = !!localStorage.getItem("authToken");
+  const userRoles = JSON.parse(localStorage.getItem("userRoles") || "[]");
   const userId = localStorage.getItem("userId") || "";
   const userEmail = localStorage.getItem("userEmail") || "";
+  const [photoUrl, setPhotoUrl] = useState(placeholder);
+
+  useEffect(() => {
+    const fetchUserPhoto = async () => {
+      try {
+        if (isLoggedIn && userId) {
+          const token = localStorage.getItem("authToken");
+          const photo = await getUserPhoto(userId, token);
+          setPhotoUrl(photo || placeholder);
+        }
+      } catch (error) {
+        console.error("Ошибка загрузки фото пользователя:", error);
+        setPhotoUrl(placeholder);
+      }
+    };
+
+    fetchUserPhoto();
+  }, [isLoggedIn, userId]);
 
   const handleLogout = () => {
     logout();
+    setPhotoUrl(placeholder);
   };
 
   return (
@@ -28,11 +49,27 @@ const NavBar = () => {
           </Nav>
           <Nav>
             <NavDropdown
-              title={isLoggedIn ? `${userEmail}` : "Личный кабинет"}
+              title={
+                <div className="dropdown-title-container">
+                  <img
+                    src={photoUrl || placeholder}
+                    alt="User Avatar"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      marginRight: "10px",
+                    }}
+                  />
+                  <span>{userEmail}</span>
+                  <span className="custom-dropdown-toggle"></span>
+                </div>
+              }
               id="basic-nav-dropdown"
             >
               {!isLoggedIn ? (
-                <React.Fragment>
+                <>
                   <NavDropdown.Item to={"/register-user"} as={Link}>
                     Зарегистрироваться
                   </NavDropdown.Item>
@@ -40,9 +77,9 @@ const NavBar = () => {
                   <NavDropdown.Item to={"/login"} as={Link}>
                     Войти
                   </NavDropdown.Item>
-                </React.Fragment>
+                </>
               ) : (
-                <React.Fragment>
+                <>
                   <NavDropdown.Divider />
                   <NavDropdown.Item
                     to={`/user-dashboard/${userId}/my-dashboard`}
@@ -51,7 +88,7 @@ const NavBar = () => {
                     Мой профиль
                   </NavDropdown.Item>
                   {userRoles.includes("ROLE_ADMIN") && (
-                    <React.Fragment>
+                    <>
                       <NavDropdown.Divider />
                       <NavDropdown.Item
                         to={`/admin-dashboard/${userId}/admin-dashboard`}
@@ -59,14 +96,14 @@ const NavBar = () => {
                       >
                         Панель администратора
                       </NavDropdown.Item>
-                    </React.Fragment>
+                    </>
                   )}
 
                   <NavDropdown.Divider />
                   <NavDropdown.Item to={"#"} onClick={handleLogout}>
                     Выйти
                   </NavDropdown.Item>
-                </React.Fragment>
+                </>
               )}
             </NavDropdown>
           </Nav>

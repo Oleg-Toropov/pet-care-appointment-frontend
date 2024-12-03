@@ -73,3 +73,13 @@ export async function unLockUserAccount(userId) {
   const result = await api.put(`/users/account/${userId}/unLock-user-account`);
   return result.data;
 }
+
+export const getUserPhoto = async (userId, token) => {
+  const response = await api.get(`/users/user/${userId}/photo`, {
+    headers: { Authorization: `Bearer ${token}` },
+    responseType: "blob",
+  });
+
+  const imageUrl = URL.createObjectURL(response.data);
+  return imageUrl;
+};
