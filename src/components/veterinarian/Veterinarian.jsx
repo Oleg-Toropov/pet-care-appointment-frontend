@@ -77,7 +77,7 @@ const Veterinarian = () => {
               />
             </Col>
             <Col className="text-end">
-              <Link to={"/doctors"}>
+              <Link className="text-highlight" to={"/doctors"}>
                 <BsFillArrowRightSquareFill /> вернуться к ветеринарам
               </Link>
             </Col>
@@ -106,9 +106,9 @@ const Veterinarian = () => {
               Записаться на прием
             </Link>
             <hr />
-            <p className="about">
+            <h3>
               О ветеринаре {vet.firstName} {vet.lastName}
-            </p>
+            </h3>
             <p>
               {biography ||
                 "Информация о ветеринаре пока отсутствует, но вскоре появится!"}

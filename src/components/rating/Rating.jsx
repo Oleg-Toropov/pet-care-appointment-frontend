@@ -115,7 +115,7 @@ const Rating = ({ veterinarianId, onReviewSubmit }) => {
           />
         </Form.Group>
         <div className="mt-2">
-          <Button type="submit" variant="outline-primary">
+          <Button type="submit" className="custom-button">
             Отправить отзыв
           </Button>
         </div>

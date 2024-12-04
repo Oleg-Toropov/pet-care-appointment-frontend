@@ -243,6 +243,10 @@ const BookAppointment = () => {
                               new Date().setDate(new Date().getDate() + 30)
                             ),
                           }}
+                          className="custom-calendar"
+                          modifiersClassNames={{
+                            selected: "rdp-day_selected",
+                          }}
                         />
                       </div>
 
@@ -313,16 +317,17 @@ const BookAppointment = () => {
 
                 <div className="d-flex justify-content-center mb-3">
                   <OverlayTrigger overlay={<Tooltip>Добавить питомца</Tooltip>}>
-                    <Button size="sm" onClick={addPet} className="me-2">
+                    <Button
+                      onClick={addPet}
+                      className="me-2 custom-button-light"
+                    >
                       <FaPlus />
                     </Button>
                   </OverlayTrigger>
 
                   <Button
                     type="submit"
-                    variant="outline-primary"
-                    size="sm"
-                    className="me-2"
+                    className="me-2 custom-button"
                     disabled={isProcessing}
                   >
                     {isProcessing ? (
@@ -332,11 +337,7 @@ const BookAppointment = () => {
                     )}
                   </Button>
 
-                  <Button
-                    variant="outline-info"
-                    size="sm"
-                    onClick={handleReset}
-                  >
+                  <Button className="custom-button-light" onClick={handleReset}>
                     Очистить
                   </Button>
                 </div>

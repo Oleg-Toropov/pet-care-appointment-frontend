@@ -85,7 +85,7 @@ const AppointmentUpdateModal = ({
       <Modal.Body>
         <Form>
           <Form.Group as={Row} className="mb-4">
-            <Col md={8}>
+            <Col md={9}>
               <div className="calendar-container">
                 <div className="calendar">
                   <h5 className="legend">Дата:</h5>
@@ -99,6 +99,10 @@ const AppointmentUpdateModal = ({
                       after: new Date(
                         new Date().setDate(new Date().getDate() + 30)
                       ),
+                    }}
+                    className="custom-calendar"
+                    modifiersClassNames={{
+                      selected: "rdp-day_selected",
                     }}
                   />
                 </div>

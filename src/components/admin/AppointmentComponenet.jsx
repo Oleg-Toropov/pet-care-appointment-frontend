@@ -165,40 +165,12 @@ const AppointmentComponent = () => {
             <th>Номер приема</th>
             <th>Дата</th>
             <th>Время</th>
-            {/* <th>Причина записи</th> */}
             <th>Статус</th>
             <th>Email клиента</th>
             <th>Email ветеринара</th>
           </tr>
         </thead>
         <tbody>
-          {/* {currentAppointments.map > 0 ? (
-            (appointment) => (
-              <tr
-                key={appointment.id}
-                onClick={() => handleRowClick(appointment)}
-                style={{ cursor: "pointer" }}
-              >
-                <td>{appointment.appointmentNo}</td>
-                <td>
-                  {new Date(appointment.appointmentDate).toLocaleDateString(
-                    "ru-RU"
-                  )}
-                </td>
-                <td>{appointment.appointmentTime}</td>
-                <td>{appointment.reason}</td>
-                <td>{formatAppointmentStatus(appointment.status)}</td>
-                <td>{appointment.patient?.email}</td>
-                <td>{appointment.veterinarian?.email}</td>
-              </tr>
-            )
-          ) : (
-            <NoDataAvailable
-              dataType={"appointment data"}
-              message={errorMessage}
-            />
-          )} */}
-
           {currentAppointments.length > 0 ? (
             currentAppointments.map((appointment) => (
               <tr
@@ -213,7 +185,6 @@ const AppointmentComponent = () => {
                   )}
                 </td>
                 <td>{appointment.appointmentTime}</td>
-                {/* <td>{appointment.reason}</td> */}
                 <td>{formatAppointmentStatus(appointment.status)}</td>
                 <td>{appointment.patient?.email}</td>
                 <td>{appointment.veterinarian?.email}</td>

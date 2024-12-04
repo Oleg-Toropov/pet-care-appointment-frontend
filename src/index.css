@@ -1,5 +1,5 @@
 h3 {
-  color: var(--color-primary);
+  color: #69abb7;
   font-size: 16px;
   font-weight: bold;
   margin: 10px 0;
@@ -93,8 +93,12 @@ h6 {
 
 .link-2 {
   text-decoration: none;
-  color: #3aa0e0;
+  color: rgb(13, 116, 116);
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   font-size: 16px;
+}
+.link-2:hover {
+  text-decoration: underline;
 }
 
 .field-set {
@@ -190,49 +194,58 @@ h6 {
 /* End search component*/
 
 /* Start calendar */
-.rdp-caption {
+.custom-calendar .rdp-day {
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.custom-calendar .rdp-day_selected {
+  color: #469c9c;
+  font-weight: bold;
+  border: 2px solid #469c9c;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  font-weight: normal;
-  color: #333;
+  margin: auto;
+}
+.custom-calendar {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.rdp-nav {
+.custom-calendar .rdp-caption {
   display: flex;
-  align-items: center;
-  position: absolute;
-
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-.rdp-nav button {
+.custom-calendar .rdp-day:hover {
+  color: #69abb7;
+  border-color: #469c9c;
+}
+
+.custom-calendar .rdp-nav button {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 16px;
-  color: #007bff;
+  color: #69abb7 !important;
+  font-size: 10px;
+  transition: color 0.3s ease;
 }
 
-.rdp-caption_label {
-  margin: 0 15px;
-  font-size: 16px;
-  color: #333;
+.custom-calendar .rdp-nav button:hover {
+  color: #469c9c !important;
 }
 
-.rdp-day {
-  color: #333;
-  font-size: 16px;
-  cursor: pointer;
-  transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-.rdp-day_selected {
-  color: white;
-  background-color: #0056b3;
-  border-radius: 50%;
-}
 /* End calendar */
 
 /* Start buttoms time */

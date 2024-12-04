@@ -233,13 +233,13 @@ const VeterinarianSearch = ({ onSearchResult }) => {
         </fieldset>
 
         <div className="d-flex mb-4">
-          <Button type="submit" variant="outline-primary">
+          <Button type="submit" className="custom-button">
             Поиск
           </Button>
           <div className="mx-2">
             <Button
               type="button"
-              variant="outline-info"
+              className="custom-button-light"
               onClick={handleClearSearch}
             >
               Сбросить поиск

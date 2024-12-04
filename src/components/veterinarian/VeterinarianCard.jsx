@@ -47,11 +47,8 @@ const VeterinarianCard = ({ vet, eventKey, activeKey, onToggle }) => {
                 to={`/Veterinarian/${vet.id}/veterinarian`}
                 className="link-2"
               >
-                Отзывы клиентов о
+                Отзывы клиентов о ветеринаре {vet.firstName}
               </Link>{" "}
-              <span className="margin-left-space ms-2">
-                ветеринаре {vet.firstName}
-              </span>
             </div>
           </Accordion.Body>
         </Accordion.Item>
