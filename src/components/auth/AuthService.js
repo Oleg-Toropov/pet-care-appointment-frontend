@@ -27,7 +27,7 @@ export const logout = () => {
   localStorage.removeItem("authToken");
   localStorage.removeItem("userId");
   localStorage.removeItem("userRoles");
-  window.location.href = "/";
+  window.location.href = "/login";
 };
 
 export async function requestPasswordReset(email) {
@@ -53,18 +53,25 @@ export async function resetPassword(token, newPassword) {
 let logoutTimer;
 
 export const setLogoutTimer = (token) => {
-  const decoded = jwtDecode(token);
-  const expirationTime = decoded.exp * 1000;
-  const currentTime = Date.now();
+  if (!token) {
+    return;
+  }
 
-  const timeUntilLogout = expirationTime - currentTime;
+  try {
+    const decoded = jwtDecode(token);
+    const expirationTime = decoded.exp * 1000;
+    const currentTime = Date.now();
+    const timeUntilLogout = expirationTime - currentTime;
 
-  if (timeUntilLogout > 0) {
-    clearTimeout(logoutTimer);
-    logoutTimer = setTimeout(() => {
+    if (timeUntilLogout > 0) {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(() => {
+        logout();
+      }, timeUntilLogout);
+    } else {
       logout();
-    }, timeUntilLogout);
-  } else {
+    }
+  } catch (error) {
     logout();
   }
 };

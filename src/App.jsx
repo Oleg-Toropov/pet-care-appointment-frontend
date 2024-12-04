@@ -20,6 +20,8 @@ import EmailVerification from "./components/auth/EmailVerification";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PasswordResetRequest from "./components/auth/PasswordResetRequest";
 import ResetPassword from "./components/auth/ResetPassword";
+import { useEffect } from "react";
+import { setLogoutTimer } from "./components/auth/AuthService";
 
 function App() {
   const router = createBrowserRouter(
@@ -86,6 +88,14 @@ function App() {
       </Route>
     )
   );
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      setLogoutTimer(token);
+    }
+  }, []);
+
   return (
     <main className="">
       <RouterProvider router={router} />

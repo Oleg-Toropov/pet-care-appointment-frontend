@@ -6,19 +6,40 @@ import { getUserPhoto } from "../user/UserService";
 import placeholder from "../../assets/images/placeholder.jpg";
 
 const NavBar = () => {
-  const isLoggedIn = !!localStorage.getItem("authToken");
-  const userRoles = JSON.parse(localStorage.getItem("userRoles") || "[]");
-  const userId = localStorage.getItem("userId") || "";
-  const userEmail = localStorage.getItem("userEmail") || "";
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    !!localStorage.getItem("authToken")
+  );
+  const [userRoles, setUserRoles] = useState([]);
+  const [userId, setUserId] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [photoUrl, setPhotoUrl] = useState(placeholder);
 
   useEffect(() => {
+    const updateUserData = () => {
+      const authToken = localStorage.getItem("authToken");
+      setIsLoggedIn(!!authToken);
+
+      if (authToken) {
+        setUserRoles(JSON.parse(localStorage.getItem("userRoles") || "[]"));
+        setUserId(localStorage.getItem("userId") || "");
+        setUserEmail(localStorage.getItem("userEmail") || "");
+      } else {
+        setUserRoles([]);
+        setUserId("");
+        setUserEmail("");
+      }
+    };
+
+    updateUserData();
+
     const fetchUserPhoto = async () => {
       try {
         if (isLoggedIn && userId) {
           const token = localStorage.getItem("authToken");
           const photo = await getUserPhoto(userId, token);
           setPhotoUrl(photo || placeholder);
+        } else {
+          setPhotoUrl(placeholder);
         }
       } catch (error) {
         console.error("Ошибка загрузки фото пользователя:", error);
@@ -31,6 +52,10 @@ const NavBar = () => {
 
   const handleLogout = () => {
     logout();
+    setIsLoggedIn(false);
+    setUserRoles([]);
+    setUserId("");
+    setUserEmail("");
     setPhotoUrl(placeholder);
   };
 
@@ -50,23 +75,30 @@ const NavBar = () => {
           <Nav>
             <NavDropdown
               title={
-                <div className="dropdown-title-container">
-                  <img
-                    src={photoUrl || placeholder}
-                    alt="User Avatar"
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      marginRight: "10px",
-                    }}
-                  />
-                  <span>{userEmail}</span>
+                <div className="dropdown-title-container d-flex align-items-center">
+                  {isLoggedIn && (
+                    <img
+                      src={photoUrl || placeholder}
+                      alt="User Avatar"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                        marginRight: "10px",
+                      }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = placeholder;
+                      }}
+                    />
+                  )}
+                  <span>{isLoggedIn ? userEmail : "Личный кабинет"}</span>
                   <span className="custom-dropdown-toggle"></span>
                 </div>
               }
               id="basic-nav-dropdown"
+              menuVariant="light"
             >
               {!isLoggedIn ? (
                 <>
@@ -98,7 +130,6 @@ const NavBar = () => {
                       </NavDropdown.Item>
                     </>
                   )}
-
                   <NavDropdown.Divider />
                   <NavDropdown.Item to={"#"} onClick={handleLogout}>
                     Выйти

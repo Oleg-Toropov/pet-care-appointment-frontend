@@ -49,17 +49,22 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
         reader.onload = async (e) => {
           const fileBytes = new Uint8Array(e.target.result);
           const response = await updateUserPhoto(user.photoId, fileBytes);
-          setSuccessMessage(response.data);
-          window.location.reload();
+          setSuccessMessage(response.message);
           setShowSuccessAlert(true);
+          window.location.reload();
         };
       } else {
         const response = await uploadUserPhoto(userId, file);
-        setSuccessMessage(response.data);
-        window.location.reload();
+        setSuccessMessage(response.message);
         setShowSuccessAlert(true);
+        window.location.reload();
       }
     } catch (error) {
+      if (error.status === 400) {
+        setErrorMessage("Выберите фотографию для загрузки");
+        setShowErrorAlert(true);
+        return;
+      }
       setErrorMessage(error.message);
       setShowErrorAlert(true);
     }

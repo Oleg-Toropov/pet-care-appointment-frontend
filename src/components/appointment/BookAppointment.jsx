@@ -222,9 +222,9 @@ const BookAppointment = () => {
             <Card className="shadow mb-5">
               <Card.Header as="h5" className="mb-4 text-center">
                 Запись на прием к ветеринару:
-                <h5 className="mt-2">
+                <p className="mt-2">
                   {firstName} {lastName} ({specialization?.toLowerCase()})
-                </h5>
+                </p>
               </Card.Header>
               <Card.Body>
                 <Form.Group as={Row} className="mb-4">
