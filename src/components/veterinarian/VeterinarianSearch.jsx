@@ -4,10 +4,12 @@ import { Form, Row, Col, Button } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
-import ru from "date-fns/locale/ru";
-import { findAvailableVeterinarians } from "./VeterinarianService";
+import { ru } from "date-fns/locale";
+import {
+  findAvailableVeterinarians,
+  getAllSpecializations,
+} from "./VeterinarianService";
 import AlertMessage from "../common/AlertMessage";
-import { getAllSpecializations } from "./VeterinarianService";
 
 registerLocale("ru", ru);
 
@@ -15,10 +17,11 @@ const VeterinarianSearch = ({ onSearchResult }) => {
   const [specializations, setSpecializations] = useState([]);
   const [searchQuery, setSearchQuery] = useState({
     date: null,
-    time: null,
+    time: "",
     specialization: "",
   });
   const [showDateTime, setShowDateTime] = useState(false);
+  const [availableTimes, setAvailableTimes] = useState([]);
   const { errorMessage, setErrorMessage, showErrorAlert, setShowErrorAlert } =
     UseMessageAlerts();
 
@@ -30,21 +33,34 @@ const VeterinarianSearch = ({ onSearchResult }) => {
   };
 
   const formatDateTime = (date, time) => {
+    const [hours, minutes] = time.split(":").map(Number);
     const appointmentDateTime = new Date(date);
-    appointmentDateTime.setHours(time.getHours(), time.getMinutes());
+    appointmentDateTime.setHours(hours, minutes, 0, 0);
     const formattedDate = appointmentDateTime.toISOString().split("T")[0];
     const formattedTime = appointmentDateTime.toTimeString().split(" ")[0];
     return { formattedDate, formattedTime };
   };
 
-  const handleDateChange = (date) => {
+  const generateTimeSlots = () => {
+    const times = [];
+    for (let hour = 9; hour < 20; hour++) {
+      times.push(`${hour.toString().padStart(2, "0")}:00`);
+      times.push(`${hour.toString().padStart(2, "0")}:30`);
+    }
+    times.push("20:00");
+    return times;
+  };
+
+  const handleDateSelect = (date) => {
     setSearchQuery((prevQuery) => ({
       ...prevQuery,
       date,
+      time: "",
     }));
+    setAvailableTimes(generateTimeSlots());
   };
 
-  const handleTimeChange = (time) => {
+  const handleTimeSelect = (time) => {
     setSearchQuery((prevQuery) => ({
       ...prevQuery,
       time,
@@ -58,14 +74,35 @@ const VeterinarianSearch = ({ onSearchResult }) => {
       setSearchQuery((prevQuery) => ({
         ...prevQuery,
         date: null,
-        time: null,
+        time: "",
       }));
     }
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
+
     const { date, time, specialization } = searchQuery;
+
+    if (!specialization) {
+      setErrorMessage("Пожалуйста, выберите специализацию.");
+      setShowErrorAlert(true);
+      return;
+    }
+
+    if (showDateTime) {
+      if (!date) {
+        setErrorMessage("Пожалуйста, выберите дату.");
+        setShowErrorAlert(true);
+        return;
+      }
+      if (!time) {
+        setErrorMessage("Пожалуйста, выберите время.");
+        setShowErrorAlert(true);
+        return;
+      }
+    }
+
     let formattedDate = "";
     let formattedTime = "";
 
@@ -105,7 +142,7 @@ const VeterinarianSearch = ({ onSearchResult }) => {
   const handleClearSearch = () => {
     setSearchQuery({
       date: null,
-      time: null,
+      time: "",
       specialization: "",
     });
     setShowDateTime(false);
@@ -128,7 +165,6 @@ const VeterinarianSearch = ({ onSearchResult }) => {
             name="specialization"
             value={searchQuery.specialization}
             onChange={handleInputChange}
-            required
           >
             <option value="" disabled hidden>
               Выберите специализацию
@@ -156,42 +192,40 @@ const VeterinarianSearch = ({ onSearchResult }) => {
               {showDateTime && (
                 <React.Fragment>
                   <Form.Group className="mb-3">
-                    <Form.Label htmlFor="date" className="hidden">
-                      Дата
-                    </Form.Label>
+                    <h5>Выберите дату:</h5>
                     <DatePicker
                       selected={searchQuery.date}
-                      onChange={handleDateChange}
-                      autoComplete="off"
+                      onChange={handleDateSelect}
                       locale="ru"
                       dateFormat="dd.MM.yyyy"
+                      placeholderText="Нажмите для выбора даты"
                       minDate={new Date()}
+                      maxDate={
+                        new Date(new Date().setDate(new Date().getDate() + 30))
+                      }
                       className="form-control"
-                      placeholderText="Выберите дату"
-                      required={showDateTime}
-                      id="date"
                     />
                   </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label htmlFor="time" className="hidden">
-                      Время
-                    </Form.Label>
-                    <DatePicker
-                      selected={searchQuery.time}
-                      onChange={handleTimeChange}
-                      autoComplete="off"
-                      locale="ru"
-                      showTimeSelect
-                      showTimeSelectOnly
-                      timeIntervals={30}
-                      timeCaption="Время"
-                      dateFormat="HH:mm"
-                      className="form-control"
-                      placeholderText="Выберите время"
-                      required={showDateTime}
-                      id="time"
-                    />
-                  </Form.Group>
+
+                  {searchQuery.date && (
+                    <div className="time-container">
+                      <h5>Выберите время:</h5>
+                      <div className="time-grid">
+                        {availableTimes.map((time) => (
+                          <button
+                            type="button"
+                            key={time}
+                            onClick={() => handleTimeSelect(time)}
+                            className={`time-button ${
+                              time === searchQuery.time ? "selected" : ""
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </React.Fragment>
               )}
             </Col>
