@@ -128,31 +128,65 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
 
   const handleUpdateAppointment = async (updatedAppointment) => {
     try {
+      setExpandedAccordion(null);
+
       const result = await updateAppointment(
         updatedAppointment.id,
         updatedAppointment
       );
 
-      setAppointments((prevAppointments) =>
-        prevAppointments.map((appointment) =>
-          appointment.id === updatedAppointment.id
-            ? updatedAppointment
-            : appointment
-        )
+      const updatedAppointments = appointments.map((appointment) =>
+        appointment.id === updatedAppointment.id
+          ? updatedAppointment
+          : appointment
       );
+
+      const sortedAppointments = updatedAppointments.sort(
+        (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate)
+      );
+
+      setAppointments(sortedAppointments);
+
+      const updatedIndex = sortedAppointments.findIndex(
+        (appointment) => appointment.id === updatedAppointment.id
+      );
+      const newPage = Math.floor(updatedIndex / appointmentsPerPage) + 1;
+
+      if (newPage !== currentPage) {
+        setCurrentPage(newPage);
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
 
       setExpandedAccordion(updatedAppointment.id);
       setSuccessMessage(result.data.message);
       setShowSuccessAlert(true);
     } catch (error) {
-      setErrorMessage(error.response.data.message);
+      setErrorMessage(
+        error.response?.data?.message || "Ошибка обновления приема"
+      );
       setShowErrorAlert(true);
     }
   };
 
+  useEffect(() => {
+    if (expandedAccordion) {
+      const accordionElement = document.getElementById(
+        `accordion-${expandedAccordion}`
+      );
+      if (accordionElement) {
+        accordionElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }
+  }, [currentPage]);
+
   const onSelectStatus = (status) => {
     setSelectedStatus(status);
+    setResetPage(true);
   };
+
   const handleClearFilter = () => {
     setSelectedStatus("all");
   };
@@ -161,8 +195,11 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
     new Set(appointments.map((appointment) => appointment.status))
   );
 
+  const [resetPage, setResetPage] = useState(false);
+
   useEffect(() => {
     let filter = appointments;
+
     if (selectedStatus && selectedStatus !== "all") {
       filter = appointments.filter(
         (appointment) => appointment.status === selectedStatus
@@ -174,7 +211,12 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
     );
 
     setFilteredAppointments(filter);
-  }, [selectedStatus, appointments]);
+
+    if (resetPage) {
+      setCurrentPage(1);
+      setResetPage(false);
+    }
+  }, [selectedStatus, appointments, resetPage]);
 
   const indexOfLastVet = currentPage * appointmentsPerPage;
   const indexOfFirstVet = indexOfLastVet - appointmentsPerPage;
@@ -191,10 +233,6 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
     setShowSuccessAlert(false);
     setShowErrorAlert(false);
   };
-
-  useEffect(() => {
-    setExpandedAccordion(null);
-  }, [currentPage]);
 
   return (
     <Container className="p-3">
@@ -215,12 +253,13 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
 
           const isWaitingForApproval = statusKey === "waiting-for-approval";
           const isCancelled = statusKey === "cancelled";
+          const isNotApproved = statusKey === "not-approved";
           const vet = appointment.veterinarian;
-
           return (
             <Accordion.Item
               eventKey={appointment.id}
               key={appointment.id}
+              id={`accordion-${appointment.id}`}
               className="mb-4"
             >
               <Accordion.Header
@@ -280,6 +319,19 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                       <p>
                         Причина записи: <span>{appointment.reason}</span>
                       </p>
+
+                      {user.userType === UserType.PATIENT &&
+                        (isCancelled ||
+                          isWaitingForApproval ||
+                          isNotApproved) && (
+                          <>
+                            <p>
+                              Ветеринар: {appointment.veterinarian.firstName}{" "}
+                              {appointment.veterinarian.lastName} (
+                              {appointment.veterinarian.specialization})
+                            </p>
+                          </>
+                        )}
                     </Col>
 
                     <Col md={8} className="mt-2">
@@ -293,7 +345,11 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                       />
                     </Col>
 
-                    {!(isCancelled || isWaitingForApproval) && (
+                    {!(
+                      isCancelled ||
+                      isWaitingForApproval ||
+                      isNotApproved
+                    ) && (
                       <UserInformation
                         userType={user.userType}
                         appointment={appointment}
@@ -316,8 +372,16 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                         firstName: vet.firstName,
                         lastName: vet.lastName,
                       }}
+                      style={{ display: "block", marginBottom: "10px" }}
                     >
-                      Записаться на новый прием
+                      Записаться на новый прием к ветеринару {vet.firstName}{" "}
+                      {vet.lastName}
+                    </Link>
+                  )}
+
+                  {user.userType === UserType.PATIENT && (
+                    <Link to={`/doctors`} style={{ display: "block" }}>
+                      Записаться на прием к другому ветеринару
                     </Link>
                   )}
 

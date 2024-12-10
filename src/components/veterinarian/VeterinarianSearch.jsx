@@ -41,13 +41,32 @@ const VeterinarianSearch = ({ onSearchResult }) => {
     return { formattedDate, formattedTime };
   };
 
-  const generateTimeSlots = () => {
+  const generateTimeSlots = (selectedDate) => {
     const times = [];
+    const now = new Date();
+    const nowPlusTwoHours = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+
     for (let hour = 9; hour < 20; hour++) {
-      times.push(`${hour.toString().padStart(2, "0")}:00`);
-      times.push(`${hour.toString().padStart(2, "0")}:30`);
+      const fullHour = new Date(selectedDate);
+      fullHour.setHours(hour, 0, 0, 0);
+
+      const halfHour = new Date(selectedDate);
+      halfHour.setHours(hour, 30, 0, 0);
+
+      if (fullHour > nowPlusTwoHours) {
+        times.push(`${hour.toString().padStart(2, "0")}:00`);
+      }
+      if (halfHour > nowPlusTwoHours) {
+        times.push(`${hour.toString().padStart(2, "0")}:30`);
+      }
     }
-    times.push("20:00");
+
+    const lastSlot = new Date(selectedDate);
+    lastSlot.setHours(20, 0, 0, 0);
+    if (lastSlot > nowPlusTwoHours) {
+      times.push("20:00");
+    }
+
     return times;
   };
 
@@ -57,7 +76,7 @@ const VeterinarianSearch = ({ onSearchResult }) => {
       date,
       time: "",
     }));
-    setAvailableTimes(generateTimeSlots());
+    setAvailableTimes(generateTimeSlots(date));
   };
 
   const handleTimeSelect = (time) => {

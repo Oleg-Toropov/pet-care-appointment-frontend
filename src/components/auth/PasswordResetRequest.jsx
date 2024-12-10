@@ -24,10 +24,16 @@ const PasswordResetRequest = () => {
     setIsProcessing(true);
     try {
       const data = await requestPasswordReset(email);
+      setShowErrorAlert(false);
+      setErrorMessage("");
+
       setSuccessMessage(data.message);
       setShowSuccessAlert(true);
       setEmail("");
     } catch (error) {
+      setShowSuccessAlert(false);
+      setSuccessMessage("");
+
       setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
     }

@@ -29,6 +29,9 @@ const PetsTable = ({
     age: "",
   });
 
+  const MIN_AGE = 0;
+  const MAX_AGE = 100;
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewPetData((prevData) => ({
@@ -64,6 +67,9 @@ const PetsTable = ({
   };
 
   const handleSaveNewPet = async () => {
+    setShowSuccessAlert(false);
+    setSuccessMessage("");
+
     if (
       !newPetData.name ||
       !newPetData.type ||
@@ -76,16 +82,31 @@ const PetsTable = ({
       return;
     }
 
+    if (newPetData.age < MIN_AGE || newPetData.age > MAX_AGE) {
+      setErrorMessage(
+        `Возраст питомца должен быть между ${MIN_AGE} и ${MAX_AGE} годами`
+      );
+      setShowErrorAlert(true);
+      return;
+    }
+
     try {
       const response = await addPetToAppointment(appointmentId, {
         ...newPetData,
       });
       onPetsUpdate(appointmentId);
+
+      setShowErrorAlert(false);
+      setErrorMessage("");
+
       setSuccessMessage(response.data.message);
       setIsAdding(false);
       setNewPetData({ name: "", type: "", breed: "", color: "", age: "" });
       setShowSuccessAlert(true);
     } catch (error) {
+      setShowSuccessAlert(false);
+      setSuccessMessage("");
+
       setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
     }
@@ -108,6 +129,9 @@ const PetsTable = ({
   };
 
   const handleSavePetUpdate = async (petId, updatedPet) => {
+    setShowSuccessAlert(false);
+    setSuccessMessage("");
+
     if (
       !updatedPet.name ||
       !updatedPet.type ||
@@ -120,13 +144,28 @@ const PetsTable = ({
       return;
     }
 
+    if (updatedPet.age < MIN_AGE || updatedPet.age > MAX_AGE) {
+      setErrorMessage(
+        `Возраст питомца должен быть между ${MIN_AGE} и ${MAX_AGE} годами`
+      );
+      setShowErrorAlert(true);
+      return;
+    }
+
     try {
       const response = await updatePet(petId, updatedPet);
       onPetsUpdate(appointmentId);
+
+      setShowErrorAlert(false);
+      setErrorMessage("");
+
       setSuccessMessage(response.message);
       setEditModeId(null);
       setShowSuccessAlert(true);
     } catch (error) {
+      setShowSuccessAlert(false);
+      setSuccessMessage("");
+
       setErrorMessage(error.message);
       setShowErrorAlert(true);
     }

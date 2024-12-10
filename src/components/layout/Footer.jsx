@@ -1,4 +1,3 @@
-import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 const Footer = () => {
@@ -8,11 +7,11 @@ const Footer = () => {
         <Row>
           <Col md={4} className="text-center text-md-start">
             <h5>Наш адрес</h5>
-            <p>г. Москва, ул. Ветеринарная, д. 10</p>
+            <p>г. Пермь, ул. Решетникова, д. 24</p>
           </Col>
           <Col md={4} className="text-center">
             <h5>Контактная информация</h5>
-            <p>Телефон: +7 (495) 123-45-67</p>
+            <p>Телефон: +7 (342) 241-45-67</p>
             <p>Email: info@doctoraibolit.ru</p>
           </Col>
           <Col md={4} className="text-center text-md-end">

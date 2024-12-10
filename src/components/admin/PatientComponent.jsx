@@ -133,10 +133,17 @@ const PatientComponent = () => {
       );
 
       setEditPatientId(null);
+
+      setShowErrorAlert(false);
+      setErrorMessage("");
+
       setSuccessMessage(response.message);
       setShowSuccessAlert(true);
     } catch (error) {
-      setErrorMessage(error.message);
+      setShowSuccessAlert(false);
+      setSuccessMessage("");
+
+      setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
     }
   };

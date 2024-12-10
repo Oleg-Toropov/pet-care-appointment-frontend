@@ -55,11 +55,18 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
         };
       } else {
         const response = await uploadUserPhoto(userId, file);
+
+        setShowErrorAlert(false);
+        setErrorMessage("");
+
         setSuccessMessage(response.message);
         setShowSuccessAlert(true);
         window.location.reload();
       }
     } catch (error) {
+      setShowSuccessAlert(false);
+      setSuccessMessage("");
+
       if (error.status === 400) {
         setErrorMessage("Выберите фотографию для загрузки");
         setShowErrorAlert(true);

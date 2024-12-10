@@ -107,11 +107,11 @@ const Rating = ({ veterinarianId, onReviewSubmit }) => {
         <Form.Group controlId="feedback">
           <Form.Control
             as="textarea"
-            row={4}
+            rows={4}
             value={feedback}
             required
             onChange={handleFeedbackChange}
-            placehilder="Оставьте отзыв"
+            placeholder="Оставьте отзыв"
           />
         </Form.Group>
         <div className="mt-2">
@@ -119,10 +119,12 @@ const Rating = ({ veterinarianId, onReviewSubmit }) => {
             Отправить отзыв
           </Button>
         </div>
-        <p>
-          Вы оценили этого врача на{" "}
-          <span style={{ color: "orange" }}>{rating} звезд</span>
-        </p>
+        {rating && (
+          <p>
+            Вы оценили врача на{" "}
+            <span style={{ color: "orange" }}>{rating} звезд</span>
+          </p>
+        )}
       </Form>
     </React.Fragment>
   );

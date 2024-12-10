@@ -103,9 +103,15 @@ const UserUpdate = () => {
         }
       }
 
+      setShowErrorAlert(false);
+      setErrorMessage("");
+
       setSuccessMessage(response.message || "Данные успешно обновлены");
       setShowSuccessAlert(true);
     } catch (error) {
+      setShowSuccessAlert(false);
+      setSuccessMessage("");
+
       setErrorMessage(
         error.response?.data?.message || "Ошибка сохранения данных"
       );

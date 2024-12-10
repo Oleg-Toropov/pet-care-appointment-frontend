@@ -44,6 +44,9 @@ const ResetPassword = () => {
     setIsProcessing(true);
     try {
       const data = await resetPassword(token, newPassword);
+      setShowErrorAlert(false);
+      setErrorMessage("");
+
       setSuccessMessage(data.message);
       setShowSuccessAlert(true);
 
@@ -51,6 +54,9 @@ const ResetPassword = () => {
         window.location.href = "/login";
       }, 3000);
     } catch (error) {
+      setShowSuccessAlert(false);
+      setSuccessMessage("");
+
       setErrorMessage(error.response.data.message);
       setShowErrorAlert(true);
     }

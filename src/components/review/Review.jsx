@@ -12,7 +12,7 @@ const Review = ({ review, userType, onDelete }) => {
 
   return (
     <div className="mb-4 position-relative">
-      <div className="d-flex align-items-center me-5">
+      <div className="d-flex  me-5">
         {userType === UserType.VET ? (
           <UserImage
             userId={review.patientId}
@@ -25,7 +25,7 @@ const Review = ({ review, userType, onDelete }) => {
           />
         )}
         <div>
-          <div className="d-flex align-items-center">
+          <div className="d-flex align-items-center ms-3">
             <h5 className="title me-3">
               <RatingStars rating={review.stars} />
             </h5>
@@ -42,7 +42,7 @@ const Review = ({ review, userType, onDelete }) => {
               </OverlayTrigger>
             )}
           </div>
-          <div className="mt-4">
+          <div className="mt-1">
             <p className="review-text ms-4">{review.feedback}</p>
           </div>
           <div>

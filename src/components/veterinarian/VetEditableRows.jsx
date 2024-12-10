@@ -40,6 +40,7 @@ const VetEditableRows = ({ vet, onSave, onCancel }) => {
           name="email"
           value={editedVet.email}
           onChange={handleInputChange}
+          disabled
         />
       </td>
       <td>
@@ -72,18 +73,30 @@ const VetEditableRows = ({ vet, onSave, onCancel }) => {
       </td>
 
       <td>
-        <Button
-          variant="success"
-          size="sm"
-          onClick={handleSave}
-          className="me-2"
-        >
-          <BsCheck />
-        </Button>
+        <Form.Control
+          type="createdAt"
+          name="createdAt"
+          value={new Date(editedVet.createdAt).toLocaleDateString("ru-RU")}
+          onChange={handleInputChange}
+          disabled
+        />
+      </td>
 
-        <Button variant="secondary" size="sm" onClick={onCancel}>
-          <BsX />
-        </Button>
+      <td>
+        <div className="d-flex gap-2">
+          <Button
+            variant="success"
+            size="sm"
+            onClick={handleSave}
+            className="me-2"
+          >
+            <BsCheck />
+          </Button>
+
+          <Button variant="secondary" size="sm" onClick={onCancel}>
+            <BsX />
+          </Button>
+        </div>
       </td>
     </tr>
   );

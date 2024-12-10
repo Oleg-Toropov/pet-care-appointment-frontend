@@ -480,3 +480,20 @@ body {
   background-color: #69abb7 !important;
   color: white !important;
 }
+
+.d-flex.align-items-center img {
+  flex-shrink: 0;
+}
+
+.modal-body {
+  padding: 10px !important;
+}
+
+.modal-body p,
+.modal-body h3 {
+  margin: 5px 0 !important;
+}
+
+.modal-body hr {
+  margin: 10px 0 !important;
+}

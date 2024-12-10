@@ -52,39 +52,25 @@ const AppointmentComponent = () => {
 
     if (searchTerm) {
       const lowercasedSearchTerm = searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (appointment) =>
-          appointment.reason.toLowerCase().includes(lowercasedSearchTerm) ||
-          appointment.status.toLowerCase().includes(lowercasedSearchTerm) ||
-          appointment.appointmentNo
-            .toLowerCase()
-            .includes(lowercasedSearchTerm) ||
-          appointment.patient?.firstName
-            .toLowerCase()
-            .includes(lowercasedSearchTerm) ||
-          appointment.patient?.lastName
-            .toLowerCase()
-            .includes(lowercasedSearchTerm) ||
+
+      filtered = filtered.filter((appointment) => {
+        const matchesEmail =
           appointment.patient?.email
-            .toLowerCase()
-            .includes(lowercasedSearchTerm) ||
-          appointment.patient?.phoneNumber
-            .toLowerCase()
-            .includes(lowercasedSearchTerm) ||
-          appointment.veterinarian?.firstName
-            .toLowerCase()
-            .includes(lowercasedSearchTerm) ||
-          appointment.veterinarian?.lastName
-            .toLowerCase()
+            ?.toLowerCase()
             .includes(lowercasedSearchTerm) ||
           appointment.veterinarian?.email
-            .toLowerCase()
-            .includes(lowercasedSearchTerm) ||
-          appointment.veterinarian?.phoneNumber
-            .toLowerCase()
-            .includes(lowercasedSearchTerm)
-      );
+            ?.toLowerCase()
+            .includes(lowercasedSearchTerm);
+
+        const matchesAppointmentNo = appointment.appointmentNo
+          ?.toString()
+          .toLowerCase()
+          .includes(lowercasedSearchTerm);
+
+        return matchesEmail || matchesAppointmentNo;
+      });
     }
+
     setFilteredAppointments(filtered);
     setCurrentPage(1);
   }, [searchTerm, appointments]);
@@ -147,7 +133,7 @@ const AppointmentComponent = () => {
             id="appointment-search"
             name="appointmentSearch"
             type="text"
-            placeholder="Поиск по имени, фамилии, email, телефону, номеру приема"
+            placeholder="Поиск email или номеру приема"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -232,7 +218,7 @@ const AppointmentComponent = () => {
               </p>
 
               <hr />
-              <h6>Питомцы:</h6>
+              <h3>Питомцы:</h3>
               {selectedAppointment.pets.map((pet) => (
                 <div key={pet.id}>
                   <p>
@@ -245,7 +231,7 @@ const AppointmentComponent = () => {
               ))}
               <hr />
 
-              <h6>Информация о клиенте:</h6>
+              <h3>Информация о клиенте:</h3>
               <p>
                 <strong>Имя:</strong> {selectedAppointment.patient?.firstName}
               </p>
@@ -265,7 +251,7 @@ const AppointmentComponent = () => {
               </p>
 
               <hr />
-              <h6>Информация о ветеринаре:</h6>
+              <h3>Информация о ветеринаре:</h3>
               <p>
                 <strong>Имя:</strong>{" "}
                 {selectedAppointment.veterinarian?.firstName}
