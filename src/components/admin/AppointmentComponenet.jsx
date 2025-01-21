@@ -12,12 +12,12 @@ import NoDataAvailable from "../common/NoDataAvailable";
 
 const AppointmentComponent = () => {
   const [appointments, setAppointments] = useState([]);
-  const [filteredAppointments, setFilteredAppointments] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const appointmentsPerPage = 10;
+  const [totalPages, setTotalPages] = useState(0);
 
   const {
     successMessage,
@@ -30,54 +30,29 @@ const AppointmentComponent = () => {
     setShowSuccessAlert,
   } = UseMessageAlerts();
 
-  const fetchAppointments = (page = 0) => {
-    getAppointments(page, appointmentsPerPage)
+  const fetchAppointments = (page = 0, search = "") => {
+    getAppointments(page, appointmentsPerPage, search)
       .then((data) => {
-        const { content } = data.data;
+        const { content, totalPages } = data.data;
         setAppointments(content);
-        setFilteredAppointments(content);
+        setTotalPages(totalPages);
       })
       .catch((error) => {
-        setErrorMessage(error.message);
+        setErrorMessage(error.message || "Ошибка загрузки данных");
         setShowErrorAlert(true);
       });
   };
 
   useEffect(() => {
-    fetchAppointments(currentPage - 1);
-  }, [currentPage]);
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   useEffect(() => {
-    let filtered = appointments;
-
-    if (searchTerm) {
-      const lowercasedSearchTerm = searchTerm.toLowerCase();
-
-      filtered = filtered.filter((appointment) => {
-        const matchesEmail =
-          appointment.patient?.email
-            ?.toLowerCase()
-            .includes(lowercasedSearchTerm) ||
-          appointment.veterinarian?.email
-            ?.toLowerCase()
-            .includes(lowercasedSearchTerm);
-
-        const matchesAppointmentNo = appointment.appointmentNo
-          ?.toString()
-          .toLowerCase()
-          .includes(lowercasedSearchTerm);
-
-        return matchesEmail || matchesAppointmentNo;
-      });
-    }
-
-    setFilteredAppointments(filtered);
-    setCurrentPage(1);
-  }, [searchTerm, appointments]);
+    fetchAppointments(currentPage - 1, searchTerm);
+  }, [currentPage, searchTerm]);
 
   const handleClearSearch = () => {
     setSearchTerm("");
-    setFilteredAppointments(appointments);
     setCurrentPage(1);
   };
 
@@ -97,21 +72,16 @@ const AppointmentComponent = () => {
         const response = await deleteAppointment(selectedAppointment.id);
         setSuccessMessage(response.message);
         setShowModal(false);
-        fetchAppointments(currentPage - 1);
+        fetchAppointments(currentPage - 1, searchTerm);
         setShowSuccessAlert(true);
       } catch (error) {
-        setErrorMessage(error.response.data.message);
+        setErrorMessage(
+          error.response?.data?.message || "Ошибка при удалении записи"
+        );
         setShowErrorAlert(true);
       }
     }
   };
-
-  const indexOfLastAppointment = currentPage * appointmentsPerPage;
-  const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
-  const currentAppointments = filteredAppointments.slice(
-    indexOfFirstAppointment,
-    indexOfLastAppointment
-  );
 
   return (
     <main>
@@ -157,8 +127,8 @@ const AppointmentComponent = () => {
           </tr>
         </thead>
         <tbody>
-          {currentAppointments.length > 0 ? (
-            currentAppointments.map((appointment) => (
+          {appointments.length > 0 ? (
+            appointments.map((appointment) => (
               <tr
                 key={appointment.id}
                 onClick={() => handleRowClick(appointment)}
@@ -177,14 +147,10 @@ const AppointmentComponent = () => {
               </tr>
             ))
           ) : (
-            <></>
-          )}
-
-          {currentAppointments.length === 0 && (
             <tr>
-              <td colSpan="7">
+              <td colSpan="6">
                 <NoDataAvailable
-                  dataType={"appointment data"}
+                  dataType="appointment data"
                   message={errorMessage}
                 />
               </td>
@@ -192,9 +158,10 @@ const AppointmentComponent = () => {
           )}
         </tbody>
       </Table>
+
       <Paginator
         currentPage={currentPage}
-        totalItems={filteredAppointments.length}
+        totalItems={totalPages * appointmentsPerPage}
         paginate={(page) => setCurrentPage(page)}
         itemsPerPage={appointmentsPerPage}
       />
@@ -215,65 +182,6 @@ const AppointmentComponent = () => {
 
               <p>
                 <strong>Причина приема:</strong> {selectedAppointment.reason}
-              </p>
-
-              <hr />
-              <h3>Питомцы:</h3>
-              {selectedAppointment.pets.map((pet) => (
-                <div key={pet.id}>
-                  <p>
-                    <strong>Кличка:</strong> {pet.name}, <strong>Тип:</strong>{" "}
-                    {pet.type}, <strong>Цвет:</strong> {pet.color},{" "}
-                    <strong>Порода:</strong> {pet.breed},{" "}
-                    <strong>Возраст:</strong> {pet.age}
-                  </p>
-                </div>
-              ))}
-              <hr />
-
-              <h3>Информация о клиенте:</h3>
-              <p>
-                <strong>Имя:</strong> {selectedAppointment.patient?.firstName}
-              </p>
-              <p>
-                <strong>Фамилия:</strong>{" "}
-                {selectedAppointment.patient?.lastName}
-              </p>
-              <p>
-                <strong>Пол:</strong>{" "}
-                {selectedAppointment.patient?.gender === "Male"
-                  ? "Мужской"
-                  : "Женский"}
-              </p>
-              <p>
-                <strong>Телефон:</strong>{" "}
-                {selectedAppointment.patient?.phoneNumber}
-              </p>
-
-              <hr />
-              <h3>Информация о ветеринаре:</h3>
-              <p>
-                <strong>Имя:</strong>{" "}
-                {selectedAppointment.veterinarian?.firstName}
-              </p>
-              <p>
-                <strong>Фамилия:</strong>{" "}
-                {selectedAppointment.veterinarian?.lastName}
-              </p>
-              <p>
-                <strong>Пол:</strong>{" "}
-                {selectedAppointment.veterinarian?.gender === "Male"
-                  ? "Мужской"
-                  : "Женский"}
-              </p>
-              <p>
-                <strong>Телефон:</strong>{" "}
-                {selectedAppointment.veterinarian?.phoneNumber}
-              </p>
-
-              <p>
-                <strong>Специализация:</strong>{" "}
-                {selectedAppointment.veterinarian?.specialization}
               </p>
             </div>
           )}

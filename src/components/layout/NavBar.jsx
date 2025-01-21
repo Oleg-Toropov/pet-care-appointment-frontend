@@ -36,8 +36,9 @@ const NavBar = () => {
       try {
         if (isLoggedIn && userId) {
           const token = localStorage.getItem("authToken");
-          const photo = await getUserPhoto(userId, token);
-          setPhotoUrl(photo || placeholder);
+          const photoUrl = await getUserPhoto(userId, token);
+          setPhotoUrl(photoUrl);
+          setPhotoUrl(photoUrl || placeholder);
         } else {
           setPhotoUrl(placeholder);
         }

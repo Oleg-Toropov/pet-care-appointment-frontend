@@ -75,7 +75,10 @@ const UserProfile = ({ user, handleRemovePhoto, handleDeleteAccount }) => {
           <Col md={3}>
             <Card className="text-center mb-3 shadow">
               <Card.Body>
-                <UserImage userId={user.id} userPhoto={user.photo} />
+                <UserImage
+                  src={user.photoUrl}
+                  alt={`Фото пользователя ${user.id}`}
+                />
               </Card.Body>
 
               {isCurrentUser && (

@@ -77,9 +77,11 @@ export async function unLockUserAccount(userId) {
 export const getUserPhoto = async (userId, token) => {
   const response = await api.get(`/users/user/${userId}/photo`, {
     headers: { Authorization: `Bearer ${token}` },
-    responseType: "blob",
   });
 
-  const imageUrl = URL.createObjectURL(response.data);
-  return imageUrl;
+  if (response.data && response.data.data) {
+    return response.data.data;
+  } else {
+    return null;
+  }
 };

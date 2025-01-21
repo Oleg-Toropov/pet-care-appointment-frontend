@@ -71,7 +71,7 @@ export const setLogoutTimer = (token) => {
     } else {
       logout();
     }
-  } catch (error) {
+  } catch {
     logout();
   }
 };

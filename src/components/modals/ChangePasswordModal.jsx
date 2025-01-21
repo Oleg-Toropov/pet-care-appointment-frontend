@@ -3,7 +3,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { changeUserPassword } from "../user/UserService";
 import AlertMessage from "../common/AlertMessage";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
-import { Form, Modal, Row, Col, InputGroup, Button } from "react-bootstrap";
+import { Form, Modal, InputGroup, Button } from "react-bootstrap";
 
 const ChangePasswordModal = ({ userId, show, handleClose }) => {
   const [showPassword, setShowPassword] = useState(false);

@@ -364,7 +364,8 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                     <AlertMessage type={"danger"} message={errorMessage} />
                   )}
 
-                  {user.userType === UserType.PATIENT && (
+                  {(user.userType === UserType.PATIENT ||
+                    user.userType === UserType.ADMIN) && (
                     <Link
                       to={`/book-appointment/${vet.id}/new-appointment`}
                       state={{
@@ -379,22 +380,25 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                     </Link>
                   )}
 
-                  {user.userType === UserType.PATIENT && (
+                  {(user.userType === UserType.PATIENT ||
+                    user.userType === UserType.ADMIN) && (
                     <Link to={`/doctors`} style={{ display: "block" }}>
                       Записаться на прием к другому ветеринару
                     </Link>
                   )}
 
-                  {user && user.userType === UserType.PATIENT && (
-                    <div>
-                      <PatientActions
-                        onCancel={handleCancelAppointment}
-                        onUpdate={handleUpdateAppointment}
-                        isDisabled={!isWaitingForApproval}
-                        appointment={appointment}
-                      />
-                    </div>
-                  )}
+                  {user &&
+                    (user.userType === UserType.PATIENT ||
+                      user.userType === UserType.ADMIN) && (
+                      <div>
+                        <PatientActions
+                          onCancel={handleCancelAppointment}
+                          onUpdate={handleUpdateAppointment}
+                          isDisabled={!isWaitingForApproval}
+                          appointment={appointment}
+                        />
+                      </div>
+                    )}
 
                   {user && user.userType === UserType.VET && (
                     <div>

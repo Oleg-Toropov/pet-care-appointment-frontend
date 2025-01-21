@@ -32,6 +32,7 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
       setShowErrorAlert(true);
     }
   };
+
   useEffect(() => {
     getUser();
   }, [userId]);
@@ -44,15 +45,10 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
       formData.append("file", file);
 
       if (user && user.photo) {
-        const reader = new FileReader();
-        reader.readAsArrayBuffer(file);
-        reader.onload = async (e) => {
-          const fileBytes = new Uint8Array(e.target.result);
-          const response = await updateUserPhoto(user.photoId, fileBytes);
-          setSuccessMessage(response.message);
-          setShowSuccessAlert(true);
-          window.location.reload();
-        };
+        const response = await updateUserPhoto(user.photoId, file);
+        setSuccessMessage(response.message);
+        setShowSuccessAlert(true);
+        window.location.reload();
       } else {
         const response = await uploadUserPhoto(userId, file);
 

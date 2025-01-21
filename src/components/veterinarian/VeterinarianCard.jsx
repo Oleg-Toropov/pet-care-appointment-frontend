@@ -13,7 +13,10 @@ const VeterinarianCard = ({ vet, eventKey, activeKey, onToggle }) => {
           <Accordion.Header onClick={() => onToggle(eventKey)}>
             <div className="d-flex align-items-center">
               <Link to={""}>
-                <UserImage userId={vet.id} userPhoto={vet.photo} />
+                <UserImage
+                  src={vet.photoUrl}
+                  alt={`Фото пользователя ${vet.id}`}
+                />
               </Link>
             </div>
             <div className="flex-grow-1 ml-3 px-5">

@@ -72,8 +72,14 @@ export const getAppointmentsSummary = async () => {
   return response.data;
 };
 
-export const getAppointments = async () => {
-  const response = await api.get("/appointments/all");
+export const getAppointments = async (page, size, search = "") => {
+  const response = await api.get("/appointments/all", {
+    params: {
+      page,
+      size,
+      search,
+    },
+  });
   return response.data;
 };
 

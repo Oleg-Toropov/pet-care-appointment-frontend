@@ -71,9 +71,8 @@ const Veterinarian = () => {
           <Row>
             <Col>
               <UserImage
-                userId={vet.id}
-                userPhoto={vet.photo}
-                altText={`${vet.firstName}'s photo`}
+                src={vet.photoUrl}
+                alt={`Фото пользователя ${vet.id}`}
               />
             </Col>
             <Col className="text-end">

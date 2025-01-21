@@ -15,13 +15,13 @@ const Review = ({ review, userType, onDelete }) => {
       <div className="d-flex  me-5">
         {userType === UserType.VET ? (
           <UserImage
-            userId={review.patientId}
-            userPhoto={review.patientImage}
+            src={review.patientImageUrl}
+            alt={`Фото пользователя ${review.patientId}`}
           />
         ) : (
           <UserImage
-            userId={review.veterinarianId}
-            userPhoto={review.veterinarianImage}
+            src={review.veterinarianImageUrl}
+            alt={`Фото пользователя ${review.veterinarianId}`}
           />
         )}
         <div>
