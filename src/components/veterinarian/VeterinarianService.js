@@ -5,6 +5,11 @@ export async function getVeterinarians() {
   return result.data;
 }
 
+export async function getVeterinariansWithoutDetails() {
+  const result = await api.get("/veterinarians/get-veterinarians");
+  return result.data;
+}
+
 export async function findAvailableVeterinarians(searchParams) {
   const queryParams = new URLSearchParams(searchParams);
   const result = await api.get(

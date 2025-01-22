@@ -132,7 +132,7 @@ const Veterinarian = () => {
               totalItems={vet.reviews.length}
               paginate={setCurrentPage}
               currentPage={currentPage}
-            ></Paginator>
+            />
           </Card.Body>
         </Card>
       )}

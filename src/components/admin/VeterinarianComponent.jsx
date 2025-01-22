@@ -12,7 +12,7 @@ import { Table, OverlayTrigger, Tooltip, Row, Col } from "react-bootstrap";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import AlertMessage from "../common/AlertMessage";
 import DeleteConfirmationModal from "../modals/DeleteConfirmationModal";
-import { getVeterinarians } from "../veterinarian/VeterinarianService";
+import { getVeterinariansWithoutDetails } from "../veterinarian/VeterinarianService";
 import { deleteUser, updateUser } from "../user/UserService";
 import { lockUserAccount, unLockUserAccount } from "../user/UserService";
 import VetEditableRows from "../veterinarian/VetEditableRows";
@@ -46,7 +46,7 @@ const VeterinarianComponent = () => {
   } = UseMessageAlerts();
 
   const fetchVeterinarians = () => {
-    getVeterinarians()
+    getVeterinariansWithoutDetails()
       .then((data) => {
         setVeterinarians(data.data);
       })
@@ -148,8 +148,11 @@ const VeterinarianComponent = () => {
     }
     filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     setFilteredVets(filtered);
+  }, [veterinarians, selectedSpecialization]);
+
+  useEffect(() => {
     setCurrentPage(1);
-  }, [selectedSpecialization, veterinarians]);
+  }, [selectedSpecialization]);
 
   const specializations = Array.from(
     new Set(veterinarians.map((vet) => vet.specialization))

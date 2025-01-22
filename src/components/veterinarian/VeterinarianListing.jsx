@@ -20,13 +20,12 @@ const VeterinarianListing = () => {
       .then((data) => {
         setVeterinarians(data.data);
         setAllVeterinarians(data.data);
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
+        setIsLoading(false);
       })
       .catch((error) => {
         setErrorMessage(error.response.data.message);
         setShowErrorAlert(true);
+        setIsLoading(false);
       });
   }, []);
 

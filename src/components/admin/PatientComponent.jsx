@@ -160,12 +160,15 @@ const PatientComponent = () => {
     }
     filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     setFilteredPatients(filtered);
-    setCurrentPage(1);
   }, [searchTerm, patients]);
 
   const handleClearSearch = () => {
     setSearchTerm("");
   };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   return (
     <main>

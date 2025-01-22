@@ -160,10 +160,10 @@ const AppointmentComponent = () => {
       </Table>
 
       <Paginator
-        currentPage={currentPage}
+        itemsPerPage={appointmentsPerPage}
         totalItems={totalPages * appointmentsPerPage}
         paginate={(page) => setCurrentPage(page)}
-        itemsPerPage={appointmentsPerPage}
+        currentPage={currentPage}
       />
 
       <Modal show={showModal} onHide={handleCloseModal}>
@@ -182,6 +182,64 @@ const AppointmentComponent = () => {
 
               <p>
                 <strong>Причина приема:</strong> {selectedAppointment.reason}
+              </p>
+              <hr />
+              <h3>Питомцы:</h3>
+              {selectedAppointment.pets.map((pet) => (
+                <div key={pet.id}>
+                  <p>
+                    <strong>Кличка:</strong> {pet.name}, <strong>Тип:</strong>{" "}
+                    {pet.type}, <strong>Цвет:</strong> {pet.color},{" "}
+                    <strong>Порода:</strong> {pet.breed},{" "}
+                    <strong>Возраст:</strong> {pet.age}
+                  </p>
+                </div>
+              ))}
+              <hr />
+
+              <h3>Информация о клиенте:</h3>
+              <p>
+                <strong>Имя:</strong> {selectedAppointment.patient?.firstName}
+              </p>
+              <p>
+                <strong>Фамилия:</strong>{" "}
+                {selectedAppointment.patient?.lastName}
+              </p>
+              <p>
+                <strong>Пол:</strong>{" "}
+                {selectedAppointment.patient?.gender === "Male"
+                  ? "Мужской"
+                  : "Женский"}
+              </p>
+              <p>
+                <strong>Телефон:</strong>{" "}
+                {selectedAppointment.patient?.phoneNumber}
+              </p>
+
+              <hr />
+              <h3>Информация о ветеринаре:</h3>
+              <p>
+                <strong>Имя:</strong>{" "}
+                {selectedAppointment.veterinarian?.firstName}
+              </p>
+              <p>
+                <strong>Фамилия:</strong>{" "}
+                {selectedAppointment.veterinarian?.lastName}
+              </p>
+              <p>
+                <strong>Пол:</strong>{" "}
+                {selectedAppointment.veterinarian?.gender === "Male"
+                  ? "Мужской"
+                  : "Женский"}
+              </p>
+              <p>
+                <strong>Телефон:</strong>{" "}
+                {selectedAppointment.veterinarian?.phoneNumber}
+              </p>
+
+              <p>
+                <strong>Специализация:</strong>{" "}
+                {selectedAppointment.veterinarian?.specialization}
               </p>
             </div>
           )}
