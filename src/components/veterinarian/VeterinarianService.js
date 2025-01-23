@@ -58,3 +58,8 @@ export async function updateVetBiography(biographyId, biographyData) {
   );
   return response.data;
 }
+
+export const aggregateVetBySpecialization = async () => {
+  const response = await api.get("/veterinarians/vet/get-by-specialization");
+  return response.data;
+};

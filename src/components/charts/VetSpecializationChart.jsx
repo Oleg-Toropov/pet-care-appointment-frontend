@@ -9,7 +9,7 @@ import {
   Bar,
   Cell,
 } from "recharts";
-import { aggregateVetBySpecialization } from "../user/UserService";
+import { aggregateVetBySpecialization } from "../veterinarian/VeterinarianService";
 import NoDataAvailable from "../common/NoDataAvailable";
 
 const VetSpecializationChart = () => {

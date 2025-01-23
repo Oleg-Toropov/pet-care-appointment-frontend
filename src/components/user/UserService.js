@@ -59,11 +59,6 @@ export const getAggregatedUsersAccountByActiveStatus = async () => {
   return response.data;
 };
 
-export const aggregateVetBySpecialization = async () => {
-  const response = await api.get("/veterinarians/vet/get-by-specialization");
-  return response.data;
-};
-
 export async function lockUserAccount(userId) {
   const result = await api.put(`/users/account/${userId}/lock-user-account`);
   return result.data;

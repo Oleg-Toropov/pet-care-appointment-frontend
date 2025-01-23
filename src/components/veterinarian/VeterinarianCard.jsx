@@ -27,8 +27,9 @@ const VeterinarianCard = ({ vet, eventKey, activeKey, onToggle }) => {
                 <h6> {vet.specialization} </h6>
               </Card.Title>
               <Card.Text className="review rating-stars">
-                Рейтинг: <RatingStars rating={vet.averageRating} /> (
-                {vet.totalReviewers})
+                Рейтинг: {vet.averageRating.toFixed(1)}{" "}
+                <RatingStars rating={vet.averageRating} /> ({vet.totalReviewers}
+                )
               </Card.Text>
 
               <Link

@@ -88,7 +88,7 @@ const Veterinarian = () => {
             <Card.Text>Специализация: {vet.specialization}</Card.Text>
             {vet.averageRating > 0 && (
               <Card.Text className="rating-stars">
-                Рейтинг: {Number(vet.averageRating.toFixed(1))}
+                Рейтинг: {vet.averageRating.toFixed(1)}
                 <RatingStars rating={vet.averageRating} /> (
                 {vet.totalReviewers || 0})
               </Card.Text>
