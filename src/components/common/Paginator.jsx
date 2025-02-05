@@ -4,6 +4,10 @@ const Paginator = ({ itemsPerPage, totalItems, currentPage, paginate }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const visiblePages = 5;
 
+  if (totalItems === 0 || totalPages <= 1) {
+    return null;
+  }
+
   const generatePageItems = () => {
     let items = [];
     const half = Math.floor(visiblePages / 2);
@@ -37,20 +41,23 @@ const Paginator = ({ itemsPerPage, totalItems, currentPage, paginate }) => {
   return (
     <div className="d-flex justify-content-center">
       <Pagination>
-        <Pagination.Prev
-          disabled={currentPage === 1}
-          onClick={() => paginate(currentPage - 1)}
-        >
-          ᐸ
-        </Pagination.Prev>
-        {generatePageItems()}
-        <Pagination.Next
-          disabled={currentPage === totalPages}
-          onClick={() => paginate(currentPage + 1)}
-        >
-          {" "}
-          ᐳ
-        </Pagination.Next>
+        {totalPages > 1 && (
+          <>
+            <Pagination.Prev
+              disabled={currentPage === 1}
+              onClick={() => paginate(currentPage - 1)}
+            >
+              ᐸ
+            </Pagination.Prev>
+            {generatePageItems()}
+            <Pagination.Next
+              disabled={currentPage === totalPages}
+              onClick={() => paginate(currentPage + 1)}
+            >
+              ᐳ
+            </Pagination.Next>
+          </>
+        )}
       </Pagination>
     </div>
   );

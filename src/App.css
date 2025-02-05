@@ -316,7 +316,6 @@ input[type="radio"] {
   --color-completed: #0faf57;
   --color-cancelled: #7d0d23;
   --color-waiting-for-approval: #1e90ff;
-  --color-pending: #ff4500;
   --color-approved: #54b1b1;
   --color-not-approved: #d55713;
   --color-default: #d3d3d3;

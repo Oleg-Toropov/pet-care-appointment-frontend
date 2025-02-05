@@ -1,12 +1,17 @@
 import { api } from "../utils/api";
 
-export async function getVeterinarians() {
+export async function getVeterinariansWithoutDetails() {
   const result = await api.get("/veterinarians/get-all-veterinarians");
   return result.data;
 }
 
-export async function getVeterinariansWithoutDetails() {
+export async function getVeterinarians() {
   const result = await api.get("/veterinarians/get-veterinarians");
+  return result.data;
+}
+
+export async function getVeterinarianById(vetId) {
+  const result = await api.get(`/veterinarians/veterinarian/${vetId}`);
   return result.data;
 }
 

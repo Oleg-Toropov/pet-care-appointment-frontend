@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import VeterinarianCard from "./VeterinarianCard";
-import { getVeterinarians } from "./VeterinarianService";
+import { getVeterinariansWithoutDetails } from "./VeterinarianService";
 import VeterinarianSearch from "./VeterinarianSearch";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import NoDataAvailable from "../common/NoDataAvailable";
@@ -16,7 +16,7 @@ const VeterinarianListing = () => {
     UseMessageAlerts();
 
   useEffect(() => {
-    getVeterinarians()
+    getVeterinariansWithoutDetails()
       .then((data) => {
         setVeterinarians(data.data);
         setAllVeterinarians(data.data);

@@ -38,14 +38,13 @@ export const getStatusKey = (status) => {
 
 export function formatAppointmentStatus(status) {
   const statusTranslations = {
-    CANCELLED: "Отменён",
+    CANCELLED: "Отменён клиентом",
     ON_GOING: "В процессе",
     UP_COMING: "Предстоящий",
-    APPROVED: "Подтверждён",
-    NOT_APPROVED: "Не подтверждён",
-    WAITING_FOR_APPROVAL: "Ожидает подтверждения",
-    PENDING: "В ожидании",
-    COMPLETED: "Завершён",
+    APPROVED: "Подтверждён ветеринаром",
+    NOT_APPROVED: "Не подтверждён ветеринаром",
+    WAITING_FOR_APPROVAL: "Ожидает подтверждения от ветеринара",
+    COMPLETED: "Прием завершён",
   };
 
   return statusTranslations[status] || status;

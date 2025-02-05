@@ -19,8 +19,22 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
     setShowErrorAlert,
   } = UseMessageAlerts();
 
+  const MAX_FILE_SIZE = 2 * 1024 * 1024;
+
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+    const selectedFile = event.target.files[0];
+
+    if (selectedFile) {
+      if (selectedFile.size > MAX_FILE_SIZE) {
+        setErrorMessage("Файл слишком большой. Максимальный размер: 2MB.");
+        setShowErrorAlert(true);
+        setFile(null);
+      } else {
+        setErrorMessage("");
+        setShowErrorAlert(false);
+        setFile(selectedFile);
+      }
+    }
   };
 
   const getUser = async () => {
@@ -92,12 +106,29 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
             Выберите фотографию, которую вы хотели бы разместить в своем профиле
           </h6>
           <InputGroup>
-            <Form.Control type="file" onChange={handleFileChange} />
+            <Form.Control
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
             <Button variant="secondary" onClick={handleImageUpload}>
               Загрузить
             </Button>
           </InputGroup>
         </Form>
+        {file && (
+          <div className="text-center mt-3">
+            <img
+              src={URL.createObjectURL(file)}
+              alt="Предпросмотр"
+              style={{
+                maxWidth: "150px",
+                maxHeight: "150px",
+                borderRadius: "10px",
+              }}
+            />
+          </div>
+        )}
       </Modal.Body>
     </Modal>
   );

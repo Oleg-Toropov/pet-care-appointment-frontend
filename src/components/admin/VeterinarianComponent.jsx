@@ -12,7 +12,7 @@ import { Table, OverlayTrigger, Tooltip, Row, Col } from "react-bootstrap";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import AlertMessage from "../common/AlertMessage";
 import DeleteConfirmationModal from "../modals/DeleteConfirmationModal";
-import { getVeterinariansWithoutDetails } from "../veterinarian/VeterinarianService";
+import { getVeterinarians } from "../veterinarian/VeterinarianService";
 import { deleteUser, updateUser } from "../user/UserService";
 import { lockUserAccount, unLockUserAccount } from "../user/UserService";
 import VetEditableRows from "../veterinarian/VetEditableRows";
@@ -46,7 +46,7 @@ const VeterinarianComponent = () => {
   } = UseMessageAlerts();
 
   const fetchVeterinarians = () => {
-    getVeterinariansWithoutDetails()
+    getVeterinarians()
       .then((data) => {
         setVeterinarians(data.data);
       })

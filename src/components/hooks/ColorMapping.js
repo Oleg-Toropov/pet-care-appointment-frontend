@@ -14,7 +14,6 @@ const useColorMapping = () => {
       "waiting-for-approval": rootStyle
         .getPropertyValue("--color-waiting-for-approval")
         .trim(),
-      pending: rootStyle.getPropertyValue("--color-pending").trim(),
       approved: rootStyle.getPropertyValue("--color-approved").trim(),
       default: rootStyle.getPropertyValue("--color-default").trim(),
     });

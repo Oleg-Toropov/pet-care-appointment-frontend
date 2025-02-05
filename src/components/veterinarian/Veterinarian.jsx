@@ -5,7 +5,7 @@ import UserImage from "../common/UserImage";
 import { BsFillArrowRightSquareFill } from "react-icons/bs";
 import Review from "../review/Review";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
-import { getUserById } from "../user/UserService";
+import { getVeterinarianById } from "./VeterinarianService";
 import { getBiographyById } from "./VeterinarianService";
 import AlertMessage from "../common/AlertMessage";
 import RatingStars from "../rating/RatingStars";
@@ -27,7 +27,7 @@ const Veterinarian = () => {
   const getUser = async () => {
     setIsLoading(true);
     try {
-      const userResult = await getUserById(vetId);
+      const userResult = await getVeterinarianById(vetId);
       setVet(userResult.data);
 
       const biographyResult = await getBiographyById(vetId);
