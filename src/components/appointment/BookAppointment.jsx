@@ -1,7 +1,7 @@
 import { useState } from "react";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import AlertMessage from "../common/AlertMessage";
-import { useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import {
   Container,
   Row,
@@ -222,9 +222,11 @@ const BookAppointment = () => {
             <Card className="shadow mb-5">
               <Card.Header as="h5" className="mb-4 text-center">
                 Запись на прием к ветеринару:
-                <p className="mt-2">
-                  {firstName} {lastName} ({specialization?.toLowerCase()})
-                </p>
+                <Link to={`/Veterinarian/${recipientId}/veterinarian`}>
+                  <p className="mt-2">
+                    {firstName} {lastName} ({specialization?.toLowerCase()})
+                  </p>
+                </Link>{" "}
               </Card.Header>
               <Card.Body>
                 <Form.Group as={Row} className="mb-4">

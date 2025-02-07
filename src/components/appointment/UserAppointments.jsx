@@ -254,6 +254,7 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
           const isWaitingForApproval = statusKey === "waiting-for-approval";
           const isCancelled = statusKey === "cancelled";
           const isNotApproved = statusKey === "not-approved";
+          const isCompleted = statusKey === "completed";
           const vet = appointment.veterinarian;
           return (
             <Accordion.Item
@@ -365,27 +366,46 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                   )}
 
                   {(user.userType === UserType.PATIENT ||
-                    user.userType === UserType.ADMIN) && (
-                    <Link
-                      to={`/book-appointment/${vet.id}/new-appointment`}
-                      state={{
-                        specialization: vet.specialization,
-                        firstName: vet.firstName,
-                        lastName: vet.lastName,
-                      }}
-                      style={{ display: "block", marginBottom: "10px" }}
-                    >
-                      Записаться на новый прием к ветеринару {vet.firstName}{" "}
-                      {vet.lastName}
-                    </Link>
-                  )}
+                    user.userType === UserType.ADMIN) &&
+                    isCompleted && (
+                      <Link
+                        to={`/veterinarian/${vet.id}/veterinarian`}
+                        state={{
+                          specialization: vet.specialization,
+                          firstName: vet.firstName,
+                          lastName: vet.lastName,
+                        }}
+                        style={{ display: "block", marginBottom: "10px" }}
+                      >
+                        Написать отзыв о ветеринаре {vet.firstName}{" "}
+                        {vet.lastName}
+                      </Link>
+                    )}
 
                   {(user.userType === UserType.PATIENT ||
-                    user.userType === UserType.ADMIN) && (
-                    <Link to={`/doctors`} style={{ display: "block" }}>
-                      Записаться на прием к другому ветеринару
-                    </Link>
-                  )}
+                    user.userType === UserType.ADMIN) &&
+                    isCompleted && (
+                      <Link
+                        to={`/book-appointment/${vet.id}/new-appointment`}
+                        state={{
+                          specialization: vet.specialization,
+                          firstName: vet.firstName,
+                          lastName: vet.lastName,
+                        }}
+                        style={{ display: "block", marginBottom: "10px" }}
+                      >
+                        Записаться на новый прием к ветеринару {vet.firstName}{" "}
+                        {vet.lastName}
+                      </Link>
+                    )}
+
+                  {(user.userType === UserType.PATIENT ||
+                    user.userType === UserType.ADMIN) &&
+                    (isCancelled || isNotApproved) && (
+                      <Link to={`/doctors`} style={{ display: "block" }}>
+                        Записаться на прием к другому ветеринару
+                      </Link>
+                    )}
 
                   {user &&
                     (user.userType === UserType.PATIENT ||

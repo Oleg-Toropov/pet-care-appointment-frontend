@@ -496,3 +496,17 @@ body {
 .modal-body hr {
   margin: 10px 0 !important;
 }
+
+.sticky-search {
+  position: sticky;
+  top: 20px;
+  align-self: start;
+  z-index: 10;
+}
+
+.title-background {
+  background: rgba(255, 255, 255, 255);
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: #333;
+}

@@ -24,14 +24,15 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
 
+    setErrorMessage("");
+    setShowErrorAlert(false);
+
     if (selectedFile) {
       if (selectedFile.size > MAX_FILE_SIZE) {
         setErrorMessage("Файл слишком большой. Максимальный размер: 2MB.");
         setShowErrorAlert(true);
         setFile(null);
       } else {
-        setErrorMessage("");
-        setShowErrorAlert(false);
         setFile(selectedFile);
       }
     }
@@ -39,56 +40,67 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
 
   const getUser = async () => {
     try {
-      const result = getUserById(userId);
+      const result = await getUserById(userId);
       setUser(result.data);
     } catch (error) {
-      setErrorMessage(error.response.data.message);
+      setErrorMessage(
+        error.response?.data?.message || "Ошибка загрузки пользователя"
+      );
       setShowErrorAlert(true);
     }
   };
 
   useEffect(() => {
-    getUser();
-  }, [userId]);
+    if (show) {
+      getUser();
+    }
+  }, [userId, show]);
 
   const handleImageUpload = async (e) => {
     e.preventDefault();
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      if (user && user.photo) {
-        const response = await updateUserPhoto(user.photoId, file);
-        setSuccessMessage(response.message);
-        setShowSuccessAlert(true);
-        window.location.reload();
-      } else {
-        const response = await uploadUserPhoto(userId, file);
-
-        setShowErrorAlert(false);
-        setErrorMessage("");
-
-        setSuccessMessage(response.message);
-        setShowSuccessAlert(true);
-        window.location.reload();
-      }
-    } catch (error) {
-      setShowSuccessAlert(false);
-      setSuccessMessage("");
-
-      if (error.status === 400) {
+      if (!file) {
         setErrorMessage("Выберите фотографию для загрузки");
         setShowErrorAlert(true);
         return;
       }
-      setErrorMessage(error.message);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      let response;
+      if (user?.photoId) {
+        response = await updateUserPhoto(user.photoId, file);
+      } else {
+        response = await uploadUserPhoto(userId, file);
+      }
+
+      setSuccessMessage(response.message);
+      setShowSuccessAlert(true);
+      setErrorMessage("");
+      setShowErrorAlert(false);
+      window.location.reload();
+    } catch (error) {
+      setSuccessMessage("");
+      setShowSuccessAlert(false);
+
+      setErrorMessage(error.message || "Ошибка загрузки фото");
       setShowErrorAlert(true);
     }
   };
 
+  const handleModalClose = () => {
+    setFile(null);
+    setErrorMessage("");
+    setShowErrorAlert(false);
+    setSuccessMessage("");
+    setShowSuccessAlert(false);
+    handleClose();
+  };
+
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleModalClose}>
       <Modal.Header closeButton>
         <Modal.Title>Загрузить фотографию</Modal.Title>
       </Modal.Header>
@@ -116,6 +128,7 @@ const ImageUploaderModal = ({ userId, show, handleClose }) => {
             </Button>
           </InputGroup>
         </Form>
+
         {file && (
           <div className="text-center mt-3">
             <img

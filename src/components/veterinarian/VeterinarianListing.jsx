@@ -55,18 +55,15 @@ const VeterinarianListing = () => {
     <Container>
       {veterinarians && veterinarians.length > 0 ? (
         <React.Fragment>
-          <Row className="justify-content-center">
-            <h2 className="text-center mb-4 mt-4">
-              Познакомьтесь с нашими ветеринарами
-            </h2>
-          </Row>
-
-          <Row className="justify-content-center">
-            <Col md={4}>
+          <Row>
+            <Col md={4} className="sticky-search">
               <VeterinarianSearch onSearchResult={handleSearchResult} />
             </Col>
 
-            <Col md={7}>
+            <Col md={8}>
+              <h2 className="title-background text-center mb-4 mt-4">
+                Ветеринары клиники
+              </h2>
               {veterinarians.map((vet, index) => (
                 <VeterinarianCard
                   key={index}
