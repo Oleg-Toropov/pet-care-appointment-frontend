@@ -25,6 +25,8 @@ const UserDashboard = () => {
   const [deletedReviewId, setDeletedReviewId] = useState(null);
   const [failedReviewId, setFailedReviewId] = useState(null);
 
+  const [activeTab, setActiveTab] = useState("status");
+
   const {
     successMessage,
     setSuccessMessage,

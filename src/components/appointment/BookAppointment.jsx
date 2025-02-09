@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import AlertMessage from "../common/AlertMessage";
 import { Link, useParams, useLocation } from "react-router-dom";
@@ -19,7 +19,10 @@ import { ru } from "date-fns/locale";
 
 import PetEntry from "../pet/PetEntry";
 import { bookAppointment } from "./AppointmentService";
-import { getAvailableTimesForAppointment } from "../veterinarian/VeterinarianService";
+import {
+  getAvailableTimesForAppointment,
+  getVeterinarianById,
+} from "../veterinarian/VeterinarianService";
 import ProcessSpinner from "../common/ProcessSpinner";
 
 const BookAppointment = () => {
@@ -42,9 +45,28 @@ const BookAppointment = () => {
   const [isDateSelected, setIsDateSelected] = useState(false);
   const [availableTimes, setAvailableTimes] = useState([]);
   const [selectedTime, setSelectedTime] = useState("");
-
+  const { recipientId } = useParams();
   const location = useLocation();
-  const { specialization, firstName, lastName } = location.state || {};
+
+  const initialData = location.state || {};
+  const [vetData, setVetData] = useState(initialData);
+  const [loading, setLoading] = useState(
+    !initialData.firstName ||
+      !initialData.lastName ||
+      !initialData.specialization
+  );
+
+  useEffect(() => {
+    if (!recipientId) return;
+
+    getVeterinarianById(recipientId)
+      .then((response) => {
+        if (response && response.data) {
+          setVetData(response.data);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [recipientId]);
 
   const {
     successMessage,
@@ -57,7 +79,6 @@ const BookAppointment = () => {
     setShowErrorAlert,
   } = UseMessageAlerts();
 
-  const { recipientId } = useParams();
   const senderId = localStorage.getItem("userId");
 
   const handleInputChange = (e) => {
@@ -214,6 +235,10 @@ const BookAppointment = () => {
     setShowErrorAlert(false);
   };
 
+  if (loading) {
+    return <p>Загрузка...</p>;
+  }
+
   return (
     <Container className="mt-5">
       <Row className="justify-content-center">
@@ -224,7 +249,8 @@ const BookAppointment = () => {
                 Запись на прием к ветеринару:
                 <Link to={`/Veterinarian/${recipientId}/veterinarian`}>
                   <p className="mt-2">
-                    {firstName} {lastName} ({specialization?.toLowerCase()})
+                    {vetData?.firstName} {vetData?.lastName} (
+                    {vetData?.specialization?.toLowerCase()})
                   </p>
                 </Link>{" "}
               </Card.Header>
