@@ -1,16 +1,16 @@
 import home1 from "../../assets/images/home1.jpg";
 import home2 from "../../assets/images/home2.jpg";
-import { Card, Button, Row, ListGroup, Col, Container } from "react-bootstrap";
+import { Card, Button, Row, Col, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faPaw,
-  faSyringe,
-  faTooth,
-  faHeartbeat,
-  faMicroscope,
-  faEllipsisH,
+  faUserPlus,
+  faSearch,
+  faCalendarCheck,
+  faCommentDots,
+  faLaptopMedical,
+  faMapMarkerAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Home = () => {
@@ -31,18 +31,29 @@ const Home = () => {
               style={{ objectFit: "cover", height: "250px" }}
             />
             <Card.Body>
-              <h2 className="text-highlight">Кто мы такие</h2>
-              <Card.Title>
-                Комплексный уход за вашими пушистыми друзьями
-              </Card.Title>
-              <Card.Text className="text-muted">
-                В Doctor Aibolit мы уверены, что каждый питомец заслуживает
-                лучшего. Наша команда преданных профессионалов стремится
-                обеспечить здоровье и счастье вашего питомца с помощью
-                комплексных ветеринарных услуг.
-              </Card.Text>
+              <h2 className="text-highlight">Что такое Doctor Aibolit?</h2>
+              <FontAwesomeIcon
+                icon={faLaptopMedical}
+                className="me-2 text-highlight"
+              />
+              <strong className="text-highlight">
+                Онлайн-сервис для записи к ветеринарам
+              </strong>{" "}
+              <div className="mb-3">
+                Doctor Aibolit – это онлайн-сервис, который помогает владельцам
+                животных легко находить проверенных ветеринаров и записываться
+                на прием онлайн.
+              </div>
+              <div className="mb-3">
+                <FontAwesomeIcon
+                  icon={faMapMarkerAlt}
+                  className="me-2 text-highlight"
+                />
+                <strong className="text-highlight">Город обслуживания</strong> –
+                сервис доступен только в городе <strong>Пермь</strong>.
+              </div>
               <Button as={Link} to="/doctors" className="custom-button">
-                Познакомьтесь с нашими ветеринарами
+                Найти ветеринара
               </Button>
             </Card.Body>
           </Card>
@@ -57,63 +68,56 @@ const Home = () => {
             <Card.Img
               variant="top"
               src={home2}
-              alt="Our Services"
+              alt="How it works"
               className="hero-image"
               style={{ objectFit: "cover", height: "250px" }}
             />
             <Card.Body>
-              <h2 className="text-highlight">Наши услуги</h2>
-              <Card.Title>Что мы предлагаем:</Card.Title>
-              <ListGroup className="mb-3">
-                <ListGroup.Item className="d-flex align-items-center">
-                  <FontAwesomeIcon
-                    icon={faPaw}
-                    className="me-2 text-highlight"
-                  />
-                  Ветеринарные осмотры
-                </ListGroup.Item>
-                <ListGroup.Item className="d-flex align-items-center">
-                  <FontAwesomeIcon
-                    icon={faSyringe}
-                    className="me-2 text-highlight"
-                  />
-                  Вакцинация животных
-                </ListGroup.Item>
-                <ListGroup.Item className="d-flex align-items-center">
-                  <FontAwesomeIcon
-                    icon={faTooth}
-                    className="me-2 text-highlight"
-                  />
-                  Стоматологический уход
-                </ListGroup.Item>
-                <ListGroup.Item className="d-flex align-items-center">
-                  <FontAwesomeIcon
-                    icon={faHeartbeat}
-                    className="me-2 text-highlight"
-                  />
-                  Экстренные операции
-                </ListGroup.Item>
-                <ListGroup.Item className="d-flex align-items-center">
-                  <FontAwesomeIcon
-                    icon={faMicroscope}
-                    className="me-2 text-highlight"
-                  />
-                  Имплантация микрочипов
-                </ListGroup.Item>
-                <ListGroup.Item className="d-flex align-items-center">
-                  <FontAwesomeIcon
-                    icon={faEllipsisH}
-                    className="me-2 text-highlight"
-                  />
-                  И многое другое...
-                </ListGroup.Item>
-              </ListGroup>
-              <Card.Text className="text-muted">
-                От плановых осмотров до экстренных операций — наш полный спектр
-                услуг гарантирует, что здоровье вашего питомца в надежных руках.
-              </Card.Text>
-              <Button as={Link} to="/doctors" className="custom-button">
-                Записаться на прием
+              <h2 className="text-highlight">Как это работает?</h2>
+
+              <div className="mb-3">
+                <FontAwesomeIcon
+                  icon={faUserPlus}
+                  className="me-2 text-highlight"
+                />
+                <strong className="text-highlight">Зарегистрируйтесь</strong> –
+                создайте учетную запись, чтобы получить доступ ко всем
+                возможностям сервиса.
+              </div>
+
+              <div className="mb-3">
+                <FontAwesomeIcon
+                  icon={faSearch}
+                  className="me-2 text-highlight"
+                />
+                <strong className="text-highlight">Найдите ветеринара</strong> –
+                выберите специалиста по специализации, рейтингу и отзывам.
+              </div>
+
+              <div className="mb-3">
+                <FontAwesomeIcon
+                  icon={faCalendarCheck}
+                  className="me-2 text-highlight"
+                />
+                <strong className="text-highlight">Запишитесь на прием</strong>{" "}
+                – выберите удобное время и запишитесь онлайн в пару кликов.
+              </div>
+
+              <div className="mb-3">
+                <FontAwesomeIcon
+                  icon={faCommentDots}
+                  className="me-2 text-highlight"
+                />
+                <strong className="text-highlight">Оставьте отзыв</strong> –
+                помогите другим владельцам животных выбрать лучшего специалиста.
+              </div>
+
+              <Button
+                as={Link}
+                to="/register-user"
+                className="custom-button me-2"
+              >
+                Зарегистрироваться
               </Button>
             </Card.Body>
           </Card>

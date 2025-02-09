@@ -437,25 +437,6 @@ body {
   padding: 0.75rem 1rem;
 }
 
-.custom-footer {
-  background-color: #69abb7;
-  color: rgb(67, 63, 63);
-  padding: 20px 0;
-
-  margin-top: 40px;
-}
-
-.custom-footer h5 {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-  color: rgb(67, 63, 63);
-}
-
-.custom-footer p {
-  margin: 0;
-  color: rgb(67, 63, 63);
-}
-
 .custom-button {
   background-color: #69abb7 !important;
   color: white !important;
@@ -509,4 +490,47 @@ body {
   padding: 10px 20px;
   border-radius: 8px;
   color: #333;
+}
+
+.custom-footer {
+  background-color: #69abb7;
+  color: #333;
+  padding: 20px 0;
+  margin-top: 40px;
+}
+
+.custom-footer a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.custom-footer a:hover {
+  text-decoration: underline;
+}
+
+.text-highlight {
+  font-weight: bold;
+  color: #007bff;
+}
+
+@media (max-width: 768px) {
+  .custom-footer h5 {
+    font-size: 1.1rem;
+  }
+  .custom-footer p {
+    font-size: 0.9rem;
+    margin: 0;
+    color: rgb(67, 63, 63);
+  }
+}
+
+.custom-footer h5 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: rgb(67, 63, 63);
+}
+
+.custom-footer p {
+  margin: 0;
+  color: rgb(67, 63, 63);
 }

@@ -145,21 +145,21 @@ const UserProfile = ({ user, handleRemovePhoto, handleDeleteAccount }) => {
           <Col md={8}>
             <Card className="mb-3 shadow">
               <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Имя:</Col>
+                <Col md={4}>Имя: </Col>
                 <Col md={4}>
                   <Card.Text>{user.firstName}</Card.Text>
                 </Col>
               </Card.Body>
 
               <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Фамилия:</Col>
+                <Col md={4}>Фамилия: </Col>
                 <Col md={4}>
                   <Card.Text>{user.lastName}</Card.Text>
                 </Col>
               </Card.Body>
 
               <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Пол:</Col>
+                <Col md={4}>Пол: </Col>
                 <Col md={4}>
                   <Card.Text>
                     {user.gender === "Male" ? "Мужской" : "Женский"}
@@ -168,21 +168,21 @@ const UserProfile = ({ user, handleRemovePhoto, handleDeleteAccount }) => {
               </Card.Body>
 
               <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Электронная почта:</Col>
+                <Col md={4}>Электронная почта: </Col>
                 <Col md={4}>
                   <Card.Text>{user.email}</Card.Text>
                 </Col>
               </Card.Body>
 
               <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Телефон:</Col>
+                <Col md={4}>Телефон: </Col>
                 <Col md={4}>
                   <Card.Text>{user.phoneNumber}</Card.Text>
                 </Col>
               </Card.Body>
 
               <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Тип пользователя:</Col>
+                <Col md={4}>Тип пользователя: </Col>
                 <Col md={4}>
                   <Card.Text>
                     {userTypeLabels[user.userType] || "Неизвестный тип"}
@@ -215,7 +215,7 @@ const UserProfile = ({ user, handleRemovePhoto, handleDeleteAccount }) => {
               <Card className="mb-3 shadow">
                 <Card.Body className="d-flex align-items-center">
                   <Row>
-                    <p className="mb-3">Краткая информация о вас:</p>
+                    <p className="mb-3">Краткая информация о вас: </p>
 
                     <Card.Text>
                       {isLoading

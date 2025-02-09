@@ -1,6 +1,8 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 const Footer = () => {
   const location = useLocation();
@@ -11,29 +13,44 @@ const Footer = () => {
   }, [location.pathname]);
 
   if (!showFooter) return null;
+
   return (
-    <footer className="custom-footer">
+    <footer className="custom-footer py-4">
       <Container>
-        <Row>
-          <Col md={4} className="text-center text-md-start">
-            <h5>Наш адрес</h5>
-            <p>г. Пермь, ул. Решетникова, д. 24</p>
+        <Row className="gy-3">
+          <Col xs={12} md={6} className="text-center text-md-start">
+            <h5>
+              <FontAwesomeIcon icon={faEnvelope} className="me-2" />
+              Контактная информация
+            </h5>
+            <p>
+              Email: <a>support@doctoraibolit.ru</a>
+            </p>
+            <p>Сервис доступен только для жителей города Пермь.</p>
           </Col>
-          <Col md={4} className="text-center">
-            <h5>Контактная информация</h5>
-            <p>Телефон: +7 (342) 241-45-67</p>
-            <p>Email: info@doctoraibolit.ru</p>
-          </Col>
-          <Col md={4} className="text-center text-md-end">
-            <h5>Часы работы</h5>
-            <p>Пн-Вс: 9:00 - 21:00</p>
+
+          <Col xs={12} md={6} className="text-center text-md-end">
+            <h5>
+              <FontAwesomeIcon icon={faInfoCircle} className="me-2" />О сервисе
+            </h5>
+            <p>Платформа для поиска ветеринаров и онлайн-записи на прием.</p>
+            <p>
+              Доступен 24/7, график работы ветеринаров зависит от их расписания.
+            </p>
           </Col>
         </Row>
-        <Row className="mt-3">
+
+        <Row>
+          <Col>
+            <hr className="my-3" />
+          </Col>
+        </Row>
+
+        <Row className="mt-2">
           <Col className="text-center">
             <p className="text-muted">
-              &copy; {new Date().getFullYear()} Doctor Aibolit. Все права
-              защищены.
+              &copy; {new Date().getFullYear()} Doctor Aibolit. Онлайн-сервис
+              для записи к ветеринарам.
             </p>
           </Col>
         </Row>
