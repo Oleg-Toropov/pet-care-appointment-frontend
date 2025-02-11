@@ -24,7 +24,7 @@ const VeterinarianCard = ({ vet, eventKey, activeKey, onToggle }) => {
                 {vet.firstName} {vet.lastName}
               </Card.Title>
               <Card.Title>
-                <h6> {vet.specialization} </h6>
+                <h6> {vet.specialization}</h6>
               </Card.Title>
               <Card.Text className="review rating-stars">
                 Рейтинг: {vet.averageRating.toFixed(1)}{" "}
@@ -32,6 +32,11 @@ const VeterinarianCard = ({ vet, eventKey, activeKey, onToggle }) => {
                 )
               </Card.Text>
 
+              <Card.Text className="review rating-stars">
+                Адрес проведения приема: {vet.clinicAddress} <br />
+                Стоимость приема: {vet.appointmentCost} ₽
+              </Card.Text>
+              <hr />
               <Link
                 to={`/book-appointment/${vet.id}/new-appointment`}
                 state={{
@@ -46,13 +51,12 @@ const VeterinarianCard = ({ vet, eventKey, activeKey, onToggle }) => {
             </div>
           </Accordion.Header>
           <Accordion.Body>
-            <div>
+            <div className="accordion-link-wrapper">
               <Link
                 to={`/Veterinarian/${vet.id}/veterinarian`}
                 className="link-2"
               >
-                Подробная информация о ветеринаре {vet.firstName} и отзывы
-                клиентов
+                Информация о ветеринаре {vet.firstName} и отзывы клиентов
               </Link>{" "}
             </div>
           </Accordion.Body>

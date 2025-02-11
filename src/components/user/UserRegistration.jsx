@@ -5,10 +5,12 @@ import { Link } from "react-router-dom";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import AlertMessage from "../common/AlertMessage";
 import ProcessSpinner from "../common/ProcessSpinner";
+import AddressInput from "../common/AddressInput";
 import VetSpecializationSelector from "../veterinarian/VetSpecializationSelector";
 import { registerUser } from "./UserService";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import ReactInputMask from "react-input-mask";
+import { NumericFormat } from "react-number-format";
 
 const UserRegistration = () => {
   const [user, setUser] = useState({
@@ -20,6 +22,8 @@ const UserRegistration = () => {
     password: "",
     userType: "",
     specialization: "",
+    clinicAddress: "",
+    appointmentCost: "",
   });
   const {
     successMessage,
@@ -73,6 +77,8 @@ const UserRegistration = () => {
       password: "",
       userType: "",
       specialization: "",
+      clinicAddress: "",
+      appointmentCost: "",
     });
     setShowErrorAlert(false);
   };
@@ -216,6 +222,7 @@ const UserRegistration = () => {
 
                 {user.userType === "VET" && (
                   <Form.Group>
+                    <Form.Label className="legend">Специализация</Form.Label>
                     <Row>
                       <Col>
                         <VetSpecializationSelector
@@ -224,6 +231,49 @@ const UserRegistration = () => {
                         />
                       </Col>
                     </Row>
+                  </Form.Group>
+                )}
+
+                {user.userType === "VET" && (
+                  <Form.Group className="mb-4">
+                    <Form.Label className="legend">
+                      Адрес проведения приемов в г. Пермь
+                    </Form.Label>
+                    <AddressInput user={user} setUser={setUser} />
+                  </Form.Group>
+                )}
+
+                {user.userType === "VET" && (
+                  <Form.Group className="mb-3">
+                    <Form.Label className="legend">
+                      Стоимость одного приема
+                    </Form.Label>
+                    <NumericFormat
+                      thousandSeparator=" "
+                      suffix=" ₽"
+                      decimalScale={0}
+                      allowNegative={false}
+                      isAllowed={(values) => {
+                        const { floatValue, formattedValue } = values;
+                        return (
+                          (!formattedValue.startsWith("0") ||
+                            formattedValue === "") &&
+                          (floatValue === undefined || floatValue <= 25000)
+                        );
+                      }}
+                      name="appointmentCost"
+                      placeholder="Введите сумму"
+                      value={user.appointmentCost}
+                      onValueChange={(values) =>
+                        setUser((prev) => ({
+                          ...prev,
+                          appointmentCost: values.value,
+                        }))
+                      }
+                      className="form-control shadow"
+                      required
+                      autoComplete="appointmentCost"
+                    />
                   </Form.Group>
                 )}
 

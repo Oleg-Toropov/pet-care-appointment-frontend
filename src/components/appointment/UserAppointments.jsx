@@ -18,7 +18,6 @@ import {
 } from "./AppointmentService";
 
 import AlertMessage from "../common/AlertMessage";
-import UserInformation from "../common/UserInformation";
 import AppointmentFilter from "./AppointmentFilter";
 import Paginator from "../common/Paginator";
 
@@ -283,26 +282,15 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
               {isExpanded && (
                 <Accordion.Body>
                   <Row className="mb-4">
-                    <Col md={4} className="m-t2">
+                    <Col md={4} className="mt-2">
                       <p>
                         Номер записи на прием :{" "}
                         <span className="text-info">
                           {appointment.appointmentNo}
-                        </span>
-                      </p>
-
-                      <ReactDatePicker
-                        selected={
-                          new Date(
-                            `${appointment.appointmentDate}T${appointment.appointmentTime}`
-                          )
-                        }
-                        locale="ru"
-                        dateFormat="MMMM d, yyyy h:mm aa"
-                        inline
-                      />
-
-                      <p>
+                        </span>{" "}
+                        <br />
+                        Причина записи: <span>{appointment.reason}</span>
+                        <br />
                         Время приема:
                         <span className="text-info">
                           {" "}
@@ -316,26 +304,71 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                           )}
                         </span>{" "}
                       </p>
-
-                      <p>
-                        Причина записи: <span>{appointment.reason}</span>
-                      </p>
-
-                      {user.userType === UserType.PATIENT &&
-                        (isCancelled ||
-                          isWaitingForApproval ||
-                          isNotApproved) && (
-                          <>
-                            <p>
-                              Ветеринар: {appointment.veterinarian.firstName}{" "}
-                              {appointment.veterinarian.lastName} (
-                              {appointment.veterinarian.specialization})
-                            </p>
-                          </>
-                        )}
+                      <ReactDatePicker
+                        selected={
+                          new Date(
+                            `${appointment.appointmentDate}T${appointment.appointmentTime}`
+                          )
+                        }
+                        locale="ru"
+                        dateFormat="MMMM d, yyyy h:mm aa"
+                        inline
+                      />
                     </Col>
 
                     <Col md={8} className="mt-2">
+                      {user.userType === UserType.PATIENT && (
+                        <>
+                          <p>
+                            Ветеринар: {appointment.veterinarian.firstName}{" "}
+                            {appointment.veterinarian.lastName} (
+                            {appointment.veterinarian.specialization}) <br />
+                            Адрес проведения приема:{" "}
+                            {appointment.veterinarian.clinicAddress}
+                            <br />
+                            Стоимость приема:{" "}
+                            {appointment.veterinarian.appointmentCost} ₽
+                          </p>
+                        </>
+                      )}
+                      {user.userType === UserType.PATIENT &&
+                        !(
+                          isCancelled ||
+                          isWaitingForApproval ||
+                          isNotApproved
+                        ) && (
+                          <>
+                            <p>
+                              Электронная почта:{" "}
+                              {appointment.veterinarian.email} <br />
+                              Телефон:{" "}
+                              <span className="text-info">
+                                {appointment.veterinarian.phoneNumber}
+                              </span>
+                            </p>
+                          </>
+                        )}
+                      {user.userType === UserType.VET &&
+                        !(
+                          isCancelled ||
+                          isWaitingForApproval ||
+                          isNotApproved
+                        ) && (
+                          <>
+                            <p>
+                              Клиент: {appointment.patient.firstName}{" "}
+                              {appointment.patient.lastName} <br />
+                              Электронная почта: {
+                                appointment.patient.email
+                              }{" "}
+                              <br />
+                              Телефон:{" "}
+                              <span className="text-info">
+                                {appointment.patient.phoneNumber}
+                              </span>
+                            </p>
+                          </>
+                        )}
                       <h4>Питомцы:</h4>
                       <PetsTable
                         pets={appointment.pets}
@@ -345,17 +378,6 @@ const UserAppointments = ({ user, appointments: initialAppointments }) => {
                         appointmentId={appointment.id}
                       />
                     </Col>
-
-                    {!(
-                      isCancelled ||
-                      isWaitingForApproval ||
-                      isNotApproved
-                    ) && (
-                      <UserInformation
-                        userType={user.userType}
-                        appointment={appointment}
-                      />
-                    )}
                   </Row>
 
                   {showSuccessAlert && (

@@ -78,7 +78,7 @@ const Rating = ({ veterinarianId, onReviewSubmit }) => {
       )}
 
       <Form onSubmit={handleSubmit}>
-        <h3>Оцените ветеринара : </h3>
+        <h5>Оцените ветеринара </h5>
         <div className="mb-2">
           {[...Array(5)].map((_, index) => {
             const ratingValue = index + 1;

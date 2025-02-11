@@ -46,7 +46,7 @@ const Review = ({ review, userType, onDelete }) => {
             <p className="review-text ms-4">{review.feedback}</p>
           </div>
           <div>
-            <p className="ms-4">{displayName}</p>
+            <h6 className="ms-4">{displayName}</h6>
           </div>
         </div>
       </div>

@@ -11,6 +11,7 @@ import VetSpecializationSelector from "../veterinarian/VetSpecializationSelector
 import ProcessSpinner from "../common/ProcessSpinner";
 import UseMessageAlerts from "../hooks/UseMessageAlerts";
 import AlertMessage from "../common/AlertMessage";
+import { NumericFormat } from "react-number-format";
 
 const UserUpdate = () => {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -25,7 +26,20 @@ const UserUpdate = () => {
     gender: "",
     phoneNumber: "",
     specialization: "",
+    street: "",
+    house: "",
+    appointmentCost: "",
   });
+
+  const handleStreetChange = (e) => {
+    const value = e.target.value.replace(/[^а-яА-ЯёЁ\s.-]/g, "");
+    setUserData((prev) => ({ ...prev, street: value }));
+  };
+
+  const handleHouseChange = (e) => {
+    const value = e.target.value.replace(/[^а-яА-ЯёЁ0-9/-]/g, "");
+    setUserData((prev) => ({ ...prev, house: value }));
+  };
 
   const [biography, setBiography] = useState("");
   const [biographyId, setBiographyId] = useState(null);
@@ -45,15 +59,27 @@ const UserUpdate = () => {
     const fetchData = async () => {
       try {
         const userResponse = await getUserById(userId);
-        setUserData(userResponse.data);
+        let fetchedUser = userResponse.data;
 
-        if (userResponse.data.userType === "VET") {
+        if (fetchedUser.userType === "VET") {
           const biographyResponse = await getBiographyById(userId);
           if (biographyResponse) {
             setBiography(biographyResponse.data.biography || "");
             setBiographyId(biographyResponse.data.id);
           }
         }
+
+        if (fetchedUser.clinicAddress) {
+          const match = fetchedUser.clinicAddress.match(
+            /^г\. Пермь, ул\. (.*), (.*)$/
+          );
+          if (match) {
+            fetchedUser.street = match[1];
+            fetchedUser.house = match[2];
+          }
+        }
+
+        setUserData(fetchedUser);
       } catch (error) {
         setErrorMessage(
           error.response?.data?.message || "Ошибка загрузки данных"
@@ -79,6 +105,7 @@ const UserUpdate = () => {
 
   const handleUserUpdate = async (e) => {
     e.preventDefault();
+    const fullAddress = `г. Пермь, ул. ${userData.street}, ${userData.house}`;
 
     try {
       setIsProcessing(true);
@@ -90,6 +117,8 @@ const UserUpdate = () => {
         email: userData.email,
         userType: userData.userType,
         specialization: userData.specialization,
+        appointmentCost: userData.appointmentCost,
+        clinicAddress: fullAddress,
       };
       const response = await updateUser(updatedUserData, userId);
 
@@ -219,20 +248,87 @@ const UserUpdate = () => {
                       onChange={handleUserInputChange}
                     />
                   </Form.Group>
-                  <Form.Group controlId="biography" className="mb-3">
-                    <Form.Label className="legend">
-                      Краткая информация о вас
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      name="vetBiography"
-                      rows={4}
-                      value={biography}
-                      onChange={handleBiographyChange}
-                      className="shadow"
-                    />
-                  </Form.Group>
                 </>
+              )}
+
+              {userData.userType === "VET" && (
+                <Form.Group className="mb-4">
+                  <Form.Label className="legend">
+                    Адрес проведения приемов в г. Пермь
+                  </Form.Label>
+                  <div className="d-flex">
+                    <span className="align-self-center">ул.</span>
+                    <input
+                      type="text"
+                      className="form-control shadow mx-2"
+                      placeholder="Ленина"
+                      value={userData.street}
+                      onChange={handleStreetChange}
+                      required
+                      style={{ width: "70%", height: "38px" }}
+                    />
+                    <span className="align-self-center">д.</span>
+                    <input
+                      type="text"
+                      className="form-control shadow"
+                      placeholder="3 / 2а"
+                      value={userData.house}
+                      onChange={handleHouseChange}
+                      required
+                      style={{ width: "30%", height: "38px" }}
+                    />
+                  </div>
+                </Form.Group>
+              )}
+
+              {userData.userType === "VET" && (
+                <Form.Group className="mb-3">
+                  <Form.Label className="legend">
+                    Стоимость одного приема
+                  </Form.Label>
+                  <NumericFormat
+                    thousandSeparator=" "
+                    suffix=" ₽"
+                    decimalScale={0}
+                    allowNegative={false}
+                    isAllowed={(values) => {
+                      const { floatValue, formattedValue } = values;
+                      return (
+                        (!formattedValue.startsWith("0") ||
+                          formattedValue === "") &&
+                        (floatValue === undefined || floatValue <= 25000)
+                      );
+                    }}
+                    name="appointmentCost"
+                    placeholder="Введите сумму"
+                    value={userData.appointmentCost}
+                    onValueChange={(values) =>
+                      setUserData((prev) => ({
+                        ...prev,
+                        appointmentCost: values.value,
+                      }))
+                    }
+                    className="form-control shadow"
+                    required
+                    autoComplete="appointmentCost"
+                  />
+                </Form.Group>
+              )}
+
+              {userData.userType === "VET" && (
+                <Form.Group controlId="biography" className="mb-3">
+                  <Form.Label className="legend">
+                    Краткая информация о вас
+                  </Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    name="vetBiography"
+                    rows={4}
+                    value={biography}
+                    onChange={handleBiographyChange}
+                    className="shadow"
+                  />
+                </Form.Group>
               )}
 
               {showErrorAlert && (

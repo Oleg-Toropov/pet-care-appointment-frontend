@@ -83,9 +83,8 @@ const Veterinarian = () => {
           </Row>
           <Card.Body>
             <Card.Title>
-              {vet.firstName} {vet.lastName}
+              {vet.firstName} {vet.lastName} ({vet.specialization})
             </Card.Title>
-            <Card.Text>Специализация: {vet.specialization}</Card.Text>
             {vet.averageRating > 0 && (
               <Card.Text className="rating-stars">
                 Рейтинг: {vet.averageRating.toFixed(1)}
@@ -93,6 +92,16 @@ const Veterinarian = () => {
                 {vet.totalReviewers || 0})
               </Card.Text>
             )}
+            <p>
+              {biography ||
+                "Информация о ветеринаре пока отсутствует, но вскоре появится!"}
+            </p>{" "}
+            <hr />
+            <Card.Text className="rating-stars">
+              Приемы проводит по адресу: {vet.clinicAddress} <br />
+              Стоимость одного приема: {vet.appointmentCost} ₽
+            </Card.Text>
+            {/* <hr /> */}
             <Link
               to={`/book-appointment/${vet.id}/new-appointment`}
               state={{
@@ -100,18 +109,10 @@ const Veterinarian = () => {
                 firstName: vet.firstName,
                 lastName: vet.lastName,
               }}
-              className="link"
+              className="link-1"
             >
               Записаться на прием
             </Link>
-            <hr />
-            <h3>
-              О ветеринаре {vet.firstName} {vet.lastName}
-            </h3>
-            <p>
-              {biography ||
-                "Информация о ветеринаре пока отсутствует, но вскоре появится!"}
-            </p>{" "}
             <hr />
             <Rating veterinarianId={vet.id} onReviewSubmit={null} />
             <h4 className="text-center mb-4">Отзывы</h4>

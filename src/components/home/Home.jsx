@@ -9,19 +9,19 @@ import {
   faSearch,
   faCalendarCheck,
   faCommentDots,
-  faLaptopMedical,
+  faPaw,
   faMapMarkerAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Home = () => {
   return (
     <Container className="home-container mt-5">
-      <Row className="g-4">
+      <Row className="g-4 align-items-stretch">
         <Col md={6}>
           <Card
             as={motion.div}
             whileHover={{ y: -10 }}
-            className="shadow-sm border-0 rounded-lg"
+            className="shadow-sm border-0 rounded-lg h-100 d-flex flex-column"
           >
             <Card.Img
               variant="top"
@@ -30,29 +30,44 @@ const Home = () => {
               className="hero-image"
               style={{ objectFit: "cover", height: "250px" }}
             />
-            <Card.Body>
+
+            <Card.Body className="d-flex flex-column">
               <h2 className="text-highlight">Что такое Doctor Aibolit?</h2>
-              <FontAwesomeIcon
-                icon={faLaptopMedical}
-                className="me-2 text-highlight"
-              />
-              <strong className="text-highlight">
-                Онлайн-сервис для записи к ветеринарам
-              </strong>{" "}
               <div className="mb-3">
-                Doctor Aibolit – это онлайн-сервис, который помогает владельцам
-                животных легко находить проверенных ветеринаров и записываться
-                на прием онлайн.
+                <FontAwesomeIcon icon={faPaw} className="me-2 text-highlight" />
+                Doctor Aibolit – это современный онлайн-сервис, который делает
+                заботу о питомцах удобной и доступной. <br />
+                Сервис позволяет владельцам животных:
               </div>
+
               <div className="mb-3">
-                <FontAwesomeIcon
-                  icon={faMapMarkerAlt}
-                  className="me-2 text-highlight"
-                />
-                <strong className="text-highlight">Город обслуживания</strong> –
-                сервис доступен только в городе <strong>Пермь</strong>.
+                <FontAwesomeIcon icon={faPaw} className="me-2 text-highlight" />
+                Сервис позволяет владельцам животных:
               </div>
-              <Button as={Link} to="/doctors" className="custom-button">
+
+              <div className="mb-3">
+                <FontAwesomeIcon icon={faPaw} className="me-2 text-highlight" />
+                Быстро находить проверенных ветеринаров по специализации,
+                рейтингу и отзывам.
+              </div>
+
+              <div className="mb-3">
+                <FontAwesomeIcon icon={faPaw} className="me-2 text-highlight" />
+                Онлайн записываться на прием без необходимости звонков и долгих
+                ожиданий.
+              </div>
+
+              <div className="mb-3">
+                <FontAwesomeIcon icon={faPaw} className="me-2 text-highlight" />
+                Оставлять и читать отзывы о ветеринарах, чтобы выбрать лучшего
+                специалиста.
+              </div>
+
+              <div className="mb-3">
+                <FontAwesomeIcon icon={faPaw} className="me-2 text-highlight" />
+                Сохранять историю посещений.
+              </div>
+              <Button as={Link} to="/doctors" className="custom-button mt-auto">
                 Найти ветеринара
               </Button>
             </Card.Body>
@@ -63,7 +78,7 @@ const Home = () => {
           <Card
             as={motion.div}
             whileHover={{ y: -10 }}
-            className="shadow-sm border-0 rounded-lg"
+            className="shadow-sm border-0 rounded-lg h-100 d-flex flex-column"
           >
             <Card.Img
               variant="top"
@@ -72,7 +87,8 @@ const Home = () => {
               className="hero-image"
               style={{ objectFit: "cover", height: "250px" }}
             />
-            <Card.Body>
+
+            <Card.Body className="d-flex flex-column">
               <h2 className="text-highlight">Как это работает?</h2>
 
               <div className="mb-3">
@@ -80,9 +96,8 @@ const Home = () => {
                   icon={faUserPlus}
                   className="me-2 text-highlight"
                 />
-                <strong className="text-highlight">Зарегистрируйтесь</strong> –
-                создайте учетную запись, чтобы получить доступ ко всем
-                возможностям сервиса.
+                Зарегистрируйтесь - создайте учетную запись, чтобы получить
+                доступ ко всем возможностям сервиса.
               </div>
 
               <div className="mb-3">
@@ -90,8 +105,8 @@ const Home = () => {
                   icon={faSearch}
                   className="me-2 text-highlight"
                 />
-                <strong className="text-highlight">Найдите ветеринара</strong> –
-                выберите специалиста по специализации, рейтингу и отзывам.
+                Найдите ветеринара - выберите специалиста по специализации,
+                рейтингу и отзывам.
               </div>
 
               <div className="mb-3">
@@ -99,8 +114,8 @@ const Home = () => {
                   icon={faCalendarCheck}
                   className="me-2 text-highlight"
                 />
-                <strong className="text-highlight">Запишитесь на прием</strong>{" "}
-                – выберите удобное время и запишитесь онлайн в пару кликов.
+                Запишитесь на прием – выберите удобное время и запишитесь онлайн
+                в пару кликов.
               </div>
 
               <div className="mb-3">
@@ -108,14 +123,23 @@ const Home = () => {
                   icon={faCommentDots}
                   className="me-2 text-highlight"
                 />
-                <strong className="text-highlight">Оставьте отзыв</strong> –
-                помогите другим владельцам животных выбрать лучшего специалиста.
+                Оставьте отзыв - помогите другим владельцам животных выбрать
+                лучшего специалиста.
+              </div>
+
+              <div className="mb-3">
+                <FontAwesomeIcon
+                  icon={faMapMarkerAlt}
+                  className="me-2 text-highlight"
+                />
+                Город обслуживания - сервис доступен только в городе{" "}
+                <strong>Пермь</strong>.
               </div>
 
               <Button
                 as={Link}
                 to="/register-user"
-                className="custom-button me-2"
+                className="custom-button mt-auto"
               >
                 Зарегистрироваться
               </Button>

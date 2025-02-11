@@ -90,13 +90,24 @@ h6 {
   color: var(--color-nav-home);
   font-size: 14px;
 }
+.link-1 {
+  text-decoration: none;
+  margin-bottom: 4px;
+  color: var(--color-nav-home);
+  font-size: 17px;
+}
 
 .link-2 {
   text-decoration: none;
-  color: rgb(13, 116, 116);
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-  font-size: 16px;
+  color: var(--color-title);
+  font-size: 14px;
+  font-weight: 600;
 }
+
+.accordion-link-wrapper {
+  padding-left: 150px;
+}
+
 .link-2:hover {
   text-decoration: underline;
 }

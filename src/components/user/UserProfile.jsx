@@ -144,46 +144,58 @@ const UserProfile = ({ user, handleRemovePhoto, handleDeleteAccount }) => {
 
           <Col md={8}>
             <Card className="mb-3 shadow">
-              <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Имя: </Col>
-                <Col md={4}>
+              <Card.Body className="d-flex align-items-center py-1">
+                <Col md={3}>
+                  <h3>Имя: </h3>
+                </Col>
+                <Col md={5}>
                   <Card.Text>{user.firstName}</Card.Text>
                 </Col>
               </Card.Body>
 
-              <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Фамилия: </Col>
-                <Col md={4}>
+              <Card.Body className="d-flex align-items-center py-1">
+                <Col md={3}>
+                  <h3>Фамилия:</h3>{" "}
+                </Col>
+                <Col md={5}>
                   <Card.Text>{user.lastName}</Card.Text>
                 </Col>
               </Card.Body>
 
-              <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Пол: </Col>
-                <Col md={4}>
+              <Card.Body className="d-flex align-items-center py-1">
+                <Col md={3}>
+                  <h3>Пол:</h3>{" "}
+                </Col>
+                <Col md={5}>
                   <Card.Text>
                     {user.gender === "Male" ? "Мужской" : "Женский"}
                   </Card.Text>
                 </Col>
               </Card.Body>
 
-              <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Электронная почта: </Col>
-                <Col md={4}>
+              <Card.Body className="d-flex align-items-center py-1">
+                <Col md={3}>
+                  <h3>Электронная почта:</h3>{" "}
+                </Col>
+                <Col md={5}>
                   <Card.Text>{user.email}</Card.Text>
                 </Col>
               </Card.Body>
 
-              <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Телефон: </Col>
-                <Col md={4}>
+              <Card.Body className="d-flex align-items-center py-1">
+                <Col md={3}>
+                  <h3>Телефон: </h3>
+                </Col>
+                <Col md={5}>
                   <Card.Text>{user.phoneNumber}</Card.Text>
                 </Col>
               </Card.Body>
 
-              <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Тип пользователя: </Col>
-                <Col md={4}>
+              <Card.Body className="d-flex align-items-center py-1">
+                <Col md={3}>
+                  <h3>Тип пользователя:</h3>{" "}
+                </Col>
+                <Col md={5}>
                   <Card.Text>
                     {userTypeLabels[user.userType] || "Неизвестный тип"}
                   </Card.Text>
@@ -191,17 +203,43 @@ const UserProfile = ({ user, handleRemovePhoto, handleDeleteAccount }) => {
               </Card.Body>
 
               {user.userType === "VET" && (
-                <Card.Body className="d-flex align-items-center">
-                  <Col md={4}>Специализация: </Col>
-                  <Col md={4}>
+                <Card.Body className="d-flex align-items-center py-1">
+                  <Col md={3}>
+                    <h3>Специализация:</h3>{" "}
+                  </Col>
+                  <Col md={5}>
                     <Card.Text>{user.specialization}</Card.Text>
                   </Col>
                 </Card.Body>
               )}
 
-              <Card.Body className="d-flex align-items-center">
-                <Col md={4}>Статус учетной записи: </Col>
-                <Col md={4}>
+              {user.userType === "VET" && (
+                <Card.Body className="d-flex align-items-center py-1">
+                  <Col md={3}>
+                    <h3>Адрес для приемов:</h3>{" "}
+                  </Col>
+                  <Col md={5}>
+                    <Card.Text>{user.clinicAddress}</Card.Text>
+                  </Col>
+                </Card.Body>
+              )}
+
+              {user.userType === "VET" && (
+                <Card.Body className="d-flex align-items-center py-1">
+                  <Col md={3}>
+                    <h3>Стоимость приема: </h3>
+                  </Col>
+                  <Col md={5}>
+                    <Card.Text>{user.appointmentCost} руб.</Card.Text>
+                  </Col>
+                </Card.Body>
+              )}
+
+              <Card.Body className="d-flex align-items-center py-1">
+                <Col md={3}>
+                  <h3>Статус уч. записи:</h3>{" "}
+                </Col>
+                <Col md={5}>
                   <Card.Text
                     className={user.enabled ? style.active : style.inactive}
                   >
@@ -213,9 +251,11 @@ const UserProfile = ({ user, handleRemovePhoto, handleDeleteAccount }) => {
 
             {user.userType === "VET" && (
               <Card className="mb-3 shadow">
-                <Card.Body className="d-flex align-items-center">
+                <Card.Body className="d-flex align-items-center py-1">
                   <Row>
-                    <p className="mb-3">Краткая информация о вас: </p>
+                    <p className="mb-3">
+                      <h3>Краткая информация о вас:</h3>{" "}
+                    </p>
 
                     <Card.Text>
                       {isLoading
